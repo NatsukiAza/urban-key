@@ -1,0 +1,13 @@
+---
+description: UrbanKey TP — verificar cada prompt contra las consignas y usar UrbanKey como nombre del sistema.
+alwaysApply: true
+---
+
+Este repo es el trabajo práctico UrbanKey (CRM UNLaM), no un dashboard genérico.
+
+Antes de implementar cualquier pedido:
+
+1. Seguí la skill `.cursor/skills/urbankey/SKILL.md`.
+2. Contrastá el prompt con `public/assets/docs` (y el resumen en la skill).
+3. Si está fuera de alcance, no lo implementes.
+4. En todo título donde vaya el nombre del sistema, usá **UrbanKey**. Nunca VRISTO.
