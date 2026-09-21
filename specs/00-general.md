@@ -28,6 +28,7 @@ Set **único fullstack** (monolito Next.js + Supabase). Una feature declara de c
 - Estado → [[_base/estado]]
 - Formularios y validación → [[_base/formularios-y-validacion]]
 - UI y feedback → [[_base/ui-y-feedback]]
+- Catálogo de componentes del template → [[_base/catalogo-template]]
 - Criterios de aceptación → [[_base/criterios-de-aceptacion]]
 - Testing → [[_base/testing]]
 

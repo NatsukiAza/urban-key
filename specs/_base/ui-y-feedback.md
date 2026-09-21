@@ -12,6 +12,7 @@ Fijar cómo se ve y cómo comunica la app: qué componentes usar, cómo mostrar 
 ### Base visual
 
 - **Tailwind** + template **VRISTO** (ya en el repo): layouts en `components/Layouts/` (`DefaultLayout`, `Sidebar`, `Header`, `Footer`).
+- El inventario de bloques reutilizables del template (gráficos, tablas, kanban, forms) está en [[catalogo-template]]: **se busca ahí antes de escribir UI nueva**.
 - Componentes de datos: **mantine-datatable** (ya presente) para tablas con orden/paginación/selección; **@headlessui/react** y **@tippyjs/react** para dropdowns/tooltips.
 - Soporte de **tema claro/oscuro** e **i18n** (`react-i18next`, `lib/i18n.ts`) ya montados; toda UI nueva los respeta.
 
@@ -61,3 +62,4 @@ Aplica a: estado de oportunidad, estado de contacto, tipo de operación, tipo de
 - [[formularios-y-validacion]] — errores por campo.
 - [[modelado-y-tipos]] — enums con `config` visual.
 - [[acceso-y-roles]] — gating de acciones por rol.
+- [[catalogo-template]] — de dónde copiar gráficos, tablas y tableros.
