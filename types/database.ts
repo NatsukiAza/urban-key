@@ -343,13 +343,19 @@ export type Database = {
           actualizado_en: string
           actualizado_por: string | null
           ambientes: number | null
+          antiguedad: number | null
+          banos: number | null
+          cochera: boolean
           contacto_id: string
           creado_en: string
           creado_por: string | null
+          descripcion: string | null
           direccion: string
+          dormitorios: number | null
           estado: Database["public"]["Enums"]["estado_inmueble"]
           expensas: number | null
           id: string
+          localidad: string | null
           m2: number | null
           moneda: Database["public"]["Enums"]["moneda"]
           nombre: string | null
@@ -363,13 +369,19 @@ export type Database = {
           actualizado_en?: string
           actualizado_por?: string | null
           ambientes?: number | null
+          antiguedad?: number | null
+          banos?: number | null
+          cochera?: boolean
           contacto_id: string
           creado_en?: string
           creado_por?: string | null
+          descripcion?: string | null
           direccion: string
+          dormitorios?: number | null
           estado?: Database["public"]["Enums"]["estado_inmueble"]
           expensas?: number | null
           id?: string
+          localidad?: string | null
           m2?: number | null
           moneda?: Database["public"]["Enums"]["moneda"]
           nombre?: string | null
@@ -383,13 +395,19 @@ export type Database = {
           actualizado_en?: string
           actualizado_por?: string | null
           ambientes?: number | null
+          antiguedad?: number | null
+          banos?: number | null
+          cochera?: boolean
           contacto_id?: string
           creado_en?: string
           creado_por?: string | null
+          descripcion?: string | null
           direccion?: string
+          dormitorios?: number | null
           estado?: Database["public"]["Enums"]["estado_inmueble"]
           expensas?: number | null
           id?: string
+          localidad?: string | null
           m2?: number | null
           moneda?: Database["public"]["Enums"]["moneda"]
           nombre?: string | null

@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconCaretDown from '../Icon/IconCaretDown';
 import IconMenuScrumboard from '../Icon/Menu/IconMenuScrumboard';
+import IconHome from '../Icon/IconHome';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
@@ -71,6 +72,31 @@ const Sidebar = () => {
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
+                            {/* La cartera de inmuebles es el insumo del embudo: va antes que Oportunidades. */}
+                            <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'inmuebles' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('inmuebles')}>
+                                    <div className="flex items-center">
+                                        <IconHome className="group-hover:!text-primary shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Inmuebles')}</span>
+                                    </div>
+
+                                    <div className={currentMenu !== 'inmuebles' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                        <IconCaretDown />
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'inmuebles' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <Link href="/inmuebles">{t('Lista')}</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/inmuebles/nuevo">{t('Nuevo')}</Link>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'oportunidades' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('oportunidades')}>
                                     <div className="flex items-center">

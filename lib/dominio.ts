@@ -2,6 +2,9 @@ import type { EstadoOportunidad } from './enums/estadoOportunidad';
 import type { EstadoContacto } from './enums/estadoContacto';
 import type { TipoFunnel } from './enums/tipoFunnel';
 import type { TipoOperacion } from './enums/tipoOperacion';
+import type { TipoInmueble } from './enums/tipoInmueble';
+import type { EstadoInmueble } from './enums/estadoInmueble';
+import type { Moneda } from './enums/moneda';
 import type { RolUsuario } from './enums/rolUsuario';
 
 // Entidades compartidas del dominio. Con Supabase, estas formas saldrán de types/database.ts.
@@ -31,12 +34,26 @@ export interface Contacto {
 export interface Inmueble {
     id: string;
     contactoId: string;
-    tipoOperacion: TipoOperacion;
+    sucursalId: string | null;
+    nombre: string | null;
     direccion: string;
-    ambientes: number;
-    m2: number;
-    precio: number;
+    localidad: string | null;
+    tipoOperacion: TipoOperacion;
+    tipoInmueble: TipoInmueble;
+    estado: EstadoInmueble;
+    ambientes: number | null;
+    dormitorios: number | null;
+    banos: number | null;
+    m2: number | null;
+    cochera: boolean;
+    antiguedad: number | null;
+    precio: number | null;
+    moneda: Moneda;
+    expensas: number | null;
+    descripcion: string | null;
     activo: boolean;
+    creadoEn: string;
+    actualizadoEn: string;
 }
 
 export interface Funnel {
