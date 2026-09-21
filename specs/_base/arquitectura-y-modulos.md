@@ -71,7 +71,7 @@ components/
 ├── Layouts/         # DefaultLayout, Sidebar, Header, Footer (del template)
 └── {compartidos}/   # UI reutilizable entre módulos → [[ui-y-feedback]]
 lib/
-├── supabase/        # clientes server/client/middleware → [[acceso-y-datos]]
+├── supabase/        # clientes server/client/proxy → [[acceso-y-datos]]
 ├── enums/           # enums de dominio con config visual → [[modelado-y-tipos]]
 ├── auth/            # helpers de rol/sesión → [[acceso-y-roles]]
 └── {entidad}/       # queries/actions/types por módulo

@@ -12,7 +12,7 @@ Definir el modelo de **roles** y el mecanismo de **autorización**: de dónde sa
 ### Autenticación — Supabase Auth
 
 - La sesión la maneja **Supabase Auth** (email + contraseña). Las contraseñas nunca se almacenan en la app → regla transversal en [[00-general]].
-- La sesión se refresca en **`middleware.ts`** (raíz) usando `lib/supabase/middleware.ts` → [[acceso-y-datos]]. El middleware también redirige a `/auth/cover-login` si no hay sesión en rutas protegidas.
+- La sesión se refresca en **`proxy.ts`** (raíz, el ex `middleware.ts` de Next ≤15) usando `lib/supabase/proxy.ts` → [[acceso-y-datos]]. El proxy también redirige a `/auth/cover-login` si no hay sesión en rutas protegidas.
 - El login/recuperación viven en el grupo `app/(auth)/`; la app autenticada en `app/(dashboard)/`.
 
 ### Roles del sistema
@@ -40,7 +40,7 @@ export async function getUsuarioActual(): Promise<{ id: string; rol: Rol } | nul
 
 ### Protección de rutas
 
-- **Middleware**: exige sesión para todo `(dashboard)`.
+- **Proxy** (`proxy.ts` en la raíz): exige sesión para todo `(dashboard)`.
 - **Por rol**: rutas restringidas a un rol se protegen en el `layout.tsx`/`page.tsx` del segmento (Server Component) resolviendo `getUsuarioActual()` y haciendo `redirect('/no-autorizado')` si el rol no está permitido. No se confía solo en ocultar el link.
 
 ```tsx
@@ -76,11 +76,11 @@ Cada feature declara sus rutas y roles; el estado consolidado se mantiene acá.
 
 ## Preguntas abiertas
 
-- ¿El vendedor ve contactos/inmuebles **solo asignados a él** o toda la cartera en modo lectura? Definir por feature y reflejar en las políticas RLS.
+- ¿El vendedor ve contactos/inmuebles **solo asignados a él** o toda la cartera? **Resuelto provisoriamente en la migración de RLS: la cartera es compartida** — todo usuario activo lee y edita contactos e inmuebles, y la restricción por pertenencia se aplica solo a `oportunidades` (que sí tienen responsable). Si el equipo decide restringirla, se cambian las políticas `contactos_*` e `inmuebles_*` y nada más.
 
 ## Ver también
 
-- [[acceso-y-datos]] — clientes Supabase, middleware de sesión, chequeo en Server Actions.
+- [[acceso-y-datos]] — clientes Supabase, proxy de sesión, chequeo en Server Actions.
 - [[modelado-y-tipos]] — enum de rol con config visual; tabla `usuarios`.
 - [[ui-y-feedback]] — chip/badge de rol y gating de acciones.
 - Roles y reglas transversales: [[00-general]].

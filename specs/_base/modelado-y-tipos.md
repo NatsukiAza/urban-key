@@ -78,10 +78,12 @@ Relaciones clave (el detalle fino se fija en cada feature):
 
 - Al crear una tabla o un tipo/DTO/enum nuevo para un módulo.
 
-## Preguntas abiertas
+## Decisiones tomadas al escribir el esquema
 
-- Propietario/interesado: ¿flags booleanos en `contactos`, o tabla de roles del contacto? Definir en la feature de contactos.
-- ¿`id` `uuid` o `bigint`? Elegir uno y usarlo consistente en todo el esquema.
+- **`id` es `uuid`** (`default gen_random_uuid()`) en todas las tablas. Lo fuerza `usuarios.id`, que referencia `auth.users (id)`; mezclar tipos entre tablas rompería la consistencia.
+- **Propietario/interesado son flags booleanos** en `contactos` (`es_propietario`, `es_interesado`), con un CHECK que exige al menos uno. Coincide con `lib/dominio.ts`; si el día de mañana un contacto necesita más roles, se pasa a tabla.
+- **Inmobiliaria y sucursal** entran al modelo (vienen del diagrama de clases). `usuarios`, `contactos` e `inmuebles` cuelgan de una sucursal opcional.
+- Enums nuevos definidos en la base que todavía **no tienen su archivo en `lib/enums/`**: `tipo_inmueble`, `estado_inmueble`, `tipo_actividad`, `moneda`. Los crea la feature dueña de cada módulo.
 
 ## Ver también
 

@@ -1,21 +1,95 @@
 import 'server-only';
-import { db } from '../mock/store';
+import { createClient } from '../supabase/server';
+import { aContacto, aEtapa, aFunnel, aInmueble, aMotivoPerdida, aOrigen, aUsuario } from '../mapeo';
+import type { Database } from '@/types/database';
 import type { Oportunidad, OportunidadDetalle, OportunidadRow, FiltroOportunidades, FormOptions, ColumnaEtapa, OportunidadCard, HistorialEtapaDetalle } from './types';
-import type { Contacto, Inmueble } from '../dominio';
 
-const nombreContacto = (c?: Contacto | null) => (c ? `${c.nombre} ${c.apellido}` : '');
-const nombreInmueble = (i?: Inmueble | null) => (i ? i.direccion : null);
+type OportunidadDbRow = Database['public']['Tables']['oportunidades']['Row'];
+
+const RESPONSABLE = 'usuarios!oportunidades_responsable_id_fkey';
+
+const SELECT_LISTA = `
+    id, titulo, estado, valor_estimado,
+    contacto:contactos(nombre, apellido),
+    inmueble:inmuebles(direccion),
+    responsable:${RESPONSABLE}(nombre, apellido),
+    funnel:funnels(nombre),
+    etapa:etapas(nombre)
+`;
+
+const SELECT_CARD = `
+    id, titulo, etapa_id, estado, valor_estimado,
+    contacto:contactos(nombre, apellido),
+    inmueble:inmuebles(direccion),
+    responsable:${RESPONSABLE}(nombre, apellido)
+`;
+
+const SELECT_DETALLE = `
+    *,
+    contacto:contactos(*),
+    inmueble:inmuebles(*),
+    responsable:${RESPONSABLE}(*),
+    funnel:funnels(*),
+    etapa:etapas(*),
+    origen:origenes(*),
+    motivoPerdida:motivos_perdida(*),
+    historial:historial_etapas(
+        *,
+        etapaAnterior:etapas!historial_etapas_etapa_anterior_id_fkey(*),
+        etapaNueva:etapas!historial_etapas_etapa_nueva_id_fkey(*),
+        usuario:usuarios(*)
+    )
+`;
+
+const nombreCompleto = (p: { nombre: string; apellido: string } | null) => (p ? `${p.nombre} ${p.apellido}`.trim() : '');
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const esUuid = (v: string | undefined | null): v is string => typeof v === 'string' && UUID.test(v);
+const filtroUuid = (v: string | undefined) => (esUuid(v) ? v : undefined);
+
+function aOportunidad(r: OportunidadDbRow): Oportunidad {
+    return {
+        id: r.id,
+        titulo: r.titulo,
+        contactoId: r.contacto_id,
+        inmuebleId: r.inmueble_id,
+        responsableId: r.responsable_id,
+        funnelId: r.funnel_id,
+        etapaId: r.etapa_id,
+        estado: r.estado,
+        valorEstimado: r.valor_estimado,
+        origenId: r.origen_id,
+        observaciones: r.observaciones,
+        motivoPerdidaId: r.motivo_perdida_id,
+        fechaCierreReal: r.fecha_cierre_real,
+        activo: r.activo,
+        creadoEn: r.creado_en,
+        actualizadoEn: r.actualizado_en,
+        creadoPor: r.creado_por ?? '',
+        actualizadoPor: r.actualizado_por ?? '',
+    };
+}
 
 export async function getOportunidades(filtro: FiltroOportunidades = {}): Promise<Oportunidad[]> {
     try {
-        return db.oportunidades
-            .filter((o) => o.activo)
-            .filter((o) => (filtro.responsableId ? o.responsableId === filtro.responsableId : true))
-            .filter((o) => (filtro.etapaId ? o.etapaId === filtro.etapaId : true))
-            .filter((o) => (filtro.estado ? o.estado === filtro.estado : true))
-            .filter((o) => (filtro.origenId ? o.origenId === filtro.origenId : true))
-            .filter((o) => (filtro.funnelId ? o.funnelId === filtro.funnelId : true))
-            .sort((a, b) => (a.creadoEn < b.creadoEn ? 1 : -1));
+        const supabase = await createClient();
+        let q = supabase.from('oportunidades').select('*').eq('activo', true);
+
+        const responsableId = filtroUuid(filtro.responsableId);
+        const etapaId = filtroUuid(filtro.etapaId);
+        const origenId = filtroUuid(filtro.origenId);
+        const funnelId = filtroUuid(filtro.funnelId);
+
+        if (responsableId) q = q.eq('responsable_id', responsableId);
+        if (etapaId) q = q.eq('etapa_id', etapaId);
+        if (filtro.estado) q = q.eq('estado', filtro.estado);
+        if (origenId) q = q.eq('origen_id', origenId);
+        if (funnelId) q = q.eq('funnel_id', funnelId);
+
+        const { data, error } = await q.order('creado_en', { ascending: false });
+        if (error) throw error;
+
+        return (data ?? []).map(aOportunidad);
     } catch (err) {
         console.error('Error getOportunidades', err);
         return [];
@@ -23,45 +97,78 @@ export async function getOportunidades(filtro: FiltroOportunidades = {}): Promis
 }
 
 export async function getOportunidadesList(filtro: FiltroOportunidades = {}): Promise<OportunidadRow[]> {
-    const oportunidades = await getOportunidades(filtro);
-    return oportunidades.map((o) => ({
-        id: o.id,
-        titulo: o.titulo,
-        contacto: nombreContacto(db.contactos.find((c) => c.id === o.contactoId)),
-        inmueble: nombreInmueble(db.inmuebles.find((i) => i.id === o.inmuebleId)),
-        responsable: (() => {
-            const u = db.usuarios.find((x) => x.id === o.responsableId);
-            return u ? `${u.nombre} ${u.apellido}` : '';
-        })(),
-        funnel: db.funnels.find((f) => f.id === o.funnelId)?.nombre ?? '',
-        etapa: db.etapas.find((e) => e.id === o.etapaId)?.nombre ?? '',
-        estado: o.estado,
-        valorEstimado: o.valorEstimado,
-    }));
+    try {
+        const supabase = await createClient();
+        let q = supabase.from('oportunidades').select(SELECT_LISTA).eq('activo', true);
+
+        const responsableId = filtroUuid(filtro.responsableId);
+        const etapaId = filtroUuid(filtro.etapaId);
+        const origenId = filtroUuid(filtro.origenId);
+        const funnelId = filtroUuid(filtro.funnelId);
+
+        if (responsableId) q = q.eq('responsable_id', responsableId);
+        if (etapaId) q = q.eq('etapa_id', etapaId);
+        if (filtro.estado) q = q.eq('estado', filtro.estado);
+        if (origenId) q = q.eq('origen_id', origenId);
+        if (funnelId) q = q.eq('funnel_id', funnelId);
+
+        const { data, error } = await q.order('creado_en', { ascending: false });
+        if (error) throw error;
+
+        return (data ?? []).map((o) => ({
+            id: o.id,
+            titulo: o.titulo,
+            contacto: nombreCompleto(o.contacto),
+            inmueble: o.inmueble?.direccion ?? null,
+            responsable: nombreCompleto(o.responsable),
+            funnel: o.funnel?.nombre ?? '',
+            etapa: o.etapa?.nombre ?? '',
+            estado: o.estado,
+            valorEstimado: o.valor_estimado,
+        }));
+    } catch (err) {
+        console.error('Error getOportunidadesList', err);
+        return [];
+    }
 }
 
 export async function getOportunidadDetalle(id: string): Promise<OportunidadDetalle | null> {
+    if (!esUuid(id)) return null;
     try {
-        const o = db.oportunidades.find((x) => x.id === id && x.activo);
-        if (!o) return null;
-        const historial: HistorialEtapaDetalle[] = db.historialEtapas
-            .filter((h) => h.oportunidadId === id)
-            .sort((a, b) => (a.creadoEn < b.creadoEn ? 1 : -1))
-            .map((h) => ({
-                ...h,
-                etapaAnterior: db.etapas.find((e) => e.id === h.etapaAnteriorId) ?? null,
-                etapaNueva: db.etapas.find((e) => e.id === h.etapaNuevaId) ?? null,
-                usuario: db.usuarios.find((u) => u.id === h.usuarioId) ?? null,
-            }));
+        const supabase = await createClient();
+        const { data, error } = await supabase
+            .from('oportunidades')
+            .select(SELECT_DETALLE)
+            .eq('id', id)
+            .eq('activo', true)
+            .order('creado_en', { referencedTable: 'historial_etapas', ascending: false })
+            .maybeSingle();
+
+        if (error) throw error;
+        if (!data) return null;
+
+        const historial: HistorialEtapaDetalle[] = (data.historial ?? []).map((h) => ({
+            id: h.id,
+            oportunidadId: h.oportunidad_id,
+            etapaAnteriorId: h.etapa_anterior_id,
+            etapaNuevaId: h.etapa_nueva_id,
+            usuarioId: h.usuario_id ?? '',
+            creadoEn: h.creado_en,
+            observacion: h.observacion,
+            etapaAnterior: h.etapaAnterior ? aEtapa(h.etapaAnterior) : null,
+            etapaNueva: h.etapaNueva ? aEtapa(h.etapaNueva) : null,
+            usuario: h.usuario ? aUsuario(h.usuario) : null,
+        }));
+
         return {
-            ...o,
-            contacto: db.contactos.find((c) => c.id === o.contactoId) ?? null,
-            inmueble: db.inmuebles.find((i) => i.id === o.inmuebleId) ?? null,
-            responsable: db.usuarios.find((u) => u.id === o.responsableId) ?? null,
-            funnel: db.funnels.find((f) => f.id === o.funnelId) ?? null,
-            etapa: db.etapas.find((e) => e.id === o.etapaId) ?? null,
-            origen: db.origenes.find((x) => x.id === o.origenId) ?? null,
-            motivoPerdida: db.motivosPerdida.find((m) => m.id === o.motivoPerdidaId) ?? null,
+            ...aOportunidad(data),
+            contacto: data.contacto ? aContacto(data.contacto) : null,
+            inmueble: data.inmueble ? aInmueble(data.inmueble) : null,
+            responsable: data.responsable ? aUsuario(data.responsable) : null,
+            funnel: data.funnel ? aFunnel(data.funnel) : null,
+            etapa: data.etapa ? aEtapa(data.etapa) : null,
+            origen: data.origen ? aOrigen(data.origen) : null,
+            motivoPerdida: data.motivoPerdida ? aMotivoPerdida(data.motivoPerdida) : null,
             historial,
         };
     } catch (err) {
@@ -71,26 +178,55 @@ export async function getOportunidadDetalle(id: string): Promise<OportunidadDeta
 }
 
 export async function getOportunidad(id: string): Promise<Oportunidad | null> {
-    return db.oportunidades.find((x) => x.id === id && x.activo) ?? null;
+    if (!esUuid(id)) return null;
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('oportunidades').select('*').eq('id', id).eq('activo', true).maybeSingle();
+        if (error) throw error;
+        return data ? aOportunidad(data) : null;
+    } catch (err) {
+        console.error('Error getOportunidad', err);
+        return null;
+    }
 }
 
 export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funnelId: string; columnas: ColumnaEtapa[] }> {
+    if (!esUuid(funnelId)) return { funnelId, columnas: [] };
     try {
-        const etapas = db.etapas.filter((e) => e.funnelId === funnelId).sort((a, b) => a.orden - b.orden);
-        const columnas: ColumnaEtapa[] = etapas.map((e) => {
-            const tasks: OportunidadCard[] = db.oportunidades
-                .filter((o) => o.activo && o.etapaId === e.id)
-                .map((o) => ({
-                    id: o.id,
-                    titulo: o.titulo,
-                    contacto: nombreContacto(db.contactos.find((c) => c.id === o.contactoId)),
-                    inmueble: nombreInmueble(db.inmuebles.find((i) => i.id === o.inmuebleId)),
-                    responsable: nombreContacto(db.usuarios.find((u) => u.id === o.responsableId) as any),
-                    valorEstimado: o.valorEstimado,
-                    estado: o.estado,
-                }));
-            return { id: e.id, title: e.nombre, orden: e.orden, resultado: e.resultado, tasks };
-        });
+        const supabase = await createClient();
+
+        const [etapasRes, opsRes] = await Promise.all([
+            supabase.from('etapas').select('*').eq('funnel_id', funnelId).order('orden', { ascending: true }),
+            supabase.from('oportunidades').select(SELECT_CARD).eq('funnel_id', funnelId).eq('activo', true),
+        ]);
+
+        if (etapasRes.error) throw etapasRes.error;
+        if (opsRes.error) throw opsRes.error;
+
+        const porEtapa = new Map<string, OportunidadCard[]>();
+        for (const o of opsRes.data ?? []) {
+            const card: OportunidadCard = {
+                id: o.id,
+                titulo: o.titulo,
+                contacto: nombreCompleto(o.contacto),
+                inmueble: o.inmueble?.direccion ?? null,
+                responsable: nombreCompleto(o.responsable),
+                valorEstimado: o.valor_estimado,
+                estado: o.estado,
+            };
+            const lista = porEtapa.get(o.etapa_id);
+            if (lista) lista.push(card);
+            else porEtapa.set(o.etapa_id, [card]);
+        }
+
+        const columnas: ColumnaEtapa[] = (etapasRes.data ?? []).map((e) => ({
+            id: e.id,
+            title: e.nombre,
+            orden: e.orden,
+            resultado: e.resultado,
+            tasks: porEtapa.get(e.id) ?? [],
+        }));
+
         return { funnelId, columnas };
     } catch (err) {
         console.error('Error getOportunidadesPorEtapa', err);
@@ -99,17 +235,46 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
 }
 
 export async function getFormOptions(): Promise<FormOptions> {
-    return {
-        usuarios: db.usuarios,
-        interesados: db.contactos.filter((c) => c.activo),
-        inmuebles: db.inmuebles.filter((i) => i.activo),
-        funnels: db.funnels,
-        etapas: db.etapas,
-        origenes: db.origenes,
-        motivosPerdida: db.motivosPerdida,
-    };
+    const vacio: FormOptions = { usuarios: [], interesados: [], inmuebles: [], funnels: [], etapas: [], origenes: [], motivosPerdida: [] };
+
+    try {
+        const supabase = await createClient();
+        const [usuarios, contactos, inmuebles, funnels, etapas, origenes, motivos] = await Promise.all([
+            supabase.from('usuarios').select('*').eq('activo', true).order('apellido'),
+            supabase.from('contactos').select('*').eq('activo', true).order('apellido'),
+            supabase.from('inmuebles').select('*').eq('activo', true).order('direccion'),
+            supabase.from('funnels').select('*').eq('activo', true),
+            supabase.from('etapas').select('*').eq('activo', true).order('orden'),
+            supabase.from('origenes').select('*').eq('activo', true).order('nombre'),
+            supabase.from('motivos_perdida').select('*').eq('activo', true).order('nombre'),
+        ]);
+
+        const primerError = [usuarios, contactos, inmuebles, funnels, etapas, origenes, motivos].find((r) => r.error)?.error;
+        if (primerError) throw primerError;
+
+        return {
+            usuarios: (usuarios.data ?? []).map(aUsuario),
+            interesados: (contactos.data ?? []).map(aContacto),
+            inmuebles: (inmuebles.data ?? []).map(aInmueble),
+            funnels: (funnels.data ?? []).map(aFunnel),
+            etapas: (etapas.data ?? []).map(aEtapa),
+            origenes: (origenes.data ?? []).map(aOrigen),
+            motivosPerdida: (motivos.data ?? []).map(aMotivoPerdida),
+        };
+    } catch (err) {
+        console.error('Error getFormOptions', err);
+        return vacio;
+    }
 }
 
 export async function getFunnels() {
-    return db.funnels;
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('funnels').select('*').eq('activo', true);
+        if (error) throw error;
+        return (data ?? []).map(aFunnel);
+    } catch (err) {
+        console.error('Error getFunnels', err);
+        return [];
+    }
 }

@@ -17,7 +17,7 @@ Un archivo por contexto de ejecución. **No** se crean clientes ad-hoc en los m�
 | --- | --- | --- |
 | Server | `lib/supabase/server.ts` | Server Components, Server Actions, Route Handlers. Lee/escribe cookies de sesión. **Se crea por request** (no cachear a nivel módulo). |
 | Browser | `lib/supabase/client.ts` | Client Components que necesiten Supabase directo (evitar; preferir Server Actions). |
-| Middleware | `lib/supabase/middleware.ts` + `middleware.ts` (raíz) | Refresca la sesión en cada request → [[acceso-y-roles]]. |
+| Proxy | `lib/supabase/proxy.ts` + `proxy.ts` (raíz) | Refresca la sesión en cada request → [[acceso-y-roles]]. En Next.js 16 `middleware.ts` se renombró a `proxy.ts`. |
 
 Las variables de entorno (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) viven en `.env.local` y nunca se commitean. La `service_role` key **no** se usa en la app cliente/servidor de request; solo en scripts/seeds fuera del flujo de usuario.
 

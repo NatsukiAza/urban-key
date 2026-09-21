@@ -1,10 +1,26 @@
 import 'server-only';
-import { db } from '../mock/store';
+import { createClient } from '../supabase/server';
+import { aUsuario } from '../mapeo';
 import type { Usuario } from '../dominio';
 
-// STUB de sesión. Sin auth real todavía: devuelve un usuario seed fijo.
-// Se usa para creado_por / actualizado_por / historial.usuarioId.
-// Al integrar Supabase Auth, este es el único archivo que cambia.
 export async function getUsuarioActual(): Promise<Usuario | null> {
-    return db.usuarios.find((u) => u.rol === 'VENDEDOR') ?? db.usuarios[0] ?? null;
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase.from('usuarios').select('*').eq('id', user.id).maybeSingle();
+
+    if (error) {
+        console.error('Error resolviendo el usuario actual', error);
+        return null;
+    }
+    if (!data) {
+        console.error(`El usuario ${user.id} no tiene fila en public.usuarios`);
+        return null;
+    }
+
+    return aUsuario(data);
 }
