@@ -69,7 +69,7 @@ const Sidebar = () => {
                     <div className="flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">UrbanKey</span>
                         </Link>
 
                         <button
@@ -167,6 +167,33 @@ const Sidebar = () => {
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('contacts')}</span>
                                             </div>
                                         </Link>
+                                    </li>
+
+                                    <li className="menu nav-item">
+                                        <button type="button" className={`${currentMenu === 'oportunidades' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('oportunidades')}>
+                                            <div className="flex items-center">
+                                                <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Oportunidades')}</span>
+                                            </div>
+
+                                            <div className={currentMenu !== 'oportunidades' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                <IconCaretDown />
+                                            </div>
+                                        </button>
+
+                                        <AnimateHeight duration={300} height={currentMenu === 'oportunidades' ? 'auto' : 0}>
+                                            <ul className="sub-menu text-gray-500">
+                                                <li>
+                                                    <Link href="/oportunidades">{t('Lista')}</Link>
+                                                </li>
+                                                <li>
+                                                    <Link href="/oportunidades/tablero">{t('Tablero')}</Link>
+                                                </li>
+                                                <li>
+                                                    <Link href="/oportunidades/nuevo">{t('Nueva')}</Link>
+                                                </li>
+                                            </ul>
+                                        </AnimateHeight>
                                     </li>
 
                                     <li className="menu nav-item">
