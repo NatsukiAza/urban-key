@@ -18,6 +18,7 @@ import { showToast } from '@/lib/ui/toast';
 import { estadoOportunidadConfig, estadoOportunidadOptions } from '@/lib/enums/estadoOportunidad';
 import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/types';
 import type { Usuario, Funnel, Origen } from '@/lib/dominio';
+import PageSizeSelect from '@/components/PageSizeSelect';
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), { ssr: false }) as any;
 
@@ -160,6 +161,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                             ))}
                         </select>
                         <input type="text" className="form-input w-auto" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <PageSizeSelect value={pageSize} options={PAGE_SIZES} onChange={setPageSize} />
                     </div>
                 </div>
 
@@ -221,8 +223,6 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                         recordsPerPage={pageSize}
                         page={page}
                         onPageChange={(p: number) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         paginationText={({ from, to, totalRecords }: any) => `Mostrando ${from} a ${to} de ${totalRecords} oportunidades`}

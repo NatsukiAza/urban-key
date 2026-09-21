@@ -11,7 +11,8 @@
     "db:link": "supabase link --project-ref hrymntwkonghkkkjezpm",
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --linked > types/database.ts",
-    "db:demo": "node scripts/cargar-datos-demo.mjs"
+    "db:demo": "node scripts/cargar-datos-demo.mjs",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -58,6 +59,7 @@
     "autoprefixer": "^10.6.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "patch-package": "^8.0.1",
     "postcss": "^8.5.28",
     "supabase": "^2.117.0",
     "tailwindcss": "^3.4.19",

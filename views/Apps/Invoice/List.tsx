@@ -11,6 +11,7 @@ import IconTrashLines from '../../../components/Icon/IconTrashLines';
 import IconPlus from '../../../components/Icon/IconPlus';
 import IconEdit from '../../../components/Icon/IconEdit';
 import IconEye from '../../../components/Icon/IconEye';
+import PageSizeSelect from '../../../components/PageSizeSelect';
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), { ssr: false }) as any;
 
@@ -226,8 +227,9 @@ const List = () => {
                             Add New
                         </Link>
                     </div>
-                    <div className="ltr:ml-auto rtl:mr-auto">
+                    <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
                         <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <PageSizeSelect value={pageSize} options={PAGE_SIZES} onChange={setPageSize} suffix="/ page" label="Rows per page" />
                     </div>
                 </div>
 
@@ -303,8 +305,6 @@ const List = () => {
                         recordsPerPage={pageSize}
                         page={page}
                         onPageChange={(p: number) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         selectedRecords={selectedRecords}

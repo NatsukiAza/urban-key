@@ -12,6 +12,7 @@ import IconTrashLines from '@/components/Icon/IconTrashLines';
 import IconPlus from '@/components/Icon/IconPlus';
 import IconEdit from '@/components/Icon/IconEdit';
 import IconEye from '@/components/Icon/IconEye';
+import PageSizeSelect from '@/components/PageSizeSelect';
 import { darDeBajaInmueble } from '@/lib/inmueble/actions';
 import { showToast } from '@/lib/ui/toast';
 import { tipoOperacionConfig, tipoOperacionOptions } from '@/lib/enums/tipoOperacion';
@@ -148,6 +149,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                             ))}
                         </select>
                         <input type="text" className="form-input w-auto" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                        <PageSizeSelect value={pageSize} options={PAGE_SIZES} onChange={setPageSize} />
                     </div>
                 </div>
 
@@ -233,8 +235,6 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                         recordsPerPage={pageSize}
                         page={page}
                         onPageChange={(p: number) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         paginationText={({ from, to, totalRecords }: any) => `Mostrando ${from} a ${to} de ${totalRecords} inmuebles`}
