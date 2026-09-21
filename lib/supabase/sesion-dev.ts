@@ -1,7 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+const enProduccion = () => process.env.NODE_ENV === 'production';
+
 export function sesionDevHabilitada(): boolean {
-    return process.env.NODE_ENV !== 'production' && Boolean(process.env.DEV_USER_EMAIL) && Boolean(process.env.DEV_USER_PASSWORD);
+    if (!process.env.DEV_USER_EMAIL || !process.env.DEV_USER_PASSWORD) return false;
+    if (!enProduccion()) return true;
+
+    return process.env.PERMITIR_SESION_DEMO === '1';
 }
 
 let proximoIntento = 0;
@@ -21,5 +26,11 @@ export async function iniciarSesionDev(supabase: SupabaseClient): Promise<void> 
     }
 
     proximoIntento = 0;
-    console.log(`[sesión dev] Sesión abierta como ${process.env.DEV_USER_EMAIL}. Este atajo no corre en producción.`);
+
+    if (enProduccion()) {
+        console.warn(`[sesión demo] ATENCIÓN: sesión automática como ${process.env.DEV_USER_EMAIL} en producción (PERMITIR_SESION_DEMO=1). Todo visitante del deploy es este usuario. Borrá la variable cuando esté el login real.`);
+        return;
+    }
+
+    console.log(`[sesión dev] Sesión abierta como ${process.env.DEV_USER_EMAIL}.`);
 }
