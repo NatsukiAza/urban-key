@@ -4,13 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import Dropdown from '../../components/Dropdown';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import IconPencilPaper from '../../components/Icon/IconPencilPaper';
-import IconCoffee from '../../components/Icon/IconCoffee';
-import IconCalendar from '../../components/Icon/IconCalendar';
-import IconMapPin from '../../components/Icon/IconMapPin';
 import IconMail from '../../components/Icon/IconMail';
-import IconPhone from '../../components/Icon/IconPhone';
 import IconTwitter from '../../components/Icon/IconTwitter';
 import IconDribbble from '../../components/Icon/IconDribbble';
 import IconGithub from '../../components/Icon/IconGithub';
@@ -19,12 +15,25 @@ import IconTag from '../../components/Icon/IconTag';
 import IconCreditCard from '../../components/Icon/IconCreditCard';
 import IconClock from '../../components/Icon/IconClock';
 import IconHorizontalDots from '../../components/Icon/IconHorizontalDots';
+import { createClient } from '@/lib/supabase/client';
+import { nombreCompleto, rolLabel, type Usuario } from '@/lib/supabase/usuarios';
 
 const Profile = () => {
     const dispatch = useDispatch();
+    const [perfil, setPerfil] = useState<Usuario | null>(null);
     useEffect(() => {
-        dispatch(setPageTitle('Profile'));
-    });
+        dispatch(setPageTitle('Perfil'));
+        const supabase = createClient();
+        supabase.auth.getUser().then(async ({ data }) => {
+            if (!data.user) {
+                return;
+            }
+            const { data: row } = await supabase.from('usuarios').select('id, sucursal_id, nombre, apellido, email, rol, activo').eq('id', data.user.id).maybeSingle();
+            if (row) {
+                setPerfil(row);
+            }
+        });
+    }, [dispatch]);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
     return (
         <div>
@@ -50,32 +59,15 @@ const Profile = () => {
                         <div className="mb-5">
                             <div className="flex flex-col justify-center items-center">
                                 <img src="/assets/images/profile-34.jpeg" alt="img" className="w-24 h-24 rounded-full object-cover  mb-5" />
-                                <p className="font-semibold text-primary text-xl">Jimmy Turner</p>
+                                <p className="font-semibold text-primary text-xl">{perfil ? nombreCompleto(perfil) : 'Usuario'}</p>
                             </div>
-                            <ul className="mt-5 flex flex-col max-w-[160px] m-auto space-y-4 font-semibold text-white-dark">
+                            <ul className="mt-5 flex flex-col max-w-[220px] m-auto space-y-4 font-semibold text-white-dark">
                                 <li className="flex items-center gap-2">
-                                    <IconCoffee className="shrink-0" />
-                                    Web Developer
+                                    <IconMail className="w-5 h-5 shrink-0" />
+                                    <span className="text-primary truncate">{perfil?.email ?? ''}</span>
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <IconCalendar className="shrink-0" />
-                                    Jan 20, 1989
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <IconMapPin className="shrink-0" />
-                                    New York, USA
-                                </li>
-                                <li>
-                                    <button className="flex items-center gap-2">
-                                        <IconMail className="w-5 h-5 shrink-0" />
-                                        <span className="text-primary truncate">jimmy@gmail.com</span>
-                                    </button>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <IconPhone />
-                                    <span className="whitespace-nowrap" dir="ltr">
-                                        +1 (530) 555-12121
-                                    </span>
+                                    <span>{perfil ? rolLabel[perfil.rol] : ''}</span>
                                 </li>
                             </ul>
                             <ul className="mt-7 flex items-center justify-center gap-2">

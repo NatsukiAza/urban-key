@@ -12,6 +12,7 @@ import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconCaretDown from '../Icon/IconCaretDown';
 import IconMenuScrumboard from '../Icon/Menu/IconMenuScrumboard';
 import IconHome from '../Icon/IconHome';
+import IconMenuContacts from '../Icon/Menu/IconMenuContacts';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
@@ -95,6 +96,15 @@ const Sidebar = () => {
                                         </li>
                                     </ul>
                                 </AnimateHeight>
+                            </li>
+
+                            <li className="nav-item">
+                                <Link href="/contactos" className="group">
+                                    <div className="flex items-center">
+                                        <IconMenuContacts className="group-hover:!text-primary shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Contactos')}</span>
+                                    </div>
+                                </Link>
                             </li>
 
                             <li className="menu nav-item">

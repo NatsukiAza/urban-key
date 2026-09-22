@@ -1,7 +1,16 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import type { User } from '@supabase/supabase-js';
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
 import { iniciarSesionDev, sesionDevHabilitada } from './sesion-dev';
+
+function redirigirConSesion(request: NextRequest, response: NextResponse, pathname: string) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname;
+    const redirect = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+}
 
 export async function actualizarSesion(request: NextRequest) {
     let response = NextResponse.next({ request });
@@ -20,14 +29,28 @@ export async function actualizarSesion(request: NextRequest) {
         },
     });
 
+    let user: User | null = null;
     try {
-        const { data } = await supabase.auth.getUser();
+        ({ data: { user } } = await supabase.auth.getUser());
 
-        if (!data.user && sesionDevHabilitada()) {
+        if (!user && sesionDevHabilitada()) {
             await iniciarSesionDev(supabase);
+            ({ data: { user } } = await supabase.auth.getUser());
         }
     } catch (err) {
         console.error('Error refrescando la sesión de Supabase', err);
+    }
+
+    const path = request.nextUrl.pathname;
+    const esRutaAuth = path.startsWith('/auth');
+    const esLoginORegistro = path.startsWith('/auth/cover-login') || path.startsWith('/auth/cover-register');
+
+    if (!user && !esRutaAuth) {
+        return redirigirConSesion(request, response, '/auth/cover-login');
+    }
+
+    if (user && esLoginORegistro) {
+        return redirigirConSesion(request, response, '/');
     }
 
     return response;
