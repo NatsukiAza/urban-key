@@ -10,8 +10,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-    title: 'VRISTO - Urban Key CRM',
-    description: 'Urban Key CRM dashboard',
+    title: 'UrbanKey',
+    description: 'UrbanKey — CRM de gestión comercial',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
