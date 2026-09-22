@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import { nombreCompleto, rolLabel, type Usuario } from '@/lib/supabase/usuarios';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
@@ -33,6 +35,30 @@ import IconMenuAuthentication from '../Icon/Menu/IconMenuAuthentication';
 
 const Header = () => {
     const pathname = usePathname();
+    const router = useRouter();
+    const [perfil, setPerfil] = useState<Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'rol'> | null>(null);
+
+    const signOut = async () => {
+        const supabase = createClient();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            return;
+        }
+        router.push('/auth/cover-login');
+        router.refresh();
+    };
+    useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(async ({ data }) => {
+            if (!data.user) {
+                return;
+            }
+            const { data: row } = await supabase.from('usuarios').select('nombre, apellido, email, rol').eq('id', data.user.id).maybeSingle();
+            if (row) {
+                setPerfil(row);
+            }
+        });
+    }, []);
     useEffect(() => {
         const selector = document.querySelector('ul.horizontal-menu a[href="' + pathname + '"]');
         if (selector) {
@@ -143,7 +169,7 @@ const Header = () => {
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <img className="w-8 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5  font-semibold  align-middle hidden md:inline dark:text-white-light transition-all duration-300">VRISTO</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5  font-semibold  align-middle hidden md:inline dark:text-white-light transition-all duration-300">UrbanKey</span>
                         </Link>
                         <button
                             type="button"
@@ -425,11 +451,11 @@ const Header = () => {
                                             <img className="rounded-md w-10 h-10 object-cover" src="/assets/images/user-profile.jpeg" alt="userProfile" />
                                             <div className="ltr:pl-4 rtl:pr-4 truncate">
                                                 <h4 className="text-base">
-                                                    John Doe
-                                                    <span className="text-xs bg-success-light rounded text-success px-1 ltr:ml-2 rtl:ml-2">Pro</span>
+                                                    {perfil ? nombreCompleto(perfil) : 'Usuario'}
+                                                    {perfil ? <span className="text-xs bg-success-light rounded text-success px-1 ltr:ml-2 rtl:ml-2">{rolLabel[perfil.rol]}</span> : null}
                                                 </h4>
                                                 <button type="button" className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
-                                                    johndoe@gmail.com
+                                                    {perfil?.email ?? ''}
                                                 </button>
                                             </div>
                                         </div>
@@ -453,10 +479,10 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li className="border-t border-white-light dark:border-white-light/10">
-                                        <Link href="/auth/boxed-signin" className="text-danger !py-3">
+                                        <button type="button" className="text-danger !py-3" onClick={signOut}>
                                             <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
-                                            Sign Out
-                                        </Link>
+                                            Cerrar sesión
+                                        </button>
                                     </li>
                                 </ul>
                             </Dropdown>
@@ -518,7 +544,7 @@ const Header = () => {
                                 <Link href="/apps/scrumboard">{t('scrumboard')}</Link>
                             </li>
                             <li>
-                                <Link href="/apps/contacts">{t('contacts')}</Link>
+                                <Link href="/contactos">Contactos</Link>
                             </li>
                             <li className="relative">
                                 <button type="button">

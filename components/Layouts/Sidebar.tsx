@@ -69,7 +69,7 @@ const Sidebar = () => {
                     <div className="flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">UrbanKey</span>
                         </Link>
 
                         <button
@@ -161,10 +161,10 @@ const Sidebar = () => {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link href="/apps/contacts" className="group">
+                                        <Link href="/contactos" className="group">
                                             <div className="flex items-center">
                                                 <IconMenuContacts className="group-hover:!text-primary shrink-0" />
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('contacts')}</span>
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Contactos</span>
                                             </div>
                                         </Link>
                                     </li>
