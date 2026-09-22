@@ -570,6 +570,28 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     @apply bg-success;
 }
 
+/* toast compacto (helper showToast) */
+.swal2-popup.swal2-toast.uk-toast {
+    padding: 10px 14px !important;
+    flex-direction: row !important;
+    align-items: center;
+    width: auto;
+    gap: 10px;
+    margin: 0 1.25rem 1.5rem 0 !important;
+}
+.swal2-popup.swal2-toast.uk-toast .swal2-icon {
+    width: 1.5em;
+    height: 1.5em;
+    min-width: 1.5em;
+    margin: 0;
+}
+.swal2-popup.swal2-toast.uk-toast .swal2-title {
+    margin: 0;
+    padding: 0;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
 /* apex chart */
 .apexcharts-canvas .apexcharts-tooltip.apexcharts-theme-light,
 .apexcharts-canvas .apexcharts-xaxistooltip.apexcharts-theme-light {

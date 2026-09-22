@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:supabase": "node scripts/check-supabase.mjs",
+    "db:link": "supabase link --project-ref hrymntwkonghkkkjezpm",
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --linked > types/database.ts",
+    "db:demo": "node scripts/cargar-datos-demo.mjs",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -39,7 +45,8 @@
     "react-redux": "^9.3.0",
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.7",
-    "sweetalert2": "^11.26.25"
+    "sweetalert2": "^11.26.25",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",
@@ -52,7 +59,9 @@
     "autoprefixer": "^10.6.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "patch-package": "^8.0.1",
     "postcss": "^8.5.28",
+    "supabase": "^2.117.0",
     "tailwindcss": "^3.4.19",
     "typescript": "^5"
   }

@@ -1,23 +1,21 @@
-import { createServerClient } from '@supabase/ssr';
+import 'server-only';
 import { cookies } from 'next/headers';
-import { supabaseEnv } from './env';
+import { createServerClient } from '@supabase/ssr';
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
+import type { Database } from '@/types/database';
 
 export async function createClient() {
     const cookieStore = await cookies();
-    const { url, key } = supabaseEnv();
 
-    return createServerClient(url, key, {
+    return createServerClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
         cookies: {
             getAll() {
                 return cookieStore.getAll();
             },
             setAll(cookiesToSet) {
                 try {
-                    cookiesToSet.forEach(({ name, value, options }) => {
-                        cookieStore.set(name, value, options);
-                    });
+                    cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
                 } catch {
-                    // Un Server Component no puede escribir cookies. El proxy renueva la sesión.
                 }
             },
         },

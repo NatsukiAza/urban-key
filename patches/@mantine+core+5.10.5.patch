@@ -1,0 +1,104 @@
+diff --git a/node_modules/@mantine/core/cjs/FocusTrap/FocusTrap.js b/node_modules/@mantine/core/cjs/FocusTrap/FocusTrap.js
+index 1823204..96d5499 100644
+--- a/node_modules/@mantine/core/cjs/FocusTrap/FocusTrap.js
++++ b/node_modules/@mantine/core/cjs/FocusTrap/FocusTrap.js
+@@ -12,7 +12,7 @@ function FocusTrap({
+   refProp = "ref"
+ }) {
+   const focusTrapRef = hooks.useFocusTrap(active);
+-  const ref = hooks.useMergedRef(focusTrapRef, children == null ? void 0 : children.ref);
++  const ref = hooks.useMergedRef(focusTrapRef, children == null ? void 0 : (children.props.ref ?? null));
+   if (!utils.isElement(children)) {
+     return children;
+   }
+diff --git a/node_modules/@mantine/core/cjs/Popover/PopoverTarget/PopoverTarget.js b/node_modules/@mantine/core/cjs/Popover/PopoverTarget/PopoverTarget.js
+index cec386e..f22f018 100644
+--- a/node_modules/@mantine/core/cjs/Popover/PopoverTarget/PopoverTarget.js
++++ b/node_modules/@mantine/core/cjs/Popover/PopoverTarget/PopoverTarget.js
+@@ -51,7 +51,7 @@ const PopoverTarget = React.forwardRef((props, ref) => {
+   }
+   const forwardedProps = others;
+   const ctx = Popover_context.usePopoverContext();
+-  const targetRef = hooks.useMergedRef(ctx.reference, children.ref, ref);
++  const targetRef = hooks.useMergedRef(ctx.reference, (children.props.ref ?? null), ref);
+   const accessibleProps = ctx.withRoles ? {
+     "aria-haspopup": popupType,
+     "aria-expanded": ctx.opened,
+diff --git a/node_modules/@mantine/core/cjs/Tooltip/Tooltip.js b/node_modules/@mantine/core/cjs/Tooltip/Tooltip.js
+index ca1e40b..45d7cc9 100644
+--- a/node_modules/@mantine/core/cjs/Tooltip/Tooltip.js
++++ b/node_modules/@mantine/core/cjs/Tooltip/Tooltip.js
+@@ -159,7 +159,7 @@ const _Tooltip = React.forwardRef((props, ref) => {
+   if (!utils.isElement(children)) {
+     throw new Error(Tooltip_errors.TOOLTIP_ERRORS.children);
+   }
+-  const targetRef = hooks.useMergedRef(tooltip.reference, children.ref, ref);
++  const targetRef = hooks.useMergedRef(tooltip.reference, (children.props.ref ?? null), ref);
+   return /* @__PURE__ */ React__default.createElement(React__default.Fragment, null, /* @__PURE__ */ React__default.createElement(OptionalPortal.OptionalPortal, {
+     withinPortal
+   }, /* @__PURE__ */ React__default.createElement(Transition.Transition, {
+diff --git a/node_modules/@mantine/core/cjs/Tooltip/TooltipFloating/TooltipFloating.js b/node_modules/@mantine/core/cjs/Tooltip/TooltipFloating/TooltipFloating.js
+index 3fe2fa0..9a095a9 100644
+--- a/node_modules/@mantine/core/cjs/Tooltip/TooltipFloating/TooltipFloating.js
++++ b/node_modules/@mantine/core/cjs/Tooltip/TooltipFloating/TooltipFloating.js
+@@ -101,7 +101,7 @@ function TooltipFloating(props) {
+   if (!utils.isElement(children)) {
+     throw new Error(Tooltip_errors.TOOLTIP_ERRORS.children);
+   }
+-  const targetRef = hooks.useMergedRef(boundaryRef, children.ref);
++  const targetRef = hooks.useMergedRef(boundaryRef, (children.props.ref ?? null));
+   const onMouseEnter = (event) => {
+     var _a2, _b2;
+     (_b2 = (_a2 = children.props).onMouseEnter) == null ? void 0 : _b2.call(_a2, event);
+diff --git a/node_modules/@mantine/core/esm/FocusTrap/FocusTrap.js b/node_modules/@mantine/core/esm/FocusTrap/FocusTrap.js
+index 8b3fabb..4608e62 100644
+--- a/node_modules/@mantine/core/esm/FocusTrap/FocusTrap.js
++++ b/node_modules/@mantine/core/esm/FocusTrap/FocusTrap.js
+@@ -8,7 +8,7 @@ function FocusTrap({
+   refProp = "ref"
+ }) {
+   const focusTrapRef = useFocusTrap(active);
+-  const ref = useMergedRef(focusTrapRef, children == null ? void 0 : children.ref);
++  const ref = useMergedRef(focusTrapRef, children == null ? void 0 : (children.props.ref ?? null));
+   if (!isElement(children)) {
+     return children;
+   }
+diff --git a/node_modules/@mantine/core/esm/Popover/PopoverTarget/PopoverTarget.js b/node_modules/@mantine/core/esm/Popover/PopoverTarget/PopoverTarget.js
+index 3b3377a..d4fb767 100644
+--- a/node_modules/@mantine/core/esm/Popover/PopoverTarget/PopoverTarget.js
++++ b/node_modules/@mantine/core/esm/Popover/PopoverTarget/PopoverTarget.js
+@@ -47,7 +47,7 @@ const PopoverTarget = forwardRef((props, ref) => {
+   }
+   const forwardedProps = others;
+   const ctx = usePopoverContext();
+-  const targetRef = useMergedRef(ctx.reference, children.ref, ref);
++  const targetRef = useMergedRef(ctx.reference, (children.props.ref ?? null), ref);
+   const accessibleProps = ctx.withRoles ? {
+     "aria-haspopup": popupType,
+     "aria-expanded": ctx.opened,
+diff --git a/node_modules/@mantine/core/esm/Tooltip/Tooltip.js b/node_modules/@mantine/core/esm/Tooltip/Tooltip.js
+index 7de6988..d2c78a0 100644
+--- a/node_modules/@mantine/core/esm/Tooltip/Tooltip.js
++++ b/node_modules/@mantine/core/esm/Tooltip/Tooltip.js
+@@ -151,7 +151,7 @@ const _Tooltip = forwardRef((props, ref) => {
+   if (!isElement(children)) {
+     throw new Error(TOOLTIP_ERRORS.children);
+   }
+-  const targetRef = useMergedRef(tooltip.reference, children.ref, ref);
++  const targetRef = useMergedRef(tooltip.reference, (children.props.ref ?? null), ref);
+   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(OptionalPortal, {
+     withinPortal
+   }, /* @__PURE__ */ React.createElement(Transition, {
+diff --git a/node_modules/@mantine/core/esm/Tooltip/TooltipFloating/TooltipFloating.js b/node_modules/@mantine/core/esm/Tooltip/TooltipFloating/TooltipFloating.js
+index dcba169..6834f0b 100644
+--- a/node_modules/@mantine/core/esm/Tooltip/TooltipFloating/TooltipFloating.js
++++ b/node_modules/@mantine/core/esm/Tooltip/TooltipFloating/TooltipFloating.js
+@@ -93,7 +93,7 @@ function TooltipFloating(props) {
+   if (!isElement(children)) {
+     throw new Error(TOOLTIP_ERRORS.children);
+   }
+-  const targetRef = useMergedRef(boundaryRef, children.ref);
++  const targetRef = useMergedRef(boundaryRef, (children.props.ref ?? null));
+   const onMouseEnter = (event) => {
+     var _a2, _b2;
+     (_b2 = (_a2 = children.props).onMouseEnter) == null ? void 0 : _b2.call(_a2, event);

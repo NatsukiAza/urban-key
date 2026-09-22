@@ -190,7 +190,7 @@ const LoginCover = () => {
                                 </Link>
                             </div>
                         </div>
-                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()} UrbanKey</p>
+                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}. UrbanKey. Todos los derechos reservados.</p>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,6 @@
+# El deploy por CLI sube la carpeta tal cual: nada de secretos ni artefactos locales.
+.env
+.env.*
+.next
+node_modules
+.git
