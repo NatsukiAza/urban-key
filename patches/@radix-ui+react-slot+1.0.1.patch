@@ -1,0 +1,26 @@
+diff --git a/node_modules/@radix-ui/react-slot/dist/index.js b/node_modules/@radix-ui/react-slot/dist/index.js
+index 20541a5..9c122a4 100644
+--- a/node_modules/@radix-ui/react-slot/dist/index.js
++++ b/node_modules/@radix-ui/react-slot/dist/index.js
+@@ -47,7 +47,7 @@ $82dc8d030dec7549$export$8c6ed5c666ac1360.displayName = 'Slot';
+     const { children: children , ...slotProps } = props;
+     if (/*#__PURE__*/ $dAvBt$react.isValidElement(children)) return /*#__PURE__*/ $dAvBt$react.cloneElement(children, {
+         ...$82dc8d030dec7549$var$mergeProps(slotProps, children.props),
+-        ref: $dAvBt$radixuireactcomposerefs.composeRefs(forwardedRef, children.ref)
++        ref: $dAvBt$radixuireactcomposerefs.composeRefs(forwardedRef, (children.props.ref ?? null))
+     });
+     return $dAvBt$react.Children.count(children) > 1 ? $dAvBt$react.Children.only(null) : null;
+ });
+diff --git a/node_modules/@radix-ui/react-slot/dist/index.module.js b/node_modules/@radix-ui/react-slot/dist/index.module.js
+index 7953fd2..b958c3a 100644
+--- a/node_modules/@radix-ui/react-slot/dist/index.module.js
++++ b/node_modules/@radix-ui/react-slot/dist/index.module.js
+@@ -37,7 +37,7 @@ $5e63c961fc1ce211$export$8c6ed5c666ac1360.displayName = 'Slot';
+     const { children: children , ...slotProps } = props;
+     if (/*#__PURE__*/ $9IrjX$isValidElement(children)) return /*#__PURE__*/ $9IrjX$cloneElement(children, {
+         ...$5e63c961fc1ce211$var$mergeProps(slotProps, children.props),
+-        ref: $9IrjX$composeRefs(forwardedRef, children.ref)
++        ref: $9IrjX$composeRefs(forwardedRef, (children.props.ref ?? null))
+     });
+     return $9IrjX$Children.count(children) > 1 ? $9IrjX$Children.only(null) : null;
+ });

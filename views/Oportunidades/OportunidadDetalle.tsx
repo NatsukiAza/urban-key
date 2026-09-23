@@ -9,6 +9,7 @@ import IconEdit from '@/components/Icon/IconEdit';
 import { cambiarEtapa } from '@/lib/oportunidad/actions';
 import { showToast } from '@/lib/ui/toast';
 import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
+import { formatearImporte } from '@/lib/enums/moneda';
 import type { OportunidadDetalle as TDetalle } from '@/lib/oportunidad/types';
 import type { Etapa, MotivoPerdida } from '@/lib/dominio';
 
@@ -19,7 +20,6 @@ interface Props {
 }
 
 const fmtFecha = (iso: string | null) => (iso ? new Date(iso).toLocaleString('es-AR') : '—');
-const fmtMoneda = (v: number | null) => (v != null ? `$${v.toLocaleString('es-AR')}` : '—');
 
 const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) => {
     const dispatch = useDispatch();
@@ -98,7 +98,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) =>
                 <Campo label="Responsable">{detalle.responsable ? `${detalle.responsable.nombre} ${detalle.responsable.apellido}` : '—'}</Campo>
                 <Campo label="Funnel">{detalle.funnel?.nombre ?? '—'}</Campo>
                 <Campo label="Etapa actual">{detalle.etapa?.nombre ?? '—'}</Campo>
-                <Campo label="Valor estimado">{fmtMoneda(detalle.valorEstimado)}</Campo>
+                <Campo label="Valor estimado">{formatearImporte(detalle.valorEstimado, detalle.moneda)}</Campo>
                 <Campo label="Origen">{detalle.origen?.nombre ?? '—'}</Campo>
                 <Campo label="Fecha de cierre">{fmtFecha(detalle.fechaCierreReal)}</Campo>
                 {detalle.motivoPerdida && <Campo label="Motivo de pérdida">{detalle.motivoPerdida.nombre}</Campo>}

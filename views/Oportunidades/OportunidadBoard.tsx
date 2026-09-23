@@ -9,6 +9,7 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { cambiarEtapa } from '@/lib/oportunidad/actions';
 import { showToast } from '@/lib/ui/toast';
 import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
+import { formatearImporte } from '@/lib/enums/moneda';
 import type { ColumnaEtapa } from '@/lib/oportunidad/types';
 import type { Funnel, MotivoPerdida } from '@/lib/dominio';
 
@@ -127,7 +128,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
                                                 <div className="text-sm text-white-dark">{task.contacto}</div>
                                                 {task.inmueble && <div className="text-xs text-white-dark">{task.inmueble}</div>}
                                                 <div className="flex items-center justify-between pt-1">
-                                                    <span className="text-xs font-semibold">{task.valorEstimado != null ? `$${task.valorEstimado.toLocaleString('es-AR')}` : ''}</span>
+                                                    <span className="text-xs font-semibold">{task.valorEstimado != null ? formatearImporte(task.valorEstimado, task.moneda) : ''}</span>
                                                     <span className="text-xs text-white-dark">{task.responsable}</span>
                                                 </div>
                                             </div>

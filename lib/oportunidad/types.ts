@@ -1,4 +1,5 @@
 import type { EstadoOportunidad } from '../enums/estadoOportunidad';
+import type { Moneda } from '../enums/moneda';
 import type { Contacto, Inmueble, Usuario, Funnel, Etapa, Origen, MotivoPerdida } from '../dominio';
 
 export interface Oportunidad {
@@ -11,6 +12,7 @@ export interface Oportunidad {
     etapaId: string;
     estado: EstadoOportunidad;
     valorEstimado: number | null;
+    moneda: Moneda;
     origenId: string | null;
     observaciones: string | null;
     motivoPerdidaId: string | null;
@@ -31,6 +33,7 @@ export interface OportunidadInput {
     funnelId: string;
     etapaId: string;
     valorEstimado?: number | null;
+    moneda?: Moneda;
     origenId?: string | null;
     observaciones?: string | null;
 }
@@ -74,6 +77,7 @@ export interface OportunidadRow {
     etapa: string;
     estado: EstadoOportunidad;
     valorEstimado: number | null;
+    moneda: Moneda;
 }
 
 export interface FiltroOportunidades {
@@ -111,5 +115,6 @@ export interface OportunidadCard {
     inmueble: string | null;
     responsable: string;
     valorEstimado: number | null;
+    moneda: Moneda;
     estado: EstadoOportunidad;
 }

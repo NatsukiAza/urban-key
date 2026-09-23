@@ -9,7 +9,7 @@ type OportunidadDbRow = Database['public']['Tables']['oportunidades']['Row'];
 const RESPONSABLE = 'usuarios!oportunidades_responsable_id_fkey';
 
 const SELECT_LISTA = `
-    id, titulo, estado, valor_estimado,
+    id, titulo, estado, valor_estimado, moneda,
     contacto:contactos(nombre, apellido),
     inmueble:inmuebles(direccion),
     responsable:${RESPONSABLE}(nombre, apellido),
@@ -18,7 +18,7 @@ const SELECT_LISTA = `
 `;
 
 const SELECT_CARD = `
-    id, titulo, etapa_id, estado, valor_estimado,
+    id, titulo, etapa_id, estado, valor_estimado, moneda,
     contacto:contactos(nombre, apellido),
     inmueble:inmuebles(direccion),
     responsable:${RESPONSABLE}(nombre, apellido)
@@ -58,6 +58,7 @@ function aOportunidad(r: OportunidadDbRow): Oportunidad {
         etapaId: r.etapa_id,
         estado: r.estado,
         valorEstimado: r.valor_estimado,
+        moneda: r.moneda,
         origenId: r.origen_id,
         observaciones: r.observaciones,
         motivoPerdidaId: r.motivo_perdida_id,
@@ -125,6 +126,7 @@ export async function getOportunidadesList(filtro: FiltroOportunidades = {}): Pr
             etapa: o.etapa?.nombre ?? '',
             estado: o.estado,
             valorEstimado: o.valor_estimado,
+            moneda: o.moneda,
         }));
     } catch (err) {
         console.error('Error getOportunidadesList', err);
@@ -212,6 +214,7 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
                 inmueble: o.inmueble?.direccion ?? null,
                 responsable: nombreCompleto(o.responsable),
                 valorEstimado: o.valor_estimado,
+                moneda: o.moneda,
                 estado: o.estado,
             };
             const lista = porEtapa.get(o.etapa_id);

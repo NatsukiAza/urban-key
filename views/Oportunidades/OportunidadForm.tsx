@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { showToast } from '@/lib/ui/toast';
 import { crearOportunidad, actualizarOportunidad } from '@/lib/oportunidad/actions';
+import { monedaOptions } from '@/lib/enums/moneda';
 import type { FormOptions, Oportunidad } from '@/lib/oportunidad/types';
 
 interface Props {
@@ -28,6 +29,7 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
         funnelId: oportunidad?.funnelId ?? '',
         etapaId: oportunidad?.etapaId ?? '',
         valorEstimado: oportunidad?.valorEstimado != null ? String(oportunidad.valorEstimado) : '',
+        moneda: oportunidad?.moneda ?? 'ARS',
         origenId: oportunidad?.origenId ?? '',
         observaciones: oportunidad?.observaciones ?? '',
     });
@@ -60,6 +62,7 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
             funnelId: params.funnelId,
             etapaId: params.etapaId,
             valorEstimado: params.valorEstimado === '' ? null : Number(params.valorEstimado),
+            moneda: params.moneda,
             origenId: params.origenId || null,
             observaciones: params.observaciones || null,
         };
@@ -158,7 +161,18 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
 
                 <div>
                     <label htmlFor="valorEstimado">Valor estimado</label>
-                    <input id="valorEstimado" value={params.valorEstimado} onChange={change} type="number" min="0" className="form-input" placeholder="0" />
+                    <input id="valorEstimado" value={params.valorEstimado} onChange={change} type="number" min="0" step="0.01" className="form-input" placeholder="0" />
+                </div>
+
+                <div>
+                    <label htmlFor="moneda">Moneda</label>
+                    <select id="moneda" value={params.moneda} onChange={change} className="form-select">
+                        {monedaOptions.map((o) => (
+                            <option key={o.value} value={o.value}>
+                                {o.label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="sm:col-span-2">

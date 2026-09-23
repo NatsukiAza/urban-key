@@ -11,6 +11,7 @@ export const oportunidadSchema = z.object({
     funnelId: z.string().min(1, 'El funnel es obligatorio'),
     etapaId: z.string().min(1, 'La etapa es obligatoria'),
     valorEstimado: z.coerce.number().min(0, 'El valor no puede ser negativo').nullish().transform((v) => (v === undefined ? null : v)),
+    moneda: z.enum(['ARS', 'USD']).default('ARS'),
     origenId: z.string().nullish().transform((v) => v || null),
     observaciones: z.string().nullish().transform((v) => v || null),
 });

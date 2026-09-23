@@ -16,6 +16,7 @@ import IconLayoutGrid from '@/components/Icon/IconLayoutGrid';
 import { darDeBajaOportunidad } from '@/lib/oportunidad/actions';
 import { showToast } from '@/lib/ui/toast';
 import { estadoOportunidadConfig, estadoOportunidadOptions } from '@/lib/enums/estadoOportunidad';
+import { formatearImporte } from '@/lib/enums/moneda';
 import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/types';
 import type { Usuario, Funnel, Origen } from '@/lib/dominio';
 import PageSizeSelect from '@/components/PageSizeSelect';
@@ -196,7 +197,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                                 title: 'Valor',
                                 sortable: true,
                                 titleClassName: 'text-right',
-                                render: ({ valorEstimado }: OportunidadRow) => <div className="text-right font-semibold">{valorEstimado != null ? `$${valorEstimado.toLocaleString('es-AR')}` : '—'}</div>,
+                                render: ({ valorEstimado, moneda }: OportunidadRow) => <div className="text-right font-semibold">{formatearImporte(valorEstimado, moneda)}</div>,
                             },
                             {
                                 accessor: 'action',
