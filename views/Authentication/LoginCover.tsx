@@ -71,14 +71,8 @@ const LoginCover = () => {
     };
 
     return (
-        <div className="relative h-screen overflow-hidden">
-            <div className="absolute inset-0">
-                <img src="/assets/images/auth/login-bg.webp" alt="" className="h-full w-full object-cover -scale-x-100" />
-                <div className="absolute inset-0 bg-black/10"></div>
-            </div>
-            <Link href="/" className="absolute top-8 left-8 z-10 hidden lg:block">
-                <span className="text-4xl font-extrabold uppercase tracking-wide text-white drop-shadow-lg lg:text-5xl">UrbanKey</span>
-            </Link>
+        <div className="relative h-screen overflow-hidden bg-white dark:bg-[#060818]">
+            <img src="/assets/images/auth/urbankey-logo.webp" alt="UrbanKey" className="absolute top-24 left-6 z-10 hidden h-72 w-auto lg:block xl:h-96" />
             <div className="relative flex h-screen items-center justify-center overflow-y-auto px-6 py-10 dark:bg-[#060818] sm:px-16 lg:justify-end lg:pe-24">
                 <div className="relative flex w-full max-w-[460px] flex-col items-center justify-center gap-4 rounded-2xl bg-white/85 px-6 py-6 shadow-2xl backdrop-blur-xl dark:bg-black/60 sm:px-10 sm:py-8">
                         <div className="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
@@ -126,12 +120,12 @@ const LoginCover = () => {
                         </div>
                         <div className="w-full max-w-[440px]">
                             <div className="mb-6">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Iniciar sesión</h1>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-[#502558] md:text-4xl">Iniciar sesión</h1>
                                 <p className="text-base font-bold leading-normal text-white-dark">Ingresá con tu correo y contraseña de UrbanKey</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
-                                    <label htmlFor="correo">Correo</label>
+                                    <label htmlFor="correo" className="text-[#502558]">Correo</label>
                                     <div className="relative text-white-dark">
                                         <input
                                             id="correo"
@@ -149,7 +143,7 @@ const LoginCover = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="password">Contraseña</label>
+                                    <label htmlFor="password" className="text-[#502558]">Contraseña</label>
                                     <div className="relative text-white-dark">
                                         <input
                                             id="password"
@@ -167,13 +161,13 @@ const LoginCover = () => {
                                     </div>
                                 </div>
                                 {error ? <p className="text-danger">{error}</p> : null}
-                                <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]" disabled={submitting}>
+                                <button type="submit" className="btn !mt-6 w-full border-0 bg-gradient-to-r from-[#502558] to-[#D8AC71] uppercase text-white shadow-[0_10px_20px_-10px_rgba(80,37,88,0.6)] transition-all duration-300 hover:from-[#D8AC71] hover:to-[#502558]" disabled={submitting}>
                                     {submitting ? 'Ingresando...' : 'Ingresar'}
                                 </button>
                             </form>
                             <div className="mt-6 text-center dark:text-white">
                                 ¿No tenés cuenta?&nbsp;
-                                <Link href="/auth/cover-register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                <Link href="/auth/cover-register" className="uppercase text-[#502558] underline transition hover:text-[#D8AC71] dark:hover:text-white">
                                     Registrate
                                 </Link>
                             </div>

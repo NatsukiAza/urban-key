@@ -243,10 +243,10 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     }
 
     .btn-primary {
-        @apply border-primary bg-primary text-white shadow-primary/60;
+        @apply border-[#502558] bg-[#502558] text-white shadow-[#502558]/60 dark:border-[#D8AC71] dark:bg-[#D8AC71] dark:text-black dark:shadow-[#D8AC71]/60;
     }
     .btn-outline-primary {
-        @apply border-primary text-primary shadow-none hover:bg-primary hover:text-white;
+        @apply border-[#502558] text-[#502558] shadow-none hover:bg-[#502558] hover:text-white dark:border-[#D8AC71] dark:text-[#D8AC71] dark:hover:bg-[#D8AC71] dark:hover:text-black;
     }
 
     .btn-secondary {
