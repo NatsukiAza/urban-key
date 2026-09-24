@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <div className="panel">
-            <h1 className="mb-3 text-lg font-semibold dark:text-white-light">No tenés acceso a esta pantalla</h1>
-            <p className="mb-5 text-white-dark">La gestión de usuarios es solo para el administrador.</p>
+        <div className="panel max-w-xl">
+            <h2 className="text-xl font-semibold mb-2">No tenés permiso para ver esta pantalla</h2>
+            <p className="text-white-dark mb-5">Esta acción está reservada al administrador.</p>
             <Link href="/" className="btn btn-primary">
                 Volver al inicio
             </Link>

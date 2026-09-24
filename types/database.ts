@@ -724,6 +724,7 @@ export type Database = {
       }
       es_admin: { Args: never; Returns: boolean }
       es_usuario_activo: { Args: never; Returns: boolean }
+      sucursal_actual: { Args: never; Returns: string }
       rol_actual: {
         Args: never
         Returns: Database["public"]["Enums"]["rol_usuario"]

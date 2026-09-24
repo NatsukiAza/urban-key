@@ -14,6 +14,7 @@ import IconHome from '../Icon/IconHome';
 import IconUsers from '../Icon/IconUsers';
 import IconUser from '../Icon/IconUser';
 import IconTrendingUp from '../Icon/IconTrendingUp';
+import IconMapPin from '../Icon/IconMapPin';
 import { createClient } from '@/lib/supabase/client';
 import type { RolUsuario } from '@/lib/enums/rolUsuario';
 
@@ -108,6 +109,15 @@ const Sidebar = () => {
                                         </li>
                                     </ul>
                                 </AnimateHeight>
+                            </li>
+
+                            <li className="nav-item">
+                                <Link href="/sucursales" className="group">
+                                    <div className="flex items-center">
+                                        <IconMapPin className="group-hover:!text-primary shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sucursales')}</span>
+                                    </div>
+                                </Link>
                             </li>
 
                             <li className="nav-item">
