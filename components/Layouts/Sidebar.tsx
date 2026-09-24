@@ -12,10 +12,14 @@ import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconCaretDown from '../Icon/IconCaretDown';
 import IconHome from '../Icon/IconHome';
 import IconUsers from '../Icon/IconUsers';
+import IconUser from '../Icon/IconUser';
 import IconTrendingUp from '../Icon/IconTrendingUp';
+import { createClient } from '@/lib/supabase/client';
+import type { RolUsuario } from '@/lib/enums/rolUsuario';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
+    const [rol, setRol] = useState<RolUsuario | null>(null);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
     const pathname = usePathname();
@@ -26,6 +30,15 @@ const Sidebar = () => {
             return oldValue === value ? '' : value;
         });
     };
+
+    useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(async ({ data }) => {
+            if (!data.user) return;
+            const { data: row } = await supabase.from('usuarios').select('rol').eq('id', data.user.id).maybeSingle();
+            if (row) setRol(row.rol);
+        });
+    }, []);
 
     useEffect(() => {
         const selector = document.querySelector('.sidebar ul a[href="' + pathname + '"]');
@@ -59,7 +72,7 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">UrbanKey</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle text-primary dark:text-white-light">UrbanKey</span>
                         </Link>
 
                         <button
@@ -132,6 +145,17 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
+
+                            {rol === 'ADMINISTRADOR' ? (
+                                <li className="nav-item">
+                                    <Link href="/usuarios" className="group">
+                                        <div className="flex items-center">
+                                            <IconUser className="group-hover:!text-primary shrink-0" />
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Usuarios')}</span>
+                                        </div>
+                                    </Link>
+                                </li>
+                            ) : null}
                         </ul>
                     </PerfectScrollbar>
                 </div>

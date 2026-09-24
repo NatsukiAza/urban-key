@@ -13,5 +13,15 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
         funnelId: sp.funnelId,
     };
     const [rows, options] = await Promise.all([getOportunidadesList(filtro), getFormOptions()]);
-    return <OportunidadesList rows={rows} filtro={filtro} usuarios={options.usuarios} funnels={options.funnels} origenes={options.origenes} />;
+    return (
+        <OportunidadesList
+            rows={rows}
+            filtro={filtro}
+            usuarios={options.usuarios}
+            funnels={options.funnels}
+            origenes={options.origenes}
+            etapas={options.etapas}
+            motivosPerdida={options.motivosPerdida}
+        />
+    );
 }

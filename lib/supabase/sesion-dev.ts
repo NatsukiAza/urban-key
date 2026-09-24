@@ -1,5 +1,16 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+/** Si está presente, el proxy no vuelve a abrir la sesión automática de desarrollo. */
+export const COOKIE_SIN_SESION_DEV = 'urbankey-sin-sesion-dev';
+
+export function marcarCierreDeSesion() {
+    document.cookie = `${COOKIE_SIN_SESION_DEV}=1; Path=/; SameSite=Lax`;
+}
+
+export function limpiarCierreDeSesion() {
+    document.cookie = `${COOKIE_SIN_SESION_DEV}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
+
 const enProduccion = () => process.env.NODE_ENV === 'production';
 
 export function sesionDevHabilitada(): boolean {

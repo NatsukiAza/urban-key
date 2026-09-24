@@ -9,12 +9,12 @@ type OportunidadDbRow = Database['public']['Tables']['oportunidades']['Row'];
 const RESPONSABLE = 'usuarios!oportunidades_responsable_id_fkey';
 
 const SELECT_LISTA = `
-    id, titulo, estado, valor_estimado, moneda,
+    id, titulo, estado, valor_estimado, moneda, funnel_id,
     contacto:contactos(nombre, apellido),
     inmueble:inmuebles(direccion),
     responsable:${RESPONSABLE}(nombre, apellido),
     funnel:funnels(nombre),
-    etapa:etapas(nombre)
+    etapa:etapas(id, nombre, orden)
 `;
 
 const SELECT_CARD = `
@@ -122,7 +122,9 @@ export async function getOportunidadesList(filtro: FiltroOportunidades = {}): Pr
             contacto: nombreCompleto(o.contacto),
             inmueble: o.inmueble?.direccion ?? null,
             responsable: nombreCompleto(o.responsable),
+            funnelId: o.funnel_id,
             funnel: o.funnel?.nombre ?? '',
+            etapaId: o.etapa?.id ?? '',
             etapa: o.etapa?.nombre ?? '',
             estado: o.estado,
             valorEstimado: o.valor_estimado,
@@ -267,6 +269,32 @@ export async function getFormOptions(): Promise<FormOptions> {
     } catch (err) {
         console.error('Error getFormOptions', err);
         return vacio;
+    }
+}
+
+export async function getFunnelConMasOportunidades(): Promise<string | null> {
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('oportunidades').select('funnel_id').eq('activo', true);
+        if (error) throw error;
+
+        const cantidades = new Map<string, number>();
+        for (const fila of data ?? []) {
+            cantidades.set(fila.funnel_id, (cantidades.get(fila.funnel_id) ?? 0) + 1);
+        }
+
+        let elegido: string | null = null;
+        let maximo = 0;
+        for (const [funnelId, cantidad] of cantidades) {
+            if (cantidad > maximo) {
+                maximo = cantidad;
+                elegido = funnelId;
+            }
+        }
+        return elegido;
+    } catch (err) {
+        console.error('Error getFunnelConMasOportunidades', err);
+        return null;
     }
 }
 

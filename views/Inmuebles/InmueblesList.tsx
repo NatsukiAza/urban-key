@@ -19,8 +19,13 @@ import { tipoInmuebleConfig, tipoInmuebleOptions } from '@/lib/enums/tipoInmuebl
 import { estadoInmuebleConfig, estadoInmuebleOptions } from '@/lib/enums/estadoInmueble';
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { InmuebleRow, FiltroInmuebles } from '@/lib/inmueble/types';
+import InmueblesTableSkeleton from '@/views/Inmuebles/InmueblesTableSkeleton';
+import PageHeader, { contar } from '@/components/ui/PageHeader';
 
-const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), { ssr: false }) as any;
+const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), {
+    ssr: false,
+    loading: () => <InmueblesTableSkeleton soloFilas />,
+}) as any;
 
 interface Props {
     rows: InmuebleRow[];
@@ -105,13 +110,22 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
     }, [sortStatus]);
 
     return (
+        <div>
+            <PageHeader
+                title="Inmuebles"
+                description={contar(rows.length, 'inmueble', 'inmuebles')}
+                actions={
+                    <Link href="/inmuebles/nuevo" className="btn btn-primary gap-2">
+                        <IconPlus />
+                        Nuevo
+                    </Link>
+                }
+            />
         <div className="panel px-0 border-white-light dark:border-[#1b2e4b]">
             <div className="invoice-table">
-                <div className="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
-                    <div className="flex items-center gap-2">
-                        <input type="text" className="form-input w-auto shrink-0" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
+                <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-white-light px-5 pb-4 dark:border-[#1b2e4b]">
+                    <input type="text" className="form-input w-full shrink-0 sm:w-56" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    <div className="flex flex-wrap items-center gap-2">
                         <select className="form-select w-auto shrink-0 min-w-[160px]" value={filtro.tipoOperacion ?? ''} onChange={(e) => aplicarFiltro('tipoOperacion', e.target.value)}>
                             <option value="">Toda operación</option>
                             {tipoOperacionOptions.map((o) => (
@@ -145,14 +159,16 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                             ))}
                         </select>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Link href="/inmuebles/nuevo" className="btn btn-primary gap-2">
-                            <IconPlus />
-                            Nuevo
-                        </Link>
-                    </div>
                 </div>
 
+                {rows.length === 0 ? (
+                    <div className="px-5 py-10 text-center">
+                        <p className="text-white-dark">{filtro.tipoOperacion || filtro.tipoInmueble || filtro.estado || filtro.localidad ? 'Ningún inmueble coincide con los filtros.' : 'Todavía no hay inmuebles.'}</p>
+                        <Link href="/inmuebles/nuevo" className="btn btn-primary mt-4 inline-flex">
+                            Cargar inmueble
+                        </Link>
+                    </div>
+                ) : (
                 <div className="datatables pagination-padding">
                     <DataTable
                         className="whitespace-nowrap table-hover invoice-table"
@@ -202,7 +218,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 title: 'Precio',
                                 sortable: true,
                                 titleClassName: 'text-right',
-                                render: ({ precio, moneda }: InmuebleRow) => <div className="text-right font-semibold">{formatearImporte(precio, moneda)}</div>,
+                                render: ({ precio, moneda }: InmuebleRow) => <div className="text-right font-semibold text-gold-dark">{formatearImporte(precio, moneda)}</div>,
                             },
                             {
                                 accessor: 'estado',
@@ -217,13 +233,13 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 textAlignment: 'center',
                                 render: ({ id }: InmuebleRow) => (
                                     <div className="flex gap-4 items-center w-max mx-auto">
-                                        <Link href={`/inmuebles/${id}/editar`} className="flex hover:text-info">
+                                        <Link href={`/inmuebles/${id}/editar`} className="flex hover:text-info" aria-label="Editar" title="Editar">
                                             <IconEdit className="w-4.5 h-4.5" />
                                         </Link>
-                                        <Link href={`/inmuebles/${id}`} className="flex hover:text-primary">
+                                        <Link href={`/inmuebles/${id}`} className="flex hover:text-primary" aria-label="Ver" title="Ver">
                                             <IconEye />
                                         </Link>
-                                        <button type="button" className="flex hover:text-danger" onClick={() => eliminar(id)}>
+                                        <button type="button" className="flex hover:text-danger" aria-label="Dar de baja" title="Dar de baja" onClick={() => eliminar(id)}>
                                             <IconTrashLines />
                                         </button>
                                     </div>
@@ -241,10 +257,12 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         paginationText={({ from, to, totalRecords }: any) => `Mostrando ${from} a ${to} de ${totalRecords} inmuebles`}
-                        noRecordsText="No hay inmuebles"
+                        noRecordsText="Ningún inmueble coincide con la búsqueda."
                     />
                 </div>
+                )}
             </div>
+        </div>
         </div>
     );
 };

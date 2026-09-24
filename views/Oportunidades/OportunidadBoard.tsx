@@ -12,6 +12,9 @@ import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { ColumnaEtapa } from '@/lib/oportunidad/types';
 import type { Funnel, MotivoPerdida } from '@/lib/dominio';
+import type { EstadoOportunidad } from '@/lib/enums/estadoOportunidad';
+import { inicialesDe } from '@/components/ui/Iniciales';
+import PageHeader from '@/components/ui/PageHeader';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
 
@@ -66,8 +69,74 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
         router.refresh(); // reconcilia con el store (revierte movimientos rechazados)
     };
 
+    const abiertas = columns.filter((column) => column.resultado === 'ABIERTA');
+    const cierre = columns.filter((column) => column.resultado !== 'ABIERTA');
+
+    const tonoColumna = (resultado: EstadoOportunidad) => {
+        if (resultado === 'GANADA') return 'border-t-4 border-t-success bg-success/[0.06]';
+        if (resultado === 'PERDIDA') return 'border-t-4 border-t-danger bg-danger/[0.06]';
+        return 'border-t-4 border-t-primary bg-primary/[0.04]';
+    };
+
+    const tonoTarjeta = (resultado: EstadoOportunidad) => {
+        if (resultado === 'GANADA') return 'border-l-success';
+        if (resultado === 'PERDIDA') return 'border-l-danger';
+        return 'border-l-gold';
+    };
+
+    const columna = (column: ColumnaEtapa) => (
+        <div key={column.id} className={`panel w-80 flex-none ${tonoColumna(column.resultado)}`} data-group={column.id}>
+            <div className="flex justify-between mb-5">
+                <h4 className="text-base font-semibold flex items-center gap-2">
+                    {column.title}
+                    {column.resultado !== 'ABIERTA' && <span className={`badge badge-outline-${estadoOportunidadConfig[column.resultado].color}`}>{estadoOportunidadConfig[column.resultado].label}</span>}
+                </h4>
+                <span className="badge bg-primary/10 text-primary">{column.tasks.length}</span>
+            </div>
+            <ReactSortable
+                list={column.tasks}
+                setList={(newState: any, sortable: any) => {
+                    if (!sortable) return;
+                    const destId = sortable.el.closest('[data-group]')?.getAttribute('data-group') || column.id;
+                    const before = columns.find((c) => c.id === destId);
+                    const beforeIds = new Set(before ? before.tasks.map((t) => t.id) : []);
+                    const entrante = newState.find((t: any) => !beforeIds.has(t.id));
+                    setColumns((cols) => cols.map((c) => (c.id === destId ? { ...c, tasks: newState } : c)));
+                    if (entrante) {
+                        aplicarMovimiento(entrante.id, destId);
+                    }
+                }}
+                animation={200}
+                group={{ name: 'oportunidades', pull: true, put: true }}
+                ghostClass="sortable-ghost"
+                dragClass="sortable-drag"
+                className="connect-sorting-content min-h-[150px]"
+            >
+                {column.tasks.map((task) => (
+                    <div className="sortable-list" key={task.id}>
+                        <div
+                            onClick={() => router.push(`/oportunidades/${task.id}`)}
+                            className={`mb-3 cursor-move select-none space-y-2 rounded-md border border-white-light bg-white p-3 shadow-sm ltr:border-l-4 dark:border-[#1b2e4b] dark:bg-black ${tonoTarjeta(column.resultado)}`}
+                        >
+                            <div className="text-base font-medium">{task.titulo}</div>
+                            <div className="text-sm text-white-dark">{task.contacto}</div>
+                            {task.inmueble && <div className="text-xs text-white-dark">{task.inmueble}</div>}
+                            <div className="flex items-center justify-between gap-2 pt-1">
+                                <span className="text-sm font-semibold text-gold-dark">{task.valorEstimado != null ? formatearImporte(task.valorEstimado, task.moneda) : ''}</span>
+                                <span className="grid h-7 w-7 shrink-0 place-content-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary" title={task.responsable}>
+                                    {inicialesDe(task.responsable)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </ReactSortable>
+        </div>
+    );
+
     return (
         <div>
+            <PageHeader title="Tablero de oportunidades" description="Arrastrá una tarjeta para cambiar de etapa." />
             <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
                 <div className="flex items-center gap-2">
                     <label htmlFor="funnel" className="mb-0">
@@ -86,58 +155,14 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
                 </Link>
             </div>
 
-            <div className="relative">
-                <div className="perfect-scrollbar h-full -mx-2">
-                    <div className="overflow-x-auto flex items-start flex-nowrap gap-5 pb-2 px-2">
-                        {columns.map((column) => (
-                            <div key={column.id} className="panel w-80 flex-none" data-group={column.id}>
-                                <div className="flex justify-between mb-5">
-                                    <h4 className="text-base font-semibold flex items-center gap-2">
-                                        {column.title}
-                                        {column.resultado !== 'ABIERTA' && <span className={`badge badge-outline-${estadoOportunidadConfig[column.resultado].color}`}>{estadoOportunidadConfig[column.resultado].label}</span>}
-                                    </h4>
-                                    <span className="badge bg-primary/10 text-primary">{column.tasks.length}</span>
-                                </div>
-                                <ReactSortable
-                                    list={column.tasks}
-                                    setList={(newState: any, sortable: any) => {
-                                        if (!sortable) return;
-                                        const destId = sortable.el.closest('[data-group]')?.getAttribute('data-group') || column.id;
-                                        const before = columns.find((c) => c.id === destId);
-                                        const beforeIds = new Set(before ? before.tasks.map((t) => t.id) : []);
-                                        const entrante = newState.find((t: any) => !beforeIds.has(t.id));
-                                        // actualización optimista
-                                        setColumns((cols) => cols.map((c) => (c.id === destId ? { ...c, tasks: newState } : c)));
-                                        if (entrante) {
-                                            aplicarMovimiento(entrante.id, destId);
-                                        }
-                                    }}
-                                    animation={200}
-                                    group={{ name: 'oportunidades', pull: true, put: true }}
-                                    ghostClass="sortable-ghost"
-                                    dragClass="sortable-drag"
-                                    className="connect-sorting-content min-h-[150px]"
-                                >
-                                    {column.tasks.map((task) => (
-                                        <div className="sortable-list" key={task.id}>
-                                            <div
-                                                onClick={() => router.push(`/oportunidades/${task.id}`)}
-                                                className="shadow bg-[#f4f4f4] dark:bg-white-dark/20 p-3 rounded-md mb-3 space-y-2 cursor-move select-none"
-                                            >
-                                                <div className="text-base font-medium">{task.titulo}</div>
-                                                <div className="text-sm text-white-dark">{task.contacto}</div>
-                                                {task.inmueble && <div className="text-xs text-white-dark">{task.inmueble}</div>}
-                                                <div className="flex items-center justify-between pt-1">
-                                                    <span className="text-xs font-semibold">{task.valorEstimado != null ? formatearImporte(task.valorEstimado, task.moneda) : ''}</span>
-                                                    <span className="text-xs text-white-dark">{task.responsable}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </ReactSortable>
-                            </div>
-                        ))}
-                    </div>
+            <div className="flex items-start gap-5">
+                <div className="min-w-0 flex-1 overflow-x-auto">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white-dark">En curso</p>
+                    <div className="flex items-start flex-nowrap gap-5 pb-2">{abiertas.map(columna)}</div>
+                </div>
+                <div className="flex shrink-0 flex-col border-l border-white-light pl-5 dark:border-[#1b2e4b]">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white-dark">Cierre</p>
+                    <div className="flex items-start gap-5">{cierre.map(columna)}</div>
                 </div>
             </div>
         </div>

@@ -672,6 +672,7 @@ export type Database = {
           actualizado_en: string
           apellido: string
           creado_en: string
+          debe_cambiar_contrasena: boolean
           email: string
           id: string
           nombre: string
@@ -683,6 +684,7 @@ export type Database = {
           actualizado_en?: string
           apellido?: string
           creado_en?: string
+          debe_cambiar_contrasena?: boolean
           email: string
           id: string
           nombre?: string
@@ -694,6 +696,7 @@ export type Database = {
           actualizado_en?: string
           apellido?: string
           creado_en?: string
+          debe_cambiar_contrasena?: boolean
           email?: string
           id?: string
           nombre?: string
@@ -715,6 +718,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      confirmar_contrasena_cambiada: {
+        Args: { p_usuario_id: string }
+        Returns: undefined
+      }
       es_admin: { Args: never; Returns: boolean }
       es_usuario_activo: { Args: never; Returns: boolean }
       rol_actual: {
@@ -722,6 +729,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["rol_usuario"]
       }
       ve_todo: { Args: never; Returns: boolean }
+      vincular_inmobiliaria_inicial: {
+        Args: { p_nombre: string; p_usuario_id: string }
+        Returns: string
+      }
     }
     Enums: {
       estado_contacto: "POTENCIAL" | "CLIENTE" | "INACTIVO" | "NO_CONTACTAR"

@@ -9,6 +9,7 @@ import {
     ESTADOS_CONTACTO,
     actualizarEstadoContacto,
     agregarObservacion,
+    estadoContactoConfig,
     estadoLabel,
     listarObservaciones,
     nombreContacto,
@@ -17,6 +18,8 @@ import {
     type EstadoContacto,
     type Observacion,
 } from '@/lib/supabase/contactos';
+import DetailHero from '@/components/ui/DetailHero';
+import Timeline from '@/components/ui/Timeline';
 
 const ContactoDetalle = ({ id }: { id: string }) => {
     const dispatch = useDispatch();
@@ -121,37 +124,27 @@ const ContactoDetalle = ({ id }: { id: string }) => {
         );
     }
 
+    const roles = [contacto.es_propietario ? 'Propietario' : null, contacto.es_interesado ? 'Interesado' : null].filter(Boolean).join(' · ') || '—';
+
     return (
         <div className="space-y-5">
-            <div className="panel">
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                    <h1 className="text-lg font-semibold dark:text-white-light">{nombreContacto(contacto)}</h1>
-                    <Link href="/contactos" className="text-primary hover:underline">
-                        Volver al listado
+            <DetailHero
+                title={nombreContacto(contacto)}
+                badges={<span className={`badge badge-outline-${estadoContactoConfig[contacto.estado].color}`}>{estadoContactoConfig[contacto.estado].label}</span>}
+                actions={
+                    <Link href="/contactos" className="btn btn-outline-primary">
+                        Volver
                     </Link>
-                </div>
-                <dl className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                        <dt className="text-white-dark">Email</dt>
-                        <dd>{contacto.email || '—'}</dd>
-                    </div>
-                    <div>
-                        <dt className="text-white-dark">Teléfono</dt>
-                        <dd>{contacto.telefono || '—'}</dd>
-                    </div>
-                    <div>
-                        <dt className="text-white-dark">Propietario</dt>
-                        <dd>{contacto.es_propietario ? 'Sí' : 'No'}</dd>
-                    </div>
-                    <div>
-                        <dt className="text-white-dark">Interesado</dt>
-                        <dd>{contacto.es_interesado ? 'Sí' : 'No'}</dd>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <dt className="text-white-dark">Nota del contacto</dt>
-                        <dd>{contacto.observaciones || '—'}</dd>
-                    </div>
-                </dl>
+                }
+                facts={[
+                    { label: 'Email', value: contacto.email || '—' },
+                    { label: 'Teléfono', value: contacto.telefono || '—' },
+                    { label: 'Rol', value: roles },
+                ]}
+            />
+            <div className="panel">
+                <h2 className="mb-4 text-lg font-semibold">Datos</h2>
+                <p className="text-white-dark">{contacto.observaciones || 'Sin nota del contacto.'}</p>
                 <div className="mt-5 flex flex-wrap items-end gap-3">
                     <div>
                         <label htmlFor="estado">Estado</label>
@@ -170,7 +163,7 @@ const ContactoDetalle = ({ id }: { id: string }) => {
             </div>
 
             <div className="panel">
-                <h2 className="mb-5 text-lg font-semibold dark:text-white-light">Observaciones</h2>
+                <h2 className="mb-5 text-lg font-semibold">Observaciones</h2>
                 <form className="mb-5 space-y-3" onSubmit={guardarObservacion}>
                     <label htmlFor="observacion">Nueva observación</label>
                     <textarea id="observacion" className="form-textarea" rows={3} value={texto} onChange={(event) => setTexto(event.target.value)} />
@@ -180,17 +173,14 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                 </form>
                 {error ? <p className="mb-4 text-danger">{error}</p> : null}
                 {aviso ? <p className="mb-4 text-success">{aviso}</p> : null}
-                {observaciones.length === 0 ? <p className="text-white-dark">Todavía no hay observaciones.</p> : null}
-                <ul className="space-y-4">
-                    {observaciones.map((item) => (
-                        <li key={item.id} className="border-b border-white-light pb-4 dark:border-white-light/10">
-                            <p>{item.descripcion}</p>
-                            <p className="mt-1 text-xs text-white-dark">
-                                {item.autor} · {new Date(item.fecha).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
+                <Timeline
+                    vacio="Todavía no hay observaciones."
+                    items={observaciones.map((item) => ({
+                        id: item.id,
+                        title: item.descripcion || '—',
+                        meta: `${item.autor} · ${new Date(item.fecha).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`,
+                    }))}
+                />
             </div>
         </div>
     );

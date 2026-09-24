@@ -21,9 +21,14 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#4361ee',
-                    light: '#eaf1ff',
-                    'dark-light': 'rgba(67,97,238,.15)',
+                    DEFAULT: '#502558',
+                    light: '#f6eef7',
+                    'dark-light': 'rgba(80,37,88,.15)',
+                },
+                gold: {
+                    DEFAULT: '#D8AC71',
+                    dark: '#7a5a2e',
+                    light: '#fbf6ee',
                 },
                 secondary: {
                     DEFAULT: '#805dca',

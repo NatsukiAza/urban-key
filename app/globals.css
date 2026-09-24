@@ -59,12 +59,12 @@
     }
     .sidebar .nav-item > button.active,
     .sidebar .nav-item > a.active {
-        @apply bg-[#000]/[0.08] text-black dark:bg-[#181f32] dark:text-white-dark;
+        @apply bg-primary/10 text-primary dark:bg-primary/20 dark:text-white-dark;
     }
 
     .sidebar .nav-item > button.active > div > span,
     .sidebar .nav-item > a.active > div > span {
-        @apply dark:!text-white-dark;
+        @apply !text-primary dark:!text-white-dark;
     }
 
     .sidebar ul.sub-menu li button,
@@ -74,12 +74,16 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     }
     .sidebar ul.sub-menu li button.active,
     .sidebar ul.sub-menu li a.active {
-        @apply text-primary before:bg-primary;
+        @apply text-primary before:bg-gold;
     }
 
     .sidebar .nav-item a div:first-child svg,
     .sidebar .nav-item button div:first-child svg {
         @apply h-5 w-5 text-black/50 dark:text-white/50;
+    }
+    .sidebar .nav-item > a.active div:first-child svg,
+    .sidebar .nav-item > button.active div:first-child svg {
+        @apply text-gold;
     }
 
     .main-container .main-content {
@@ -243,7 +247,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     }
 
     .btn-primary {
-        @apply border-[#502558] bg-[#502558] text-white shadow-[#502558]/60 dark:border-[#D8AC71] dark:bg-[#D8AC71] dark:text-black dark:shadow-[#D8AC71]/60;
+        @apply border-primary bg-primary text-white shadow-primary/60 dark:border-gold dark:bg-gold dark:text-black dark:shadow-gold/60;
     }
     .btn-outline-primary {
         @apply border-[#502558] text-[#502558] shadow-none hover:bg-[#502558] hover:text-white dark:border-[#D8AC71] dark:text-[#D8AC71] dark:hover:bg-[#D8AC71] dark:hover:text-black;
@@ -327,7 +331,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     .form-textarea,
     .form-select,
     .form-multiselect {
-        @apply w-full rounded-md border border-white-light bg-white px-4 py-2 text-sm font-semibold text-black !outline-none focus:border-primary focus:ring-transparent dark:border-[#17263c] dark:bg-[#121e32] dark:text-white-dark dark:focus:border-primary;
+        @apply w-full rounded-md border border-white-light bg-white px-4 py-2 text-sm font-semibold text-black !outline-none focus:border-gold focus:ring-transparent dark:border-[#17263c] dark:bg-[#121e32] dark:text-white-dark dark:focus:border-gold;
     }
 
     .form-input-lg,
@@ -399,7 +403,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
 
     .form-checkbox.outline-primary:checked {
         @apply border-primary bg-transparent;
-        background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%234361ee' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+        background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23502558' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
     }
     .form-checkbox.outline-secondary:checked {
         @apply border-secondary bg-transparent;

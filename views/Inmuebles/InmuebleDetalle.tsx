@@ -15,6 +15,7 @@ import { estadoInmuebleConfig } from '@/lib/enums/estadoInmueble';
 import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { InmuebleDetalle as TDetalle } from '@/lib/inmueble/types';
+import DetailHero from '@/components/ui/DetailHero';
 
 interface Props {
     detalle: TDetalle;
@@ -62,45 +63,53 @@ const InmuebleDetalle = ({ detalle }: Props) => {
         }
     };
 
+    const propietario = detalle.propietario ? `${detalle.propietario.nombre} ${detalle.propietario.apellido}` : '—';
+
     return (
         <div className="space-y-5">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3 flex-wrap">
-                    <h2 className="text-xl font-semibold">{detalle.direccion}</h2>
-                    <span className={`badge badge-outline-${estadoInmuebleConfig[detalle.estado].color}`}>{estadoInmuebleConfig[detalle.estado].label}</span>
-                    <span className={`badge badge-outline-${tipoOperacionConfig[detalle.tipoOperacion].color}`}>{tipoOperacionConfig[detalle.tipoOperacion].label}</span>
-                    <span className={`badge badge-outline-${tipoInmuebleConfig[detalle.tipoInmueble].color}`}>{tipoInmuebleConfig[detalle.tipoInmueble].label}</span>
-                </div>
-                <div className="flex gap-2">
-                    <Link href={`/inmuebles/${detalle.id}/editar`} className="btn btn-primary gap-2">
-                        <IconEdit className="w-4.5 h-4.5" />
-                        Editar
-                    </Link>
-                    <button type="button" className="btn btn-outline-danger gap-2" onClick={darDeBaja} disabled={abiertas > 0} title={abiertas > 0 ? 'Tiene oportunidades abiertas' : undefined}>
-                        <IconTrashLines className="w-4.5 h-4.5" />
-                        Dar de baja
-                    </button>
-                    <Link href="/inmuebles" className="btn btn-outline-primary">
-                        Volver
-                    </Link>
-                </div>
-            </div>
+            <DetailHero
+                title={detalle.direccion}
+                badges={
+                    <>
+                        <span className={`badge badge-outline-${estadoInmuebleConfig[detalle.estado].color}`}>{estadoInmuebleConfig[detalle.estado].label}</span>
+                        <span className={`badge badge-outline-${tipoOperacionConfig[detalle.tipoOperacion].color}`}>{tipoOperacionConfig[detalle.tipoOperacion].label}</span>
+                        <span className={`badge badge-outline-${tipoInmuebleConfig[detalle.tipoInmueble].color}`}>{tipoInmuebleConfig[detalle.tipoInmueble].label}</span>
+                    </>
+                }
+                actions={
+                    <>
+                        <Link href={`/inmuebles/${detalle.id}/editar`} className="btn btn-primary gap-2">
+                            <IconEdit className="w-4.5 h-4.5" />
+                            Editar
+                        </Link>
+                        <button type="button" className="btn btn-outline-danger gap-2" onClick={darDeBaja} disabled={abiertas > 0} title={abiertas > 0 ? 'Tiene oportunidades abiertas' : undefined}>
+                            <IconTrashLines className="w-4.5 h-4.5" />
+                            Dar de baja
+                        </button>
+                        <Link href="/inmuebles" className="btn btn-outline-primary">
+                            Volver
+                        </Link>
+                    </>
+                }
+                facts={[
+                    { label: 'Precio', value: formatearImporte(detalle.precio, detalle.moneda), emphasis: true },
+                    { label: 'Localidad', value: detalle.localidad || '—' },
+                    {
+                        label: 'Propietario',
+                        value: (
+                            <>
+                                {propietario}
+                                {detalle.propietario?.telefono ? <div className="text-xs font-normal text-white-dark">{detalle.propietario.telefono}</div> : null}
+                            </>
+                        ),
+                    },
+                ]}
+            />
 
-            <div className="panel grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <Campo label="Propietario">
-                    {detalle.propietario ? (
-                        <>
-                            {detalle.propietario.nombre} {detalle.propietario.apellido}
-                            {detalle.propietario.telefono && <div className="text-white-dark text-xs font-normal">{detalle.propietario.telefono}</div>}
-                        </>
-                    ) : (
-                        '—'
-                    )}
-                </Campo>
-                <Campo label="Localidad">{detalle.localidad || '—'}</Campo>
+            <div className="panel">
+                <h2 className="mb-4 text-lg font-semibold">Características</h2>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <Campo label="Nombre interno">{detalle.nombre || '—'}</Campo>
-                <Campo label="Precio">{formatearImporte(detalle.precio, detalle.moneda)}</Campo>
-
                 <Campo label="Ambientes">{fmtNumero(detalle.ambientes)}</Campo>
                 <Campo label="Dormitorios">{fmtNumero(detalle.dormitorios)}</Campo>
                 <Campo label="Baños">{fmtNumero(detalle.banos)}</Campo>
@@ -117,10 +126,11 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                     </Campo>
                 </div>
             </div>
+            </div>
 
             <div className="panel">
                 <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <h3 className="text-lg font-semibold">Oportunidades del inmueble</h3>
+                    <h2 className="text-lg font-semibold">Oportunidades del inmueble</h2>
                     {abiertas > 0 && <span className="badge badge-outline-info">{abiertas} abierta{abiertas === 1 ? '' : 's'}</span>}
                 </div>
                 {detalle.oportunidades.length === 0 ? (
