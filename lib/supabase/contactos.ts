@@ -11,6 +11,13 @@ export const estadoLabel: Record<EstadoContacto, string> = {
     NO_CONTACTAR: 'No contactar',
 };
 
+export const estadoContactoConfig: Record<EstadoContacto, { label: string; color: string }> = {
+    POTENCIAL: { label: 'Potencial', color: 'warning' },
+    CLIENTE: { label: 'Cliente', color: 'success' },
+    INACTIVO: { label: 'Inactivo', color: 'dark' },
+    NO_CONTACTAR: { label: 'No contactar', color: 'danger' },
+};
+
 export type Contacto = {
     id: string;
     nombre: string;

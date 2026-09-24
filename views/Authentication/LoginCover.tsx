@@ -11,6 +11,7 @@ import IconCaretDown from '../../components/Icon/IconCaretDown';
 import IconMail from '../../components/Icon/IconMail';
 import IconLockDots from '../../components/Icon/IconLockDots';
 import { createClient } from '@/lib/supabase/client';
+import { limpiarCierreDeSesion } from '@/lib/supabase/sesion-dev';
 import { syncUsuarioProfile } from '@/lib/supabase/usuarios';
 
 const LoginCover = () => {
@@ -66,6 +67,7 @@ const LoginCover = () => {
             return;
         }
 
+        limpiarCierreDeSesion();
         router.push('/');
         router.refresh();
     };

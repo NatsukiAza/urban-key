@@ -1,8 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import type { User } from '@supabase/supabase-js';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
-import { iniciarSesionDev, sesionDevHabilitada } from './sesion-dev';
+import { getSupabasePublicConfig } from './config';
+import { COOKIE_SIN_SESION_DEV, iniciarSesionDev, sesionDevHabilitada } from './sesion-dev';
 
 function redirigirConSesion(request: NextRequest, response: NextResponse, pathname: string) {
     const url = request.nextUrl.clone();
@@ -15,7 +15,8 @@ function redirigirConSesion(request: NextRequest, response: NextResponse, pathna
 export async function actualizarSesion(request: NextRequest) {
     let response = NextResponse.next({ request });
 
-    const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    const { url, anonKey } = getSupabasePublicConfig();
+    const supabase = createServerClient(url, anonKey, {
         cookies: {
             getAll() {
                 return request.cookies.getAll();
@@ -33,7 +34,8 @@ export async function actualizarSesion(request: NextRequest) {
     try {
         ({ data: { user } } = await supabase.auth.getUser());
 
-        if (!user && sesionDevHabilitada()) {
+        const cerroSesion = request.cookies.get(COOKIE_SIN_SESION_DEV)?.value === '1';
+        if (!user && sesionDevHabilitada() && !cerroSesion) {
             await iniciarSesionDev(supabase);
             ({ data: { user } } = await supabase.auth.getUser());
         }
@@ -44,13 +46,23 @@ export async function actualizarSesion(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const esRutaAuth = path.startsWith('/auth');
     const esLoginORegistro = path.startsWith('/auth/cover-login') || path.startsWith('/auth/cover-register');
+    const esCambioContrasena = path.startsWith('/auth/cambiar-contrasena');
 
-    if (!user && !esRutaAuth) {
+    if (!user && (esCambioContrasena || !esRutaAuth)) {
         return redirigirConSesion(request, response, '/auth/cover-login');
     }
 
-    if (user && esLoginORegistro) {
-        return redirigirConSesion(request, response, '/');
+    if (user) {
+        const { data: perfil } = await supabase.from('usuarios').select('debe_cambiar_contrasena').eq('id', user.id).maybeSingle();
+        const debeCambiar = perfil?.debe_cambiar_contrasena === true;
+
+        if (debeCambiar && !esCambioContrasena) {
+            return redirigirConSesion(request, response, '/auth/cambiar-contrasena');
+        }
+
+        if (!debeCambiar && (esLoginORegistro || esCambioContrasena)) {
+            return redirigirConSesion(request, response, '/');
+        }
     }
 
     return response;

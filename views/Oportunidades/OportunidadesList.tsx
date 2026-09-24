@@ -13,14 +13,19 @@ import IconPlus from '@/components/Icon/IconPlus';
 import IconEdit from '@/components/Icon/IconEdit';
 import IconEye from '@/components/Icon/IconEye';
 import IconLayoutGrid from '@/components/Icon/IconLayoutGrid';
-import { darDeBajaOportunidad } from '@/lib/oportunidad/actions';
+import { cambiarEtapa, darDeBajaOportunidad } from '@/lib/oportunidad/actions';
 import { showToast } from '@/lib/ui/toast';
 import { estadoOportunidadConfig, estadoOportunidadOptions } from '@/lib/enums/estadoOportunidad';
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/types';
-import type { Usuario, Funnel, Origen } from '@/lib/dominio';
+import type { Usuario, Funnel, Origen, Etapa, MotivoPerdida } from '@/lib/dominio';
+import OportunidadesTableSkeleton from '@/views/Oportunidades/OportunidadesTableSkeleton';
+import PageHeader, { contar } from '@/components/ui/PageHeader';
 
-const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), { ssr: false }) as any;
+const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), {
+    ssr: false,
+    loading: () => <OportunidadesTableSkeleton soloFilas />,
+}) as any;
 
 interface Props {
     rows: OportunidadRow[];
@@ -28,9 +33,18 @@ interface Props {
     usuarios: Usuario[];
     funnels: Funnel[];
     origenes: Origen[];
+    etapas: Etapa[];
+    motivosPerdida: MotivoPerdida[];
 }
 
-const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props) => {
+const etapaSiguiente = (row: OportunidadRow, etapas: Etapa[]) => {
+    const delFunnel = etapas.filter((etapa) => etapa.funnelId === row.funnelId).sort((a, b) => a.orden - b.orden);
+    const actual = delFunnel.find((etapa) => etapa.id === row.etapaId);
+    if (!actual) return null;
+    return delFunnel.find((etapa) => etapa.orden > actual.orden) ?? null;
+};
+
+const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, motivosPerdida }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     useEffect(() => {
@@ -39,13 +53,80 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
 
     const showMessage = (msg = '', type: any = 'success') => showToast(msg, type);
 
+    const [avanzandoId, setAvanzandoId] = useState<string | null>(null);
+
     const aplicarFiltro = (campo: keyof FiltroOportunidades, valor: string) => {
         const next = new URLSearchParams();
-        const merged: any = { ...filtro, [campo]: valor || undefined };
+        const merged: Record<string, string | undefined> = { ...filtro, [campo]: valor || undefined };
+        if (campo === 'funnelId' && merged.etapaId) {
+            const etapa = etapas.find((item) => item.id === merged.etapaId);
+            if (valor && etapa && etapa.funnelId !== valor) merged.etapaId = undefined;
+        }
         Object.entries(merged).forEach(([k, v]) => {
             if (v) next.set(k, String(v));
         });
         router.push(`/oportunidades${next.toString() ? `?${next.toString()}` : ''}`);
+    };
+
+    const avanzar = async (row: OportunidadRow) => {
+        const destino = etapaSiguiente(row, etapas);
+        if (!destino || avanzandoId) return;
+
+        let motivoPerdidaId: string | null = null;
+        if (destino.resultado === 'GANADA') {
+            const { isConfirmed } = await Swal.fire({
+                title: '¿Cerrar como ganada?',
+                text: `La oportunidad pasa a “${destino.nombre}” y queda cerrada.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Avanzar',
+                cancelButtonText: 'Cancelar',
+                padding: '2em',
+            });
+            if (!isConfirmed) return;
+        }
+        if (destino.resultado === 'PERDIDA') {
+            const opciones = motivosPerdida.reduce((acc: Record<string, string>, motivo) => ({ ...acc, [motivo.id]: motivo.nombre }), {});
+            const { value, isConfirmed } = await Swal.fire({
+                title: 'Motivo de pérdida',
+                input: 'select',
+                inputOptions: opciones,
+                inputPlaceholder: 'Seleccionar motivo',
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                inputValidator: (v) => (!v ? 'Tenés que elegir un motivo' : undefined),
+            });
+            if (!isConfirmed) return;
+            motivoPerdidaId = value;
+        }
+
+        setAvanzandoId(row.id);
+        const res = await cambiarEtapa({
+            oportunidadId: row.id,
+            etapaId: destino.id,
+            motivoPerdidaId,
+            observacion: 'Avance desde el listado',
+        });
+        setAvanzandoId(null);
+        showMessage(res.mensaje, res.ok ? 'success' : 'error');
+        if (res.ok) router.refresh();
+    };
+
+    const etapasVisibles = (filtro.funnelId ? etapas.filter((etapa) => etapa.funnelId === filtro.funnelId) : [...etapas]).sort((a, b) => {
+        if (!filtro.funnelId) {
+            const fa = funnels.find((funnel) => funnel.id === a.funnelId)?.nombre ?? '';
+            const fb = funnels.find((funnel) => funnel.id === b.funnelId)?.nombre ?? '';
+            const porFunnel = fa.localeCompare(fb, 'es');
+            if (porFunnel !== 0) return porFunnel;
+        }
+        return a.orden - b.orden;
+    });
+
+    const etiquetaEtapa = (etapa: Etapa) => {
+        if (filtro.funnelId) return etapa.nombre;
+        const funnel = funnels.find((item) => item.id === etapa.funnelId)?.nombre ?? '';
+        return `${funnel} — ${etapa.nombre}`;
     };
 
     const eliminar = async (id: string) => {
@@ -113,19 +194,44 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
         /* eslint-disable react-hooks/exhaustive-deps */
     }, [sortStatus]);
 
+    const hayFiltro = Boolean(filtro.funnelId || filtro.etapaId || filtro.responsableId || filtro.estado || filtro.origenId);
+
     return (
+        <div>
+            <PageHeader
+                title="Oportunidades"
+                description={contar(rows.length, 'oportunidad', 'oportunidades')}
+                actions={
+                    <>
+                        <Link href="/oportunidades/nuevo" className="btn btn-primary gap-2">
+                            <IconPlus />
+                            Nueva
+                        </Link>
+                        <Link href="/oportunidades/tablero" className="btn btn-outline-primary gap-2">
+                            <IconLayoutGrid className="w-4.5 h-4.5" />
+                            Tablero
+                        </Link>
+                    </>
+                }
+            />
         <div className="panel px-0 border-white-light dark:border-[#1b2e4b]">
             <div className="invoice-table">
-                <div className="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
-                    <div className="flex items-center gap-2">
-                        <input type="text" className="form-input w-auto shrink-0" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
+                <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-white-light px-5 pb-4 dark:border-[#1b2e4b]">
+                    <input type="text" className="form-input w-full shrink-0 sm:w-56" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    <div className="flex flex-wrap items-center gap-2">
                         <select className="form-select w-auto shrink-0 min-w-[175px]" value={filtro.funnelId ?? ''} onChange={(e) => aplicarFiltro('funnelId', e.target.value)}>
                             <option value="">Todos los funnels</option>
                             {funnels.map((f) => (
                                 <option key={f.id} value={f.id}>
                                     {f.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        <select className="form-select w-auto shrink-0 min-w-[200px]" value={filtro.etapaId ?? ''} onChange={(e) => aplicarFiltro('etapaId', e.target.value)}>
+                            <option value="">Todas las etapas</option>
+                            {etapasVisibles.map((etapa) => (
+                                <option key={etapa.id} value={etapa.id}>
+                                    {etiquetaEtapa(etapa)}
                                 </option>
                             ))}
                         </select>
@@ -154,18 +260,16 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                             ))}
                         </select>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Link href="/oportunidades/nuevo" className="btn btn-primary gap-2">
-                            <IconPlus />
-                            Nueva
-                        </Link>
-                        <Link href="/oportunidades/tablero" className="btn btn-outline-primary gap-2">
-                            <IconLayoutGrid className="w-4.5 h-4.5" />
-                            Tablero
-                        </Link>
-                    </div>
                 </div>
 
+                {rows.length === 0 ? (
+                    <div className="px-5 py-10 text-center">
+                        <p className="text-white-dark">{hayFiltro ? 'Ninguna oportunidad coincide con los filtros.' : 'Todavía no hay oportunidades.'}</p>
+                        <Link href="/oportunidades/nuevo" className="btn btn-primary mt-4 inline-flex">
+                            Nueva oportunidad
+                        </Link>
+                    </div>
+                ) : (
                 <div className="datatables pagination-padding">
                     <DataTable
                         className="whitespace-nowrap table-hover invoice-table"
@@ -197,26 +301,34 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                                 title: 'Valor',
                                 sortable: true,
                                 titleClassName: 'text-right',
-                                render: ({ valorEstimado, moneda }: OportunidadRow) => <div className="text-right font-semibold">{formatearImporte(valorEstimado, moneda)}</div>,
+                                render: ({ valorEstimado, moneda }: OportunidadRow) => <div className="text-right font-semibold text-gold-dark">{formatearImporte(valorEstimado, moneda)}</div>,
                             },
                             {
                                 accessor: 'action',
                                 title: 'Acciones',
                                 sortable: false,
                                 textAlignment: 'center',
-                                render: ({ id }: OportunidadRow) => (
+                                render: (row: OportunidadRow) => {
+                                    const destino = row.estado === 'ABIERTA' ? etapaSiguiente(row, etapas) : null;
+                                    return (
                                     <div className="flex gap-4 items-center w-max mx-auto">
-                                        <Link href={`/oportunidades/${id}/editar`} className="flex hover:text-info">
+                                        {destino && (
+                                            <button type="button" className="btn btn-sm btn-outline-primary" disabled={avanzandoId !== null} onClick={() => avanzar(row)}>
+                                                {avanzandoId === row.id ? 'Guardando...' : `Avanzar a ${destino.nombre}`}
+                                            </button>
+                                        )}
+                                        <Link href={`/oportunidades/${row.id}/editar`} className="flex hover:text-info" aria-label="Editar" title="Editar">
                                             <IconEdit className="w-4.5 h-4.5" />
                                         </Link>
-                                        <Link href={`/oportunidades/${id}`} className="flex hover:text-primary">
+                                        <Link href={`/oportunidades/${row.id}`} className="flex hover:text-primary" aria-label="Ver" title="Ver">
                                             <IconEye />
                                         </Link>
-                                        <button type="button" className="flex hover:text-danger" onClick={() => eliminar(id)}>
+                                        <button type="button" className="flex hover:text-danger" aria-label="Dar de baja" title="Dar de baja" onClick={() => eliminar(row.id)}>
                                             <IconTrashLines />
                                         </button>
                                     </div>
-                                ),
+                                    );
+                                },
                             },
                         ]}
                         highlightOnHover
@@ -230,10 +342,12 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
                         paginationText={({ from, to, totalRecords }: any) => `Mostrando ${from} a ${to} de ${totalRecords} oportunidades`}
-                        noRecordsText="No hay oportunidades"
+                        noRecordsText="Ninguna oportunidad coincide con la búsqueda."
                     />
                 </div>
+                )}
             </div>
+        </div>
         </div>
     );
 };

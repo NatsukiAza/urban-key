@@ -73,7 +73,9 @@ export interface OportunidadRow {
     contacto: string;
     inmueble: string | null;
     responsable: string;
+    funnelId: string;
     funnel: string;
+    etapaId: string;
     etapa: string;
     estado: EstadoOportunidad;
     valorEstimado: number | null;

@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { marcarCierreDeSesion } from '@/lib/supabase/sesion-dev';
 import { nombreCompleto, rolLabel, type Usuario } from '@/lib/supabase/usuarios';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,15 +27,7 @@ import IconUser from '../Icon/IconUser';
 import IconMail from '../Icon/IconMail';
 import IconLockDots from '../Icon/IconLockDots';
 import IconLogout from '../Icon/IconLogout';
-import IconMenuDashboard from '../Icon/Menu/IconMenuDashboard';
-import IconCaretDown from '../Icon/IconCaretDown';
-import IconMenuApps from '../Icon/Menu/IconMenuApps';
-import IconMenuUsers from '../Icon/Menu/IconMenuUsers';
-import IconMenuAuthentication from '../Icon/Menu/IconMenuAuthentication';
-
 const Header = () => {
-    const pathname = usePathname();
-    const router = useRouter();
     const [perfil, setPerfil] = useState<Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'rol'> | null>(null);
 
     const iniciales = perfil ? `${perfil.nombre?.[0] ?? ''}${perfil.apellido?.[0] ?? ''}`.toUpperCase() || 'U' : 'U';
@@ -46,8 +38,8 @@ const Header = () => {
         if (error) {
             return;
         }
-        router.push('/auth/cover-login');
-        router.refresh();
+        marcarCierreDeSesion();
+        window.location.assign('/auth/cover-login');
     };
     useEffect(() => {
         const supabase = createClient();
@@ -61,26 +53,6 @@ const Header = () => {
             }
         });
     }, []);
-    useEffect(() => {
-        const selector = document.querySelector('ul.horizontal-menu a[href="' + pathname + '"]');
-        if (selector) {
-            selector.classList.add('active');
-            const all: any = document.querySelectorAll('ul.horizontal-menu .nav-link.active');
-            for (let i = 0; i < all.length; i++) {
-                all[0]?.classList.remove('active');
-            }
-            const ul: any = selector.closest('ul.sub-menu');
-            if (ul) {
-                let ele: any = ul.closest('li.menu').querySelectorAll('.nav-link');
-                if (ele) {
-                    ele = ele[0];
-                    setTimeout(() => {
-                        ele?.classList.add('active');
-                    });
-                }
-            }
-        }
-    }, [pathname]);
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
@@ -170,7 +142,7 @@ const Header = () => {
                 <div className="relative bg-white flex w-full items-center px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex items-center shrink-0">
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5  font-semibold  align-middle hidden md:inline dark:text-white-light transition-all duration-300">UrbanKey</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle hidden text-primary dark:text-white-light md:inline">UrbanKey</span>
                         </Link>
                         <button
                             type="button"
@@ -494,147 +466,6 @@ const Header = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* horizontal menu */}
-                <ul className="horizontal-menu hidden py-1.5 font-semibold px-6 lg:space-x-1.5 xl:space-x-8 rtl:space-x-reverse bg-white border-t border-[#ebedf2] dark:border-[#191e3a] dark:bg-black text-black dark:text-white-dark">
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuDashboard className="shrink-0" />
-                                <span className="px-1">{t('dashboard')}</span>
-                            </div>
-                            <div className="right_arrow">
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <ul className="sub-menu">
-                            <li>
-                                <Link href="/">{t('sales')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/analytics">{t('analytics')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/finance">{t('finance')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/crypto">{t('crypto')}</Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuApps className="shrink-0" />
-                                <span className="px-1">{t('apps')}</span>
-                            </div>
-                            <div className="right_arrow">
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <ul className="sub-menu">
-                            <li>
-                                <Link href="/apps/chat">{t('chat')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/apps/mailbox">{t('mailbox')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/apps/todolist">{t('todo_list')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/apps/notes">{t('notes')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/apps/scrumboard">{t('scrumboard')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/contactos">Contactos</Link>
-                            </li>
-                            <li className="relative">
-                                <button type="button">
-                                    {t('invoice')}
-                                    <div className="ltr:ml-auto rtl:mr-auto rtl:rotate-90 -rotate-90">
-                                        <IconCaretDown />
-                                    </div>
-                                </button>
-                                <ul className="rounded absolute top-0 ltr:left-[95%] rtl:right-[95%] min-w-[180px] bg-white z-[10] text-dark dark:text-white-dark dark:bg-[#1b2e4b] shadow p-0 py-2 hidden">
-                                    <li>
-                                        <Link href="/apps/invoice/list">{t('list')}</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/apps/invoice/preview">{t('preview')}</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/apps/invoice/add">{t('add')}</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/apps/invoice/edit">{t('edit')}</Link>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <Link href="/apps/calendar">{t('calendar')}</Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuUsers className="shrink-0" />
-                                <span className="px-1">{t('users')}</span>
-                            </div>
-                            <div className="right_arrow">
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <ul className="sub-menu">
-                            <li>
-                                <Link href="/users/profile">{t('profile')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/users/user-account-settings">{t('account_settings')}</Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuAuthentication className="shrink-0" />
-                                <span className="px-1">{t('authentication')}</span>
-                            </div>
-                            <div className="right_arrow">
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <ul className="sub-menu">
-                            <li>
-                                <Link href="/auth/boxed-signin">{t('login_boxed')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/boxed-signup">{t('register_boxed')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/boxed-lockscreen">{t('unlock_boxed')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/boxed-password-reset">{t('recover_id_boxed')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/cover-login">{t('login_cover')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/cover-register">{t('register_cover')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/cover-lockscreen">{t('unlock_cover')}</Link>
-                            </li>
-                            <li>
-                                <Link href="/auth/cover-password-reset">{t('recover_id_cover')}</Link>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
             </div>
         </header>
     );
