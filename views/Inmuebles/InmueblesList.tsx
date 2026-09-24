@@ -12,7 +12,6 @@ import IconTrashLines from '@/components/Icon/IconTrashLines';
 import IconPlus from '@/components/Icon/IconPlus';
 import IconEdit from '@/components/Icon/IconEdit';
 import IconEye from '@/components/Icon/IconEye';
-import PageSizeSelect from '@/components/PageSizeSelect';
 import { darDeBajaInmueble } from '@/lib/inmueble/actions';
 import { showToast } from '@/lib/ui/toast';
 import { tipoOperacionConfig, tipoOperacionOptions } from '@/lib/enums/tipoOperacion';
@@ -110,13 +109,10 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
             <div className="invoice-table">
                 <div className="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
                     <div className="flex items-center gap-2">
-                        <Link href="/inmuebles/nuevo" className="btn btn-primary gap-2">
-                            <IconPlus />
-                            Nuevo
-                        </Link>
+                        <input type="text" className="form-input w-auto shrink-0" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                     <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
-                        <select className="form-select w-auto" value={filtro.tipoOperacion ?? ''} onChange={(e) => aplicarFiltro('tipoOperacion', e.target.value)}>
+                        <select className="form-select w-auto shrink-0 min-w-[160px]" value={filtro.tipoOperacion ?? ''} onChange={(e) => aplicarFiltro('tipoOperacion', e.target.value)}>
                             <option value="">Toda operación</option>
                             {tipoOperacionOptions.map((o) => (
                                 <option key={o.value} value={o.value}>
@@ -124,7 +120,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 </option>
                             ))}
                         </select>
-                        <select className="form-select w-auto" value={filtro.tipoInmueble ?? ''} onChange={(e) => aplicarFiltro('tipoInmueble', e.target.value)}>
+                        <select className="form-select w-auto shrink-0 min-w-[150px]" value={filtro.tipoInmueble ?? ''} onChange={(e) => aplicarFiltro('tipoInmueble', e.target.value)}>
                             <option value="">Todo tipo</option>
                             {tipoInmuebleOptions.map((o) => (
                                 <option key={o.value} value={o.value}>
@@ -132,7 +128,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 </option>
                             ))}
                         </select>
-                        <select className="form-select w-auto" value={filtro.estado ?? ''} onChange={(e) => aplicarFiltro('estado', e.target.value)}>
+                        <select className="form-select w-auto shrink-0 min-w-[175px]" value={filtro.estado ?? ''} onChange={(e) => aplicarFiltro('estado', e.target.value)}>
                             <option value="">Todos los estados</option>
                             {estadoInmuebleOptions.map((o) => (
                                 <option key={o.value} value={o.value}>
@@ -140,7 +136,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 </option>
                             ))}
                         </select>
-                        <select className="form-select w-auto" value={filtro.localidad ?? ''} onChange={(e) => aplicarFiltro('localidad', e.target.value)} disabled={localidades.length === 0}>
+                        <select className="form-select w-auto shrink-0 min-w-[200px]" value={filtro.localidad ?? ''} onChange={(e) => aplicarFiltro('localidad', e.target.value)} disabled={localidades.length === 0}>
                             <option value="">Todas las localidades</option>
                             {localidades.map((l) => (
                                 <option key={l} value={l}>
@@ -148,8 +144,12 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 </option>
                             ))}
                         </select>
-                        <input type="text" className="form-input w-auto" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <PageSizeSelect value={pageSize} options={PAGE_SIZES} onChange={setPageSize} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Link href="/inmuebles/nuevo" className="btn btn-primary gap-2">
+                            <IconPlus />
+                            Nuevo
+                        </Link>
                     </div>
                 </div>
 
@@ -233,6 +233,9 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                         highlightOnHover
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        recordsPerPageLabel="Por página"
                         page={page}
                         onPageChange={(p: number) => setPage(p)}
                         sortStatus={sortStatus}

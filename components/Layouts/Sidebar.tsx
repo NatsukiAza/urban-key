@@ -10,9 +10,9 @@ import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
 import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconCaretDown from '../Icon/IconCaretDown';
-import IconMenuScrumboard from '../Icon/Menu/IconMenuScrumboard';
 import IconHome from '../Icon/IconHome';
-import IconMenuContacts from '../Icon/Menu/IconMenuContacts';
+import IconUsers from '../Icon/IconUsers';
+import IconTrendingUp from '../Icon/IconTrendingUp';
 
 const Sidebar = () => {
     const [currentMenu, setCurrentMenu] = useState<string>('');
@@ -101,7 +101,7 @@ const Sidebar = () => {
                             <li className="nav-item">
                                 <Link href="/contactos" className="group">
                                     <div className="flex items-center">
-                                        <IconMenuContacts className="group-hover:!text-primary shrink-0" />
+                                        <IconUsers className="group-hover:!text-primary shrink-0" />
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Contactos')}</span>
                                     </div>
                                 </Link>
@@ -110,7 +110,7 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'oportunidades' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('oportunidades')}>
                                     <div className="flex items-center">
-                                        <IconMenuScrumboard className="group-hover:!text-primary shrink-0" />
+                                        <IconTrendingUp className="group-hover:!text-primary shrink-0" />
                                         <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Oportunidades')}</span>
                                     </div>
 

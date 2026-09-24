@@ -19,7 +19,6 @@ import { estadoOportunidadConfig, estadoOportunidadOptions } from '@/lib/enums/e
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/types';
 import type { Usuario, Funnel, Origen } from '@/lib/dominio';
-import PageSizeSelect from '@/components/PageSizeSelect';
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), { ssr: false }) as any;
 
@@ -119,6 +118,43 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
             <div className="invoice-table">
                 <div className="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
                     <div className="flex items-center gap-2">
+                        <input type="text" className="form-input w-auto shrink-0" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
+                        <select className="form-select w-auto shrink-0 min-w-[175px]" value={filtro.funnelId ?? ''} onChange={(e) => aplicarFiltro('funnelId', e.target.value)}>
+                            <option value="">Todos los funnels</option>
+                            {funnels.map((f) => (
+                                <option key={f.id} value={f.id}>
+                                    {f.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        <select className="form-select w-auto shrink-0 min-w-[200px]" value={filtro.responsableId ?? ''} onChange={(e) => aplicarFiltro('responsableId', e.target.value)}>
+                            <option value="">Todos los responsables</option>
+                            {usuarios.map((u) => (
+                                <option key={u.id} value={u.id}>
+                                    {u.nombre} {u.apellido}
+                                </option>
+                            ))}
+                        </select>
+                        <select className="form-select w-auto shrink-0 min-w-[175px]" value={filtro.estado ?? ''} onChange={(e) => aplicarFiltro('estado', e.target.value)}>
+                            <option value="">Todos los estados</option>
+                            {estadoOportunidadOptions.map((o) => (
+                                <option key={o.value} value={o.value}>
+                                    {o.label}
+                                </option>
+                            ))}
+                        </select>
+                        <select className="form-select w-auto shrink-0 min-w-[185px]" value={filtro.origenId ?? ''} onChange={(e) => aplicarFiltro('origenId', e.target.value)}>
+                            <option value="">Todos los orígenes</option>
+                            {origenes.map((o) => (
+                                <option key={o.id} value={o.id}>
+                                    {o.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-2">
                         <Link href="/oportunidades/nuevo" className="btn btn-primary gap-2">
                             <IconPlus />
                             Nueva
@@ -127,42 +163,6 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                             <IconLayoutGrid className="w-4.5 h-4.5" />
                             Tablero
                         </Link>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 ltr:ml-auto rtl:mr-auto">
-                        <select className="form-select w-auto" value={filtro.funnelId ?? ''} onChange={(e) => aplicarFiltro('funnelId', e.target.value)}>
-                            <option value="">Todos los funnels</option>
-                            {funnels.map((f) => (
-                                <option key={f.id} value={f.id}>
-                                    {f.nombre}
-                                </option>
-                            ))}
-                        </select>
-                        <select className="form-select w-auto" value={filtro.responsableId ?? ''} onChange={(e) => aplicarFiltro('responsableId', e.target.value)}>
-                            <option value="">Todos los responsables</option>
-                            {usuarios.map((u) => (
-                                <option key={u.id} value={u.id}>
-                                    {u.nombre} {u.apellido}
-                                </option>
-                            ))}
-                        </select>
-                        <select className="form-select w-auto" value={filtro.estado ?? ''} onChange={(e) => aplicarFiltro('estado', e.target.value)}>
-                            <option value="">Todos los estados</option>
-                            {estadoOportunidadOptions.map((o) => (
-                                <option key={o.value} value={o.value}>
-                                    {o.label}
-                                </option>
-                            ))}
-                        </select>
-                        <select className="form-select w-auto" value={filtro.origenId ?? ''} onChange={(e) => aplicarFiltro('origenId', e.target.value)}>
-                            <option value="">Todos los orígenes</option>
-                            {origenes.map((o) => (
-                                <option key={o.id} value={o.id}>
-                                    {o.nombre}
-                                </option>
-                            ))}
-                        </select>
-                        <input type="text" className="form-input w-auto" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <PageSizeSelect value={pageSize} options={PAGE_SIZES} onChange={setPageSize} />
                     </div>
                 </div>
 
@@ -222,6 +222,9 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes }: Props)
                         highlightOnHover
                         totalRecords={initialRecords.length}
                         recordsPerPage={pageSize}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        recordsPerPageLabel="Por página"
                         page={page}
                         onPageChange={(p: number) => setPage(p)}
                         sortStatus={sortStatus}

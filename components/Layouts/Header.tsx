@@ -38,6 +38,8 @@ const Header = () => {
     const router = useRouter();
     const [perfil, setPerfil] = useState<Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'rol'> | null>(null);
 
+    const iniciales = perfil ? `${perfil.nombre?.[0] ?? ''}${perfil.apellido?.[0] ?? ''}`.toUpperCase() || 'U' : 'U';
+
     const signOut = async () => {
         const supabase = createClient();
         const { error } = await supabase.auth.signOut();
@@ -182,7 +184,7 @@ const Header = () => {
                         </button>
                     </div>
 
-                    <div className="ltr:mr-2 rtl:ml-2 hidden sm:block">
+                    <div className="ltr:mr-2 rtl:ml-2 hidden">
                         <ul className="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
                             <li>
                                 <Link href="/apps/calendar" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
@@ -204,7 +206,7 @@ const Header = () => {
                     <div className="sm:flex-1 ltr:sm:ml-0 ltr:ml-auto sm:rtl:mr-0 rtl:mr-auto flex items-center space-x-1.5 lg:space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
                             <form
-                                className={`${search && '!block'} sm:relative absolute inset-x-0 sm:top-0 top-1/2 sm:translate-y-0 -translate-y-1/2 sm:mx-0 mx-4 z-10 sm:block hidden`}
+                                className="!hidden"
                                 onSubmit={() => setSearch(false)}
                             >
                                 <div className="relative">
@@ -224,7 +226,7 @@ const Header = () => {
                             <button
                                 type="button"
                                 onClick={() => setSearch(!search)}
-                                className="search_btn sm:hidden p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                className="search_btn !hidden p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:bg-white-light/90 dark:hover:bg-dark/60"
                             >
                                 <IconSearch className="w-4.5 h-4.5 mx-auto dark:text-[#d0d2d6]" />
                             </button>
@@ -272,7 +274,7 @@ const Header = () => {
                                 </button>
                             )}
                         </div>
-                        <div className="dropdown shrink-0">
+                        <div className="dropdown hidden shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
@@ -301,7 +303,7 @@ const Header = () => {
                                 </ul>
                             </Dropdown>
                         </div>
-                        <div className="dropdown shrink-0">
+                        <div className="dropdown hidden shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
@@ -364,7 +366,7 @@ const Header = () => {
                                 </ul>
                             </Dropdown>
                         </div>
-                        <div className="dropdown shrink-0">
+                        <div className="dropdown hidden shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
@@ -443,36 +445,40 @@ const Header = () => {
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
-                                button={<img className="w-9 h-9 rounded-full object-cover saturate-50 group-hover:saturate-100" src="/assets/images/user-profile.jpeg" alt="userProfile" />}
+                                button={
+                                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white saturate-50 group-hover:saturate-100">
+                                        {iniciales}
+                                    </span>
+                                }
                             >
                                 <ul className="text-dark dark:text-white-dark !py-0 w-[230px] font-semibold dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
-                                            <img className="rounded-md w-10 h-10 object-cover" src="/assets/images/user-profile.jpeg" alt="userProfile" />
-                                            <div className="ltr:pl-4 rtl:pr-4 truncate">
-                                                <h4 className="text-base">
-                                                    {perfil ? nombreCompleto(perfil) : 'Usuario'}
-                                                    {perfil ? <span className="text-xs bg-success-light rounded text-success px-1 ltr:ml-2 rtl:ml-2">{rolLabel[perfil.rol]}</span> : null}
-                                                </h4>
-                                                <button type="button" className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
+                                            <span className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-base font-semibold text-white">
+                                                {iniciales}
+                                            </span>
+                                            <div className="ltr:pl-4 rtl:pr-4 min-w-0">
+                                                <h4 className="truncate text-base">{perfil ? nombreCompleto(perfil) : 'Usuario'}</h4>
+                                                {perfil ? <span className="mt-1 inline-block text-xs bg-success-light rounded text-success px-1">{rolLabel[perfil.rol]}</span> : null}
+                                                <button type="button" className="block max-w-full truncate text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
                                                     {perfil?.email ?? ''}
                                                 </button>
                                             </div>
                                         </div>
                                     </li>
-                                    <li>
+                                    <li className="hidden">
                                         <Link href="/users/profile" className="dark:hover:text-white">
                                             <IconUser className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 shrink-0" />
                                             Profile
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="hidden">
                                         <Link href="/apps/mailbox" className="dark:hover:text-white">
                                             <IconMail className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 shrink-0" />
                                             Inbox
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="hidden">
                                         <Link href="/auth/boxed-lockscreen" className="dark:hover:text-white">
                                             <IconLockDots className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 shrink-0" />
                                             Lock Screen
