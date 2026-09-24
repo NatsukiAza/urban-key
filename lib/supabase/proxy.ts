@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import type { User } from '@supabase/supabase-js';
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from './config';
+import { getSupabasePublicConfig } from './config';
 import { COOKIE_SIN_SESION_DEV, iniciarSesionDev, sesionDevHabilitada } from './sesion-dev';
 
 function redirigirConSesion(request: NextRequest, response: NextResponse, pathname: string) {
@@ -15,7 +15,8 @@ function redirigirConSesion(request: NextRequest, response: NextResponse, pathna
 export async function actualizarSesion(request: NextRequest) {
     let response = NextResponse.next({ request });
 
-    const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    const { url, anonKey } = getSupabasePublicConfig();
+    const supabase = createServerClient(url, anonKey, {
         cookies: {
             getAll() {
                 return request.cookies.getAll();
