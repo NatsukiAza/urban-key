@@ -74,7 +74,12 @@ const LoginCover = () => {
 
     return (
         <div className="relative h-screen overflow-hidden bg-white dark:bg-[#060818]">
-            <img src="/assets/images/auth/urbankey-logo.webp" alt="UrbanKey" className="absolute top-24 left-6 z-10 hidden h-72 w-auto lg:block xl:h-96" />
+            <div className="absolute inset-0">
+                <img src="/assets/images/auth/login-hero-2.webp" alt="" className="h-full w-full object-cover object-center" />
+            </div>
+            <div className="absolute top-6 right-8 z-10 hidden h-32 w-32 items-center justify-center rounded-full bg-white shadow-lg lg:flex xl:h-36 xl:w-36">
+                <img src="/assets/images/auth/urbankey-logo.webp" alt="UrbanKey" className="h-24 w-24 object-contain xl:h-28 xl:w-28" />
+            </div>
             <div className="relative flex h-screen items-center justify-center overflow-y-auto px-6 py-10 dark:bg-[#060818] sm:px-16 lg:justify-end lg:pe-24">
                 <div className="relative flex w-full max-w-[460px] flex-col items-center justify-center gap-4 rounded-2xl bg-white/85 px-6 py-6 shadow-2xl backdrop-blur-xl dark:bg-black/60 sm:px-10 sm:py-8">
                         <div className="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
