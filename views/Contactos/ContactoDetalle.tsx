@@ -6,16 +6,11 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
 import {
-    ESTADOS_CONTACTO,
-    actualizarEstadoContacto,
     agregarObservacion,
-    estadoContactoConfig,
-    estadoLabel,
     listarObservaciones,
     nombreContacto,
     obtenerContacto,
     type Contacto,
-    type EstadoContacto,
     type Observacion,
 } from '@/lib/supabase/contactos';
 import DetailHero from '@/components/ui/DetailHero';
@@ -24,13 +19,10 @@ import Timeline from '@/components/ui/Timeline';
 const ContactoDetalle = ({ id }: { id: string }) => {
     const dispatch = useDispatch();
     const [contacto, setContacto] = useState<Contacto | null>(null);
-    const [estado, setEstado] = useState<EstadoContacto>('POTENCIAL');
     const [observaciones, setObservaciones] = useState<Observacion[]>([]);
     const [texto, setTexto] = useState('');
     const [error, setError] = useState('');
-    const [aviso, setAviso] = useState('');
     const [cargando, setCargando] = useState(true);
-    const [guardandoEstado, setGuardandoEstado] = useState(false);
     const [guardandoNota, setGuardandoNota] = useState(false);
 
     useEffect(() => {
@@ -48,7 +40,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
 
         const notasResultado = await listarObservaciones(supabase, id);
         setContacto(contactoResultado.contacto);
-        setEstado(contactoResultado.contacto.estado);
         dispatch(setPageTitle(nombreContacto(contactoResultado.contacto)));
         if ('error' in notasResultado) {
             setError(notasResultado.error);
@@ -64,23 +55,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
-    const guardarEstado = async () => {
-        if (!contacto || estado === contacto.estado) {
-            return;
-        }
-        setAviso('');
-        setError('');
-        setGuardandoEstado(true);
-        const resultado = await actualizarEstadoContacto(createClient(), contacto.id, estado);
-        setGuardandoEstado(false);
-        if ('error' in resultado) {
-            setError(resultado.error);
-            return;
-        }
-        setContacto(resultado.contacto);
-        setAviso('Estado actualizado.');
-    };
-
     const guardarObservacion = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!contacto) {
@@ -92,7 +66,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
             return;
         }
         setError('');
-        setAviso('');
         setGuardandoNota(true);
         const resultado = await agregarObservacion(createClient(), contacto.id, limpio);
         setGuardandoNota(false);
@@ -130,7 +103,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
         <div className="space-y-5">
             <DetailHero
                 title={nombreContacto(contacto)}
-                badges={<span className={`badge badge-outline-${estadoContactoConfig[contacto.estado].color}`}>{estadoContactoConfig[contacto.estado].label}</span>}
                 actions={
                     <Link href="/contactos" className="btn btn-outline-primary">
                         Volver
@@ -145,21 +117,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
             <div className="panel">
                 <h2 className="mb-4 text-lg font-semibold">Datos</h2>
                 <p className="text-white-dark">{contacto.observaciones || 'Sin nota del contacto.'}</p>
-                <div className="mt-5 flex flex-wrap items-end gap-3">
-                    <div>
-                        <label htmlFor="estado">Estado</label>
-                        <select id="estado" className="form-select" value={estado} onChange={(event) => setEstado(event.target.value as EstadoContacto)}>
-                            {ESTADOS_CONTACTO.map((item) => (
-                                <option key={item} value={item}>
-                                    {estadoLabel[item]}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <button type="button" className="btn btn-primary" onClick={guardarEstado} disabled={guardandoEstado || estado === contacto.estado}>
-                        {guardandoEstado ? 'Guardando...' : 'Actualizar estado'}
-                    </button>
-                </div>
             </div>
 
             <div className="panel">
@@ -172,7 +129,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                     </button>
                 </form>
                 {error ? <p className="mb-4 text-danger">{error}</p> : null}
-                {aviso ? <p className="mb-4 text-success">{aviso}</p> : null}
                 <Timeline
                     vacio="Todavía no hay observaciones."
                     items={observaciones.map((item) => ({

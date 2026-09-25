@@ -135,7 +135,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
     );
 
     return (
-        <div>
+        <div className="flex h-[calc(100dvh-10rem)] flex-col">
             <PageHeader title="Tablero de oportunidades" description="Arrastrá una tarjeta para cambiar de etapa." />
             <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
                 <div className="flex items-center gap-2">
@@ -155,14 +155,11 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
                 </Link>
             </div>
 
-            <div className="flex items-start gap-5">
-                <div className="min-w-0 flex-1 overflow-x-auto">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white-dark">En curso</p>
-                    <div className="flex items-start flex-nowrap gap-5 pb-2">{abiertas.map(columna)}</div>
-                </div>
-                <div className="flex shrink-0 flex-col border-l border-white-light pl-5 dark:border-[#1b2e4b]">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white-dark">Cierre</p>
-                    <div className="flex items-start gap-5">{cierre.map(columna)}</div>
+            <div className="min-h-0 flex-1 overflow-auto">
+                <div className="flex items-start flex-nowrap gap-5 pb-2">
+                    {abiertas.map(columna)}
+                    {cierre.length > 0 && <div className="flex-none self-stretch border-l border-white-light dark:border-[#1b2e4b]" />}
+                    {cierre.map(columna)}
                 </div>
             </div>
         </div>

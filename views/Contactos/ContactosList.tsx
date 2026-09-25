@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
-import { estadoContactoConfig, listarContactos, type Contacto } from '@/lib/supabase/contactos';
+import { listarContactos, type Contacto } from '@/lib/supabase/contactos';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
 import Iniciales from '@/components/ui/Iniciales';
 import IconPlus from '@/components/Icon/IconPlus';
@@ -77,7 +77,6 @@ const ContactosList = () => {
                                     <th>Nombre</th>
                                     <th>Email</th>
                                     <th>Teléfono</th>
-                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,9 +92,6 @@ const ContactosList = () => {
                                         </td>
                                         <td>{contacto.email || '—'}</td>
                                         <td>{contacto.telefono || '—'}</td>
-                                        <td>
-                                            <span className={`badge badge-outline-${estadoContactoConfig[contacto.estado].color}`}>{estadoContactoConfig[contacto.estado].label}</span>
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

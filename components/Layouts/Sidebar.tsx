@@ -109,9 +109,6 @@ const Sidebar = () => {
                                         <li>
                                             <Link className="hover:text-white" href="/inmuebles">{t('Lista')}</Link>
                                         </li>
-                                        <li>
-                                            <Link className="hover:text-white" href="/inmuebles/nuevo">{t('Nuevo')}</Link>
-                                        </li>
                                     </ul>
                                 </AnimateHeight>
                             </li>
@@ -153,9 +150,6 @@ const Sidebar = () => {
                                         </li>
                                         <li>
                                             <Link className="hover:text-white" href="/oportunidades/tablero">{t('Tablero')}</Link>
-                                        </li>
-                                        <li>
-                                            <Link className="hover:text-white" href="/oportunidades/nuevo">{t('Nueva')}</Link>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
