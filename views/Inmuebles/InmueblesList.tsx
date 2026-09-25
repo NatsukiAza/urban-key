@@ -21,6 +21,54 @@ import { formatearImporte } from '@/lib/enums/moneda';
 import type { InmuebleRow, FiltroInmuebles } from '@/lib/inmueble/types';
 import InmueblesTableSkeleton from '@/views/Inmuebles/InmueblesTableSkeleton';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
+import Iniciales from '@/components/ui/Iniciales';
+import EstadoChip from '@/components/ui/EstadoChip';
+import IconHome from '@/components/Icon/IconHome';
+import IconBuilding from '@/components/Icon/IconBuilding';
+import type { TipoInmueble } from '@/lib/enums/tipoInmueble';
+
+const chipColor: Record<string, { solido: string; borde: string }> = {
+    primary: { solido: 'bg-secondary', borde: 'border-secondary text-secondary' },
+    info: { solido: 'bg-info', borde: 'border-info text-info' },
+    secondary: { solido: 'bg-secondary', borde: 'border-secondary text-secondary' },
+    success: { solido: 'bg-success', borde: 'border-success text-success' },
+    warning: { solido: 'bg-warning', borde: 'border-warning text-warning' },
+    danger: { solido: 'bg-danger', borde: 'border-danger text-danger' },
+};
+
+const iconoTipo: Record<TipoInmueble, JSX.Element> = {
+    CASA: <IconHome className="h-3.5 w-3.5" duotone={false} />,
+    DEPARTAMENTO: <IconBuilding className="h-3.5 w-3.5" />,
+    PH: <IconBuilding className="h-3.5 w-3.5" />,
+};
+
+const OperacionTipoChip = ({ tipoOperacion, tipoInmueble }: Pick<InmuebleRow, 'tipoOperacion' | 'tipoInmueble'>) => {
+    const op = tipoOperacionConfig[tipoOperacion];
+    const tipo = tipoInmuebleConfig[tipoInmueble];
+    const color = chipColor[op.color] ?? { solido: 'bg-dark', borde: 'border-dark text-dark' };
+    return (
+        <span className="inline-flex items-stretch text-xs font-semibold">
+            <span className={`flex items-center rounded-l px-2 py-1 text-white ${color.solido}`}>{op.label}</span>
+            <span className={`flex items-center gap-1 rounded-r border border-l-0 bg-white px-2 py-1 dark:bg-transparent ${color.borde}`}>
+                {iconoTipo[tipoInmueble]}
+                {tipo.label}
+            </span>
+        </span>
+    );
+};
+
+const distribucion = (ambientes: number | null, dormitorios: number | null) => {
+    if (ambientes == null) return <span className="text-white-dark">—</span>;
+    let sufijo: { texto: string; muteado: boolean };
+    if (ambientes === 1) sufijo = { texto: '(Monoamb.)', muteado: true };
+    else if (dormitorios == null) sufijo = { texto: 'sin definir dorm.', muteado: true };
+    else sufijo = { texto: `· ${dormitorios} dorm`, muteado: false };
+    return (
+        <span>
+            {ambientes} amb <span className={sufijo.muteado ? 'text-white-dark' : ''}>{sufijo.texto}</span>
+        </span>
+    );
+};
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), {
     ssr: false,
@@ -176,7 +224,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                         columns={[
                             {
                                 accessor: 'direccion',
-                                title: 'Dirección',
+                                title: 'Propiedad',
                                 sortable: true,
                                 render: ({ id, direccion, localidad }: InmuebleRow) => (
                                     <Link href={`/inmuebles/${id}`}>
@@ -185,33 +233,35 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                     </Link>
                                 ),
                             },
-                            { accessor: 'propietario', title: 'Propietario', sortable: true },
                             {
-                                accessor: 'tipoInmueble',
-                                title: 'Tipo',
+                                accessor: 'propietario',
+                                title: 'Propietario',
                                 sortable: true,
-                                render: ({ tipoInmueble }: InmuebleRow) => <span className={`badge badge-outline-${tipoInmuebleConfig[tipoInmueble].color}`}>{tipoInmuebleConfig[tipoInmueble].label}</span>,
-                            },
-                            {
-                                accessor: 'tipoOperacion',
-                                title: 'Operación',
-                                sortable: true,
-                                render: ({ tipoOperacion }: InmuebleRow) => (
-                                    <span className={`badge badge-outline-${tipoOperacionConfig[tipoOperacion].color}`}>{tipoOperacionConfig[tipoOperacion].label}</span>
+                                render: ({ propietario }: InmuebleRow) => (
+                                    <div className="flex items-center gap-2">
+                                        <Iniciales nombre={propietario} />
+                                        <span>{propietario}</span>
+                                    </div>
                                 ),
                             },
                             {
-                                accessor: 'ambientes',
-                                title: 'Amb. / Dorm.',
+                                accessor: 'tipoOperacion',
+                                title: 'Operación & Tipo',
                                 sortable: true,
-                                render: ({ ambientes, dormitorios }: InmuebleRow) => <span>{`${ambientes ?? '—'} / ${dormitorios ?? '—'}`}</span>,
+                                render: ({ tipoOperacion, tipoInmueble }: InmuebleRow) => <OperacionTipoChip tipoOperacion={tipoOperacion} tipoInmueble={tipoInmueble} />,
+                            },
+                            {
+                                accessor: 'ambientes',
+                                title: 'Distribución',
+                                sortable: true,
+                                render: ({ ambientes, dormitorios }: InmuebleRow) => distribucion(ambientes, dormitorios),
                             },
                             {
                                 accessor: 'm2',
-                                title: 'm²',
+                                title: 'Superficie',
                                 sortable: true,
                                 titleClassName: 'text-right',
-                                render: ({ m2 }: InmuebleRow) => <div className="text-right">{m2 != null ? m2.toLocaleString('es-AR') : '—'}</div>,
+                                render: ({ m2 }: InmuebleRow) => <div className="text-right">{m2 != null ? `${m2.toLocaleString('es-AR')} m²` : '—'}</div>,
                             },
                             {
                                 accessor: 'precio',
@@ -224,7 +274,7 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 accessor: 'estado',
                                 title: 'Estado',
                                 sortable: true,
-                                render: ({ estado }: InmuebleRow) => <span className={`badge badge-outline-${estadoInmuebleConfig[estado].color}`}>{estadoInmuebleConfig[estado].label}</span>,
+                                render: ({ estado }: InmuebleRow) => <EstadoChip label={estadoInmuebleConfig[estado].label} color={estadoInmuebleConfig[estado].color} />,
                             },
                             {
                                 accessor: 'action',
