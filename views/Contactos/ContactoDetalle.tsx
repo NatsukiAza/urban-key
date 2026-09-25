@@ -15,6 +15,7 @@ import {
 } from '@/lib/supabase/contactos';
 import DetailHero from '@/components/ui/DetailHero';
 import Timeline from '@/components/ui/Timeline';
+import ContactoDetalleSkeleton from '@/views/Contactos/ContactoDetalleSkeleton';
 
 const ContactoDetalle = ({ id }: { id: string }) => {
     const dispatch = useDispatch();
@@ -83,7 +84,7 @@ const ContactoDetalle = ({ id }: { id: string }) => {
     };
 
     if (cargando) {
-        return <p className="text-white-dark">Cargando contacto...</p>;
+        return <ContactoDetalleSkeleton />;
     }
 
     if (!contacto) {

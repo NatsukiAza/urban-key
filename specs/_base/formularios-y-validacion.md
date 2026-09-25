@@ -38,6 +38,7 @@ export type InmuebleInput = z.infer<typeof inmuebleSchema>;
 - Un componente `views/{Entidad}/{Entidad}Form.tsx` cubre **alta** y **edición**: sin `id` = alta; con `id` = edición (recibe valores por props del Server Component).
 - El **detalle** de solo lectura puede ser el mismo form deshabilitado o un `{Entidad}Detalle.tsx` aparte → [[ui-y-feedback]].
 - El submit invoca la **Server Action** y actúa según el `ActionResult`: éxito → toast + navegación/cierre; error → alerta con `mensaje` → [[ui-y-feedback]].
+- Mientras `isSubmitting`: **todos** los controles del form quedan `disabled` y el botón que se apretó, además de su texto, muestra un **loading inline** (spinner al lado del label, sin reemplazarlo). Evita doble submit y deja claro qué acción está corriendo.
 
 ### Reglas de validación de dominio
 
@@ -47,7 +48,7 @@ export type InmuebleInput = z.infer<typeof inmuebleSchema>;
 
 ## Reglas (hacer / no hacer)
 
-- **Hacer:** un esquema zod por entidad, usado en cliente y servidor; react-hook-form para el estado del form; validar reglas de dominio en el esquema/acción; feedback a partir del `ActionResult`.
+- **Hacer:** un esquema zod por entidad, usado en cliente y servidor; react-hook-form para el estado del form; validar reglas de dominio en el esquema/acción; feedback a partir del `ActionResult`; en `isSubmitting`, deshabilitar todo el form y poner loading inline en el botón apretado.
 - **No hacer:** validar solo en el cliente; duplicar el esquema; mandar a la base datos sin `safeParse`; dispersar reglas de dominio en la UI.
 
 ## Cuándo aplica

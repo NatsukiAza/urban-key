@@ -70,10 +70,7 @@ const Sidebar = () => {
             <nav
                 className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
             >
-                <div
-                    className="h-full bg-white dark:bg-black bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: 'url(/assets/images/sidebar-bg.webp)' }}
-                >
+                <div className="h-full bg-white dark:bg-black bg-cover bg-center bg-no-repeat bg-[url('/assets/images/sidebar-bg.webp')] dark:bg-[url('/assets/images/sidebar-bg-dark.webp')]">
                     <div className="sidebar-header flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <span className="logo-mini hidden text-2xl font-semibold align-middle text-white drop-shadow">U</span>

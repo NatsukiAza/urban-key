@@ -9,6 +9,7 @@ import { listarContactos, type Contacto } from '@/lib/supabase/contactos';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
 import Iniciales from '@/components/ui/Iniciales';
 import IconPlus from '@/components/Icon/IconPlus';
+import ContactosTableSkeleton from '@/views/Contactos/ContactosTableSkeleton';
 
 const ContactosList = () => {
     const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const ContactosList = () => {
                     <input type="text" className="form-input w-full sm:w-56" placeholder="Buscar..." value={busqueda} onChange={(event) => setBusqueda(event.target.value)} />
                 </div>
                 {error ? <p className="px-5 text-danger">{error}</p> : null}
-                {cargando ? <p className="px-5 pb-5 text-white-dark">Cargando contactos...</p> : null}
+                {cargando ? <ContactosTableSkeleton /> : null}
                 {!cargando && !error && contactos.length === 0 ? (
                     <div className="px-5 py-10 text-center">
                         <p className="text-white-dark">Todavía no hay contactos.</p>

@@ -15,10 +15,11 @@ Fijar cómo se ve y cómo comunica la app: qué componentes usar, cómo mostrar 
 - El inventario de bloques reutilizables del template (gráficos, tablas, kanban, forms) está en [[catalogo-template]]: **se busca ahí antes de escribir UI nueva**.
 - Componentes de datos: **mantine-datatable** (ya presente) para tablas con orden/paginación/selección; **@headlessui/react** y **@tippyjs/react** para dropdowns/tooltips.
 - Soporte de **tema claro/oscuro** e **i18n** (`react-i18next`, `lib/i18n.ts`) ya montados; toda UI nueva los respeta.
+- Ante **cualquier cambio estético** (colores, fondos, imágenes, estilos), preguntar por la **alternativa en modo oscuro** antes de implementar; no asumir que el mismo recurso sirve para ambos temas.
 
 ### Estados de carga = skeletons
 
-- Cada listado tiene su **skeleton** (`views/{Entidad}/{Entidad}TableSkeleton.tsx`), mostrado vía `loading.tsx` del segmento o `<Suspense>`. **No** spinner global → [[acceso-y-datos]].
+- **Todo estado de carga se muestra con skeleton**, nunca con spinner (ni global ni local). Cada pantalla (listado, detalle, form) tiene su skeleton en `views/{Entidad}/`, mostrado vía `loading.tsx` del segmento o `<Suspense>` → [[acceso-y-datos]].
 
 ### Feedback de acciones
 
@@ -49,7 +50,7 @@ Aplica a: estado de oportunidad, estado de contacto, tipo de operación, tipo de
 
 ## Reglas (hacer / no hacer)
 
-- **Hacer:** reutilizar layouts y componentes del template antes de crear UI nueva; skeleton por listado; feedback vía sweetalert2 desde el `ActionResult`; confirmar acciones importantes; pintar estados con la `config` del enum; respetar tema e i18n.
+- **Hacer:** reutilizar layouts y componentes del template antes de crear UI nueva; todo loading con skeleton (nunca spinner); feedback vía sweetalert2 desde el `ActionResult`; confirmar acciones importantes; pintar estados con la `config` del enum; respetar tema e i18n; ante un cambio estético, preguntar por la variante de modo oscuro.
 - **No hacer:** spinner global de carga; inventar sistemas de alerta paralelos; hardcodear colores/labels de estado (van en el enum); mostrar acciones que el rol no puede usar.
 
 ## Cuándo aplica
