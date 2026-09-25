@@ -201,7 +201,39 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
         @apply flex rotate-0;
     }
     .collapsible-vertical .sidebar:hover .collapse-icon {
-        @apply flex rotate-180;
+        @apply flex;
+    }
+    .collapsible-vertical .sidebar .collapse-icon,
+    .collapsible-vertical .sidebar:hover .collapse-icon {
+        @apply rotate-0;
+    }
+    .collapsible-vertical .sidebar .sidebar-header {
+        @apply lg:justify-start lg:ltr:pl-[26px] lg:rtl:pr-[26px];
+    }
+    .collapsible-vertical .sidebar:hover .sidebar-header,
+    .collapsible-vertical.toggle-sidebar .sidebar-header {
+        @apply lg:justify-between lg:ltr:pl-4 lg:rtl:pr-4;
+    }
+    .collapsible-vertical .sidebar .collapse-icon {
+        @apply lg:hidden;
+    }
+    .collapsible-vertical .sidebar:hover .collapse-icon,
+    .collapsible-vertical.toggle-sidebar .sidebar .collapse-icon {
+        @apply lg:flex;
+    }
+    .collapsible-vertical .sidebar .main-logo > span:not(.logo-mini) {
+        @apply lg:hidden;
+    }
+    .collapsible-vertical .sidebar:hover .main-logo > span:not(.logo-mini),
+    .collapsible-vertical.toggle-sidebar .main-logo > span:not(.logo-mini) {
+        @apply lg:inline;
+    }
+    .collapsible-vertical .sidebar .logo-mini {
+        @apply lg:inline-block lg:w-5 lg:text-center lg:opacity-100;
+    }
+    .collapsible-vertical .sidebar:hover .logo-mini,
+    .collapsible-vertical.toggle-sidebar .logo-mini {
+        @apply lg:hidden;
     }
     .collapsible-vertical .sidebar ul > h2 span {
         @apply hidden whitespace-nowrap;

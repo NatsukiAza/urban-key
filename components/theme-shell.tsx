@@ -11,6 +11,10 @@ function ThemeShell({ children }: PropsWithChildren) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!localStorage.getItem('uk_menu_migrated')) {
+            localStorage.setItem('menu', themeConfig.menu);
+            localStorage.setItem('uk_menu_migrated', '1');
+        }
         dispatch(toggleTheme(localStorage.getItem('theme') || themeConfig.theme));
         dispatch(toggleMenu(localStorage.getItem('menu') || themeConfig.menu));
         dispatch(toggleLayout(localStorage.getItem('layout') || themeConfig.layout));

@@ -8,7 +8,7 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import AnimateHeight from 'react-animate-height';
 import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
-import IconCaretsDown from '../Icon/IconCaretsDown';
+import IconPin from '../Icon/IconPin';
 import IconCaretDown from '../Icon/IconCaretDown';
 import IconHome from '../Icon/IconHome';
 import IconUsers from '../Icon/IconUsers';
@@ -71,17 +71,19 @@ const Sidebar = () => {
                 className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
             >
                 <div className="bg-white dark:bg-black h-full">
-                    <div className="flex justify-between items-center px-4 py-3">
+                    <div className="sidebar-header flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
+                            <span className="logo-mini hidden text-2xl font-semibold align-middle text-primary dark:text-white-light">U</span>
                             <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle text-primary dark:text-white-light">UrbanKey</span>
                         </Link>
 
                         <button
                             type="button"
-                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 dark:text-white-light transition duration-300 rtl:rotate-180"
+                            className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 transition duration-300"
                             onClick={() => dispatch(toggleSidebar())}
+                            title={themeConfig.sidebar ? 'Desfijar menú' : 'Fijar menú'}
                         >
-                            <IconCaretsDown className="m-auto rotate-90" />
+                            <IconPin className="m-auto text-violet-600 dark:text-violet-400" fill={themeConfig.sidebar} />
                         </button>
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
