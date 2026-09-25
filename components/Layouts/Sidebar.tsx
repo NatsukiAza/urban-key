@@ -70,11 +70,14 @@ const Sidebar = () => {
             <nav
                 className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
             >
-                <div className="bg-white dark:bg-black h-full">
+                <div
+                    className="h-full bg-white dark:bg-black bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: 'url(/assets/images/sidebar-bg.webp)' }}
+                >
                     <div className="sidebar-header flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
-                            <span className="logo-mini hidden text-2xl font-semibold align-middle text-primary dark:text-white-light">U</span>
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle text-primary dark:text-white-light">UrbanKey</span>
+                            <span className="logo-mini hidden text-2xl font-semibold align-middle text-white drop-shadow">U</span>
+                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle text-white drop-shadow">UrbanKey</span>
                         </Link>
 
                         <button
@@ -83,7 +86,7 @@ const Sidebar = () => {
                             onClick={() => dispatch(toggleSidebar())}
                             title={themeConfig.sidebar ? 'Desfijar menú' : 'Fijar menú'}
                         >
-                            <IconPin className="m-auto text-violet-600 dark:text-violet-400" fill={themeConfig.sidebar} />
+                            <IconPin className="m-auto text-white drop-shadow" fill={themeConfig.sidebar} />
                         </button>
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
@@ -92,22 +95,22 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'inmuebles' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('inmuebles')}>
                                     <div className="flex items-center">
-                                        <IconHome className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Inmuebles')}</span>
+                                        <IconHome duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Inmuebles')}</span>
                                     </div>
 
-                                    <div className={currentMenu !== 'inmuebles' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                    <div className={`text-white ${currentMenu !== 'inmuebles' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
                                         <IconCaretDown />
                                     </div>
                                 </button>
 
                                 <AnimateHeight duration={300} height={currentMenu === 'inmuebles' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
+                                    <ul className="sub-menu text-white/80">
                                         <li>
-                                            <Link href="/inmuebles">{t('Lista')}</Link>
+                                            <Link className="hover:text-white" href="/inmuebles">{t('Lista')}</Link>
                                         </li>
                                         <li>
-                                            <Link href="/inmuebles/nuevo">{t('Nuevo')}</Link>
+                                            <Link className="hover:text-white" href="/inmuebles/nuevo">{t('Nuevo')}</Link>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
@@ -116,8 +119,8 @@ const Sidebar = () => {
                             <li className="nav-item">
                                 <Link href="/sucursales" className="group">
                                     <div className="flex items-center">
-                                        <IconMapPin className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Sucursales')}</span>
+                                        <IconMapPin duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Sucursales')}</span>
                                     </div>
                                 </Link>
                             </li>
@@ -125,8 +128,8 @@ const Sidebar = () => {
                             <li className="nav-item">
                                 <Link href="/contactos" className="group">
                                     <div className="flex items-center">
-                                        <IconUsers className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Contactos')}</span>
+                                        <IconUsers duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Contactos')}</span>
                                     </div>
                                 </Link>
                             </li>
@@ -134,25 +137,25 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button type="button" className={`${currentMenu === 'oportunidades' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('oportunidades')}>
                                     <div className="flex items-center">
-                                        <IconTrendingUp className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Oportunidades')}</span>
+                                        <IconTrendingUp duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Oportunidades')}</span>
                                     </div>
 
-                                    <div className={currentMenu !== 'oportunidades' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                    <div className={`text-white ${currentMenu !== 'oportunidades' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
                                         <IconCaretDown />
                                     </div>
                                 </button>
 
                                 <AnimateHeight duration={300} height={currentMenu === 'oportunidades' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-gray-500">
+                                    <ul className="sub-menu text-white/80">
                                         <li>
-                                            <Link href="/oportunidades">{t('Lista')}</Link>
+                                            <Link className="hover:text-white" href="/oportunidades">{t('Lista')}</Link>
                                         </li>
                                         <li>
-                                            <Link href="/oportunidades/tablero">{t('Tablero')}</Link>
+                                            <Link className="hover:text-white" href="/oportunidades/tablero">{t('Tablero')}</Link>
                                         </li>
                                         <li>
-                                            <Link href="/oportunidades/nuevo">{t('Nueva')}</Link>
+                                            <Link className="hover:text-white" href="/oportunidades/nuevo">{t('Nueva')}</Link>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
@@ -162,8 +165,8 @@ const Sidebar = () => {
                                 <li className="nav-item">
                                     <Link href="/usuarios" className="group">
                                         <div className="flex items-center">
-                                            <IconUser className="group-hover:!text-primary shrink-0" />
-                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Usuarios')}</span>
+                                            <IconUser duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                            <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Usuarios')}</span>
                                         </div>
                                     </Link>
                                 </li>

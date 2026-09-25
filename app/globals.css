@@ -59,31 +59,31 @@
     }
     .sidebar .nav-item > button.active,
     .sidebar .nav-item > a.active {
-        @apply bg-primary/10 text-primary dark:bg-primary/20 dark:text-white-dark;
+        @apply bg-black/10 text-white;
     }
 
     .sidebar .nav-item > button.active > div > span,
     .sidebar .nav-item > a.active > div > span {
-        @apply !text-primary dark:!text-white-dark;
+        @apply !text-white;
     }
 
     .sidebar ul.sub-menu li button,
     .sidebar ul.sub-menu li a {
-        @apply flex w-full items-center px-9 py-2.5 before:h-0.5 before:w-2 before:rounded before:bg-gray-300 hover:bg-gray-100
-hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark:before:bg-gray-500 dark:hover:bg-gray-900 dark:hover:text-primary;
+        @apply flex w-full items-center px-9 py-2.5 text-white/80 before:h-0.5 before:w-2 before:rounded before:bg-white/60 hover:bg-black/10
+hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     }
     .sidebar ul.sub-menu li button.active,
     .sidebar ul.sub-menu li a.active {
-        @apply text-primary before:bg-gold;
+        @apply text-white before:!bg-white;
     }
 
     .sidebar .nav-item a div:first-child svg,
     .sidebar .nav-item button div:first-child svg {
-        @apply h-5 w-5 text-black/50 dark:text-white/50;
+        @apply h-5 w-5 text-white;
     }
     .sidebar .nav-item > a.active div:first-child svg,
     .sidebar .nav-item > button.active div:first-child svg {
-        @apply text-gold;
+        @apply text-white;
     }
 
     .main-container .main-content {
