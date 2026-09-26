@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { DataTableSortStatus } from 'mantine-datatable';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactElement } from 'react';
 import sortBy from 'lodash/sortBy';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -36,7 +36,7 @@ const chipColor: Record<string, { solido: string; borde: string }> = {
     danger: { solido: 'bg-danger', borde: 'border-danger text-danger' },
 };
 
-const iconoTipo: Record<TipoInmueble, JSX.Element> = {
+const iconoTipo: Record<TipoInmueble, ReactElement> = {
     CASA: <IconHome className="h-3.5 w-3.5" duotone={false} />,
     DEPARTAMENTO: <IconBuilding className="h-3.5 w-3.5" />,
     PH: <IconBuilding className="h-3.5 w-3.5" />,
