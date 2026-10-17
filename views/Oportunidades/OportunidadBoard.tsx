@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
@@ -21,6 +21,7 @@ import IconTrendingUp from '@/components/Icon/IconTrendingUp';
 import IconSearch from '@/components/Icon/IconSearch';
 import EstadoPantalla from '@/components/ui/EstadoPantalla';
 import SwitchVista from '@/components/ui/SwitchVista';
+import { ColumnasSkeleton } from './OportunidadBoardSkeleton';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
 
@@ -123,9 +124,19 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
     const origenRef = useRef<{ cardId: string; etapaId: string; snapshot: ColumnaEtapa[] } | null>(null);
     const ocupadoRef = useRef(false);
 
+    const [cambiando, startTransition] = useTransition();
+    const [funnelPedido, setFunnelPedido] = useState<string | null>(null);
     const cambiarFunnel = (funnelId: string) => {
-        router.push(`/oportunidades/tablero?funnel=${funnelId}`);
+        if (funnelId === activeFunnelId) return;
+        setFunnelPedido(funnelId);
+        startTransition(() => {
+            router.push(`/oportunidades/tablero?funnel=${funnelId}`);
+        });
     };
+    useEffect(() => {
+        if (!cambiando) setFunnelPedido(null);
+    }, [cambiando, activeFunnelId]);
+    const mostrandoCarga = cambiando && funnelPedido !== null;
 
     const restaurar = () => {
         if (origenRef.current) setColumns(origenRef.current.snapshot);
@@ -367,7 +378,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
             />
             <div className="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
                 <div className="min-w-0 flex-1">
-                    <FunnelTabs tabs={funnels} activeId={activeFunnelId} conteos={conteoFunnels} onSelect={cambiarFunnel} ariaLabel="Funnels" />
+                    <FunnelTabs tabs={funnels} activeId={funnelPedido ?? activeFunnelId} conteos={conteoFunnels} onSelect={cambiarFunnel} ariaLabel="Funnels" />
                 </div>
                 <div className="flex w-full flex-wrap items-center gap-2 pb-1.5 sm:w-auto">
                     <input
@@ -387,7 +398,9 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
                 </div>
             </div>
 
-            {hayError ? (
+            {mostrandoCarga ? (
+                <ColumnasSkeleton />
+            ) : hayError ? (
                 <EstadoPantalla
                     variante="error"
                     icono={<IconInfoTriangle className="h-7 w-7" />}

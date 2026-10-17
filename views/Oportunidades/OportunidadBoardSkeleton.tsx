@@ -27,6 +27,23 @@ const Columna = () => (
     </div>
 );
 
+export const ColumnasSkeleton = () => (
+    <div className="flex min-h-0 flex-1 gap-3" aria-busy="true" aria-label="Cargando etapas">
+        <div className="min-w-0 flex-1 overflow-hidden">
+            <div className="flex flex-nowrap items-start gap-3 pb-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <Columna key={i} />
+                ))}
+            </div>
+        </div>
+        <div className="hidden w-[216px] shrink-0 flex-col gap-3 border-l border-uk-line pl-3 dark:border-uk-line-dark md:flex">
+            <Bar className="h-3 w-12 bg-gray-100 dark:bg-gray-800" />
+            <Bar className="min-h-[140px] flex-1 rounded-xl bg-gray-100 dark:bg-gray-800" />
+            <Bar className="min-h-[140px] flex-1 rounded-xl bg-gray-100 dark:bg-gray-800" />
+        </div>
+    </div>
+);
+
 const OportunidadBoardSkeleton = () => (
     <div className="flex h-[calc(100dvh-10rem)] flex-col" aria-busy="true">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
