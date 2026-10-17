@@ -62,6 +62,8 @@ export interface OportunidadDetalle extends Oportunidad {
     contacto: Contacto | null;
     inmueble: Inmueble | null;
     responsable: Usuario | null;
+    creador: Usuario | null;
+    enEtapaDesde: string;
     funnel: Funnel | null;
     etapa: Etapa | null;
     origen: Origen | null;

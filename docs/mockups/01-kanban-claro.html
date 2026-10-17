@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tablero de oportunidades — claro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F5F9}
+a{color:#502558}a:hover{color:#3A1A40}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="font-family: Nunito, sans-serif; color: #1B1424; background: #F7F5F9; min-height: 920px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <!-- SIDEBAR -->
+  <nav aria-label="Principal" style="flex: 1 1 232px; max-width: 100%; min-width: 232px; background: #3A1A40; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px; box-sizing: border-box; position: relative; overflow: hidden">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 8px 20px">
+      <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Urban<span style="color: #D8AC71">Key</span></span>
+      <button aria-label="Fijar menú" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #CDB8D3; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/><path d="M8 2h8"/></svg></button>
+    </div>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Inmuebles</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Sucursal</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/></svg>Contactos</a>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <a href="#" aria-current="true" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.10); color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8AC71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Oportunidades</a>
+      <a href="#" style="display: flex; align-items: center; height: 36px; padding: 0 12px 0 42px; border-radius: 8px; color: #CDB8D3; text-decoration: none; font-size: 13px; font-weight: 600">Lista</a>
+      <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 42px; border-radius: 8px; color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 700"><span style="width: 6px; height: 6px; border-radius: 3px; background: #D8AC71; margin-left: -14px"></span>Tablero</a>
+    </div>
+    <svg aria-hidden="true" width="232" height="220" viewBox="0 0 232 220" style="position: absolute; left: 0; bottom: 0; opacity: 0.16" fill="#D8AC71"><rect x="20" y="120" width="34" height="100"/><rect x="60" y="80" width="40" height="140"/><rect x="108" y="140" width="28" height="80"/><rect x="142" y="60" width="44" height="160"/><rect x="192" y="110" width="30" height="110"/></svg>
+  </nav>
+
+  <!-- CONTENT -->
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+
+    <!-- Topbar -->
+    <header style="height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #E7E2EC; box-sizing: border-box">
+      <nav aria-label="Ruta" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77">
+        <a href="#" style="color: #5C5F77; text-decoration: none">Oportunidades</a>
+        <span aria-hidden="true">/</span>
+        <span style="color: #1B1424; font-weight: 700">Tablero</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button aria-label="Cambiar a modo oscuro" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #E7E2EC; background: #FFFFFF; color: #5C5F77; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <button aria-label="Cuenta de Ximena Pastori" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #502558; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer">XP</button>
+      </div>
+    </header>
+
+    <main style="padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+      <!-- Page header -->
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px; color: #1B1424">Tablero de oportunidades</h1>
+          <p style="margin: 0; font-size: 14px; color: #5C5F77">Arrastrá una tarjeta para cambiar de etapa. Soltala en <strong style="color: #047A3F">Ganada</strong> o <strong style="color: #C42B35">Perdida</strong> para cerrarla.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+          <div role="group" aria-label="Vista" style="display: flex; padding: 4px; background: #EDE8F1; border-radius: 10px">
+            <a href="#" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 7px; color: #5C5F77; text-decoration: none; font-size: 13px; font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Lista</a>
+            <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 7px; background: #FFFFFF; color: #502558; text-decoration: none; font-size: 13px; font-weight: 800; box-shadow: 0 1px 2px rgba(30,15,40,0.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="4" height="15" rx="1"/></svg>Tablero</a>
+          </div>
+          <button style="display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(80,37,88,0.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nueva oportunidad</button>
+        </div>
+      </div>
+
+      <!-- Funnel tabs + filters -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #E7E2EC">
+        <div role="tablist" aria-label="Funnel" style="display: flex; flex-wrap: wrap; gap: 4px">
+          <button role="tab" aria-selected="true" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid #502558; background: transparent; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px">Captación Venta <span style="min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box">4</span></button>
+          <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px">Captación Alquiler <span style="min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: #EDE8F1; color: #5C5F77; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box">0</span></button>
+          <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px">Interesados Compra <span style="min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: #EDE8F1; color: #5C5F77; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box">1</span></button>
+          <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px">Interesados Alquiler <span style="min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: #EDE8F1; color: #5C5F77; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box">0</span></button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 8px; flex-wrap: wrap">
+          <label style="position: relative; display: flex; align-items: center">
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar en el tablero</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 12px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" placeholder="Buscar título o contacto" style="height: 38px; width: 220px; padding: 0 12px 0 36px; border: 1px solid #DCD5E2; border-radius: 9px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #1B1424; box-sizing: border-box">
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77; font-weight: 600">Responsable
+            <select style="height: 38px; padding: 0 32px 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #1B1424; font-weight: 600"><option>Todos</option><option>Solo mías</option></select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Board -->
+      <div role="region" aria-label="Etapas del funnel Captación Venta" tabindex="0" style="overflow-x: auto; padding-bottom: 8px">
+        <div style="display: flex; gap: 12px; align-items: stretch; min-width: max-content">
+
+          <!-- Consulta -->
+          <section aria-label="Consulta, 1 oportunidad" style="flex: 0 0 248px; background: #F0ECF3; border-radius: 12px; display: flex; flex-direction: column; min-height: 600px">
+            <header style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 style="margin: 0; font-size: 14px; font-weight: 800; color: #1B1424">Consulta</h2>
+                <span style="font-size: 12px; font-weight: 800; color: #502558; background: #FFFFFF; border-radius: 10px; padding: 2px 8px">1</span>
+              </div>
+              <span style="font-size: 12px; color: #5C5F77; font-variant-numeric: tabular-nums">USD 145.000</span>
+            </header>
+            <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 8px">
+              <article style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(30,15,40,0.06)">
+                <a href="Detalle.dc.html" style="font-size: 14px; font-weight: 800; color: #1B1424; text-decoration: none; line-height: 1.3">Tasación depto Morón</a>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #5C5F77">
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Marta Ruiz</span>
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg>Av. Rivadavia 18500, Morón</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F0ECF3">
+                  <span style="font-size: 14px; font-weight: 800; color: #7A5A2E; font-variant-numeric: tabular-nums">USD 145.000</span>
+                  <span title="Ximena Pastori" style="width: 26px; height: 26px; border-radius: 13px; background: #F6EEF7; color: #502558; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">XP</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Tasación -->
+          <section aria-label="Tasación, 1 oportunidad" style="flex: 0 0 248px; background: #F0ECF3; border-radius: 12px; display: flex; flex-direction: column">
+            <header style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 style="margin: 0; font-size: 14px; font-weight: 800; color: #1B1424">Tasación</h2>
+                <span style="font-size: 12px; font-weight: 800; color: #502558; background: #FFFFFF; border-radius: 10px; padding: 2px 8px">1</span>
+              </div>
+              <span style="font-size: 12px; color: #5C5F77">Sin valor estimado</span>
+            </header>
+            <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 8px">
+              <article style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(30,15,40,0.06)">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+                  <a href="Detalle.dc.html" style="font-size: 14px; font-weight: 800; color: #1B1424; text-decoration: none; line-height: 1.3">PH en Ramos Mejía</a>
+                  <span style="flex: none; font-size: 11px; font-weight: 800; color: #8A4B00; background: #FFF1DC; border-radius: 6px; padding: 2px 6px; display: flex; align-items: center; gap: 4px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Vence 20/10</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #5C5F77">
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Diego Acuña</span>
+                  <span style="display: flex; align-items: center; gap: 6px; font-style: italic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg>Sin inmueble asociado</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F0ECF3">
+                  <span style="font-size: 13px; font-weight: 700; color: #5C5F77">— Sin valor</span>
+                  <span title="Ximena Pastori" style="width: 26px; height: 26px; border-radius: 13px; background: #F6EEF7; color: #502558; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">XP</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Publicación -->
+          <section aria-label="Publicación, 1 oportunidad" style="flex: 0 0 248px; background: #F0ECF3; border-radius: 12px; display: flex; flex-direction: column">
+            <header style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 style="margin: 0; font-size: 14px; font-weight: 800; color: #1B1424">Publicación</h2>
+                <span style="font-size: 12px; font-weight: 800; color: #502558; background: #FFFFFF; border-radius: 10px; padding: 2px 8px">1</span>
+              </div>
+              <span style="font-size: 12px; color: #5C5F77; font-variant-numeric: tabular-nums">USD 350.000</span>
+            </header>
+            <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 8px">
+              <article style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 2px rgba(30,15,40,0.06)">
+                <a href="Detalle.dc.html" style="font-size: 14px; font-weight: 800; color: #1B1424; text-decoration: none; line-height: 1.3">Depto Paris 1888</a>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #5C5F77">
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Pepe Le Peu</span>
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg>Paris 1888</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F0ECF3">
+                  <span style="font-size: 14px; font-weight: 800; color: #7A5A2E; font-variant-numeric: tabular-nums">USD 350.000</span>
+                  <span title="Ximena Pastori" style="width: 26px; height: 26px; border-radius: 13px; background: #F6EEF7; color: #502558; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">XP</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Negociación -->
+          <section aria-label="Negociación, 1 oportunidad" style="flex: 0 0 248px; background: #F0ECF3; border-radius: 12px; display: flex; flex-direction: column">
+            <header style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 style="margin: 0; font-size: 14px; font-weight: 800; color: #1B1424">Negociación</h2>
+                <span style="font-size: 12px; font-weight: 800; color: #502558; background: #FFFFFF; border-radius: 10px; padding: 2px 8px">1</span>
+              </div>
+              <span style="font-size: 12px; color: #5C5F77; font-variant-numeric: tabular-nums">USD 210.000</span>
+            </header>
+            <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 8px">
+              <article style="background: #FFFFFF; border: 1px solid #D8AC71; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 6px 18px rgba(80,37,88,0.14)">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+                  <a href="Detalle.dc.html" style="font-size: 14px; font-weight: 800; color: #1B1424; text-decoration: none; line-height: 1.3">recorrido Ximee</a>
+                  <span style="flex: none; font-size: 11px; font-weight: 800; color: #5C5F77; background: #F0ECF3; border-radius: 6px; padding: 2px 6px">12 d en etapa</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #5C5F77">
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Pablo Molina</span>
+                  <span style="display: flex; align-items: center; gap: 6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg>Güemes 1120, Castelar</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F0ECF3">
+                  <span style="font-size: 14px; font-weight: 800; color: #7A5A2E; font-variant-numeric: tabular-nums">USD 210.000</span>
+                  <span title="Ximena Pastori" style="width: 26px; height: 26px; border-radius: 13px; background: #F6EEF7; color: #502558; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">XP</span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Reserva (vacía) -->
+          <section aria-label="Reserva, sin oportunidades" style="flex: 0 0 248px; background: #F0ECF3; border-radius: 12px; display: flex; flex-direction: column">
+            <header style="padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 2px">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <h2 style="margin: 0; font-size: 14px; font-weight: 800; color: #1B1424">Reserva</h2>
+                <span style="font-size: 12px; font-weight: 800; color: #5C5F77; background: #FFFFFF; border-radius: 10px; padding: 2px 8px">0</span>
+              </div>
+              <span style="font-size: 12px; color: #5C5F77">—</span>
+            </header>
+            <div style="padding: 0 8px 8px">
+              <div style="height: 120px; border: 1.5px dashed #CFC4D6; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #5C5F77; font-size: 12px; text-align: center; padding: 0 16px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Soltá una tarjeta acá
+              </div>
+            </div>
+          </section>
+
+          <!-- Zona de cierre fija -->
+          <aside aria-label="Cerrar oportunidad" style="flex: 0 0 216px; position: sticky; right: 0; background: #F7F5F9; padding-left: 12px; border-left: 1px solid #E7E2EC; display: flex; flex-direction: column; gap: 12px">
+            <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: #5C5F77; padding: 12px 4px 0">Cerrar</div>
+            <div style="flex: 1; min-height: 200px; border: 1.5px dashed #6CC79A; background: #EEF9F3; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; align-items: center; gap: 8px; color: #047A3F; font-weight: 800; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Operación concretada</div>
+              <span style="font-size: 12px; color: #1F5E3C">Soltá acá para cerrar como ganada.</span>
+              <span style="margin-top: auto; font-size: 12px; color: #1F5E3C">2 cerradas · <a href="#" style="color: #047A3F; font-weight: 800">Ver</a></span>
+            </div>
+            <div style="flex: 1; min-height: 200px; border: 1.5px dashed #EC8D93; background: #FDF1F2; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; align-items: center; gap: 8px; color: #C42B35; font-weight: 800; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>Perdida</div>
+              <span style="font-size: 12px; color: #7E2228">Soltá acá y elegí el motivo.</span>
+              <span style="margin-top: auto; font-size: 12px; color: #7E2228">1 perdida · <a href="#" style="color: #C42B35; font-weight: 800">Ver</a></span>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

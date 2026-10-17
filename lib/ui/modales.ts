@@ -30,11 +30,15 @@ const hoy = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-const encabezado = (tipo: 'ganada' | 'perdida', titulo: string, subtitulo: string) => `
+const encabezado = (tipo: 'ganada' | 'perdida' | 'mover', titulo: string, subtitulo: string) => `
     <div class="mb-4 flex items-center gap-3">
         <span aria-hidden="true" class="grid h-10 w-10 shrink-0 place-content-center rounded-full text-lg font-extrabold ${
-            tipo === 'ganada' ? 'bg-[#E6F6EE] text-uk-won dark:bg-success/15 dark:text-uk-won-dark' : 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
-        }">${tipo === 'ganada' ? '✓' : '✕'}</span>
+            tipo === 'ganada'
+                ? 'bg-[#E6F6EE] text-uk-won dark:bg-success/15 dark:text-uk-won-dark'
+                : tipo === 'perdida'
+                  ? 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
+                  : 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark'
+        }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : '→'}</span>
         <div class="min-w-0">
             <h2 id="uk-modal-titulo" class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${titulo}</h2>
             <p class="truncate text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(subtitulo)}</p>
@@ -147,4 +151,21 @@ export async function modalCerrarPerdida(datos: DatosModal & { motivos: { id: st
         },
     });
     return resultado.isConfirmed ? (resultado.value as CierrePerdida) : null;
+}
+
+export async function modalMoverEtapa(datos: { titulo: string; etapaOrigen: string; etapaDestino: string }): Promise<{ observacion: string | null } | null> {
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            ${encabezado('mover', `Mover a ${escapar(datos.etapaDestino)}`, `${datos.titulo} · desde ${datos.etapaOrigen}`)}
+            <div>
+                <label for="uk-obs" class="${claseLabel}">Nota <span class="${claseOpcional}">Opcional</span></label>
+                <textarea id="uk-obs" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="Ej.: se acordó visita para el jueves"></textarea>
+                <p class="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">La nota queda en el historial de la oportunidad.</p>
+            </div>`,
+        confirmButtonText: 'Mover',
+        focusCancel: false,
+        didOpen: () => document.getElementById('uk-obs')?.focus(),
+        preConfirm: () => ({ observacion: valor('uk-obs') || null }),
+    });
+    return resultado.isConfirmed ? (resultado.value as { observacion: string | null }) : null;
 }
