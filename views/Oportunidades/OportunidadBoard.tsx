@@ -16,6 +16,10 @@ import PageHeader from '@/components/ui/PageHeader';
 import FunnelTabs from '@/components/ui/FunnelTabs';
 import IconUser from '@/components/Icon/IconUser';
 import IconHome from '@/components/Icon/IconHome';
+import IconInfoTriangle from '@/components/Icon/IconInfoTriangle';
+import IconTrendingUp from '@/components/Icon/IconTrendingUp';
+import IconSearch from '@/components/Icon/IconSearch';
+import EstadoPantalla from '@/components/ui/EstadoPantalla';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
 
@@ -24,6 +28,7 @@ interface Props {
     funnels: Funnel[];
     activeFunnelId: string;
     conteoFunnels: Record<string, number>;
+    hayError: boolean;
     usuarioId: string;
     puedeFiltrarResponsable: boolean;
     motivosPerdida: MotivoPerdida[];
@@ -53,7 +58,7 @@ const sumaPorMoneda = (tasks: OportunidadCard[]) => {
     return [...totales].map(([moneda, total]) => formatearMonto(total, moneda as OportunidadCard['moneda'])).join(' · ');
 };
 
-const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, usuarioId, puedeFiltrarResponsable, motivosPerdida }: Props) => {
+const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, hayError, usuarioId, puedeFiltrarResponsable, motivosPerdida }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     useEffect(() => {
@@ -331,6 +336,14 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, us
 
     const funnelActivo = funnels.find((f) => f.id === activeFunnelId);
 
+    const totalTarjetas = columns.reduce((total, c) => total + c.tasks.length, 0);
+    const totalVisibles = columns.reduce((total, c) => total + c.tasks.filter(coincide).length, 0);
+    const filtrosActivos = [busqueda.trim() ? `búsqueda “${busqueda.trim()}”` : null, soloMias ? 'responsable: solo mías' : null].filter((f): f is string => f !== null);
+    const limpiarFiltros = () => {
+        setBusqueda('');
+        setSoloMias(false);
+    };
+
     return (
         <div className="flex h-[calc(100dvh-10rem)] flex-col">
             <PageHeader
@@ -374,25 +387,63 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, us
                 </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 gap-3">
-                <div
-                    ref={regionRef}
-                    role="region"
-                    aria-label={`Etapas del funnel ${funnelActivo?.nombre ?? ''}`}
-                    tabIndex={0}
-                    className="min-w-0 flex-1 snap-x snap-mandatory overflow-auto md:snap-none [scrollbar-color:#CFC4D6_transparent] dark:[scrollbar-color:#2A3350_transparent] focus-visible:ring-2 focus-visible:ring-primary/40 dark:focus-visible:ring-gold/50"
-                >
-                    <div className="flex flex-nowrap items-start gap-3 pb-2">{abiertas.map(columna)}</div>
+            {hayError ? (
+                <EstadoPantalla
+                    variante="error"
+                    icono={<IconInfoTriangle className="h-7 w-7" />}
+                    titulo="No pudimos cargar las oportunidades"
+                    descripcion="Puede ser un problema de conexión. Tus datos no se perdieron."
+                    acciones={
+                        <button type="button" className="btn btn-primary h-10 rounded-[10px]" onClick={() => router.refresh()}>
+                            Reintentar
+                        </button>
+                    }
+                />
+            ) : totalTarjetas === 0 ? (
+                <EstadoPantalla
+                    variante="vacio"
+                    icono={<IconTrendingUp className="h-7 w-7" duotone={false} />}
+                    titulo="Todavía no hay oportunidades en este funnel"
+                    descripcion="Cuando cargues la primera, la vas a ver acá y la podés arrastrar entre etapas."
+                    acciones={
+                        <Link href="/oportunidades/nuevo" className="btn btn-primary h-10 rounded-[10px]">
+                            Nueva oportunidad
+                        </Link>
+                    }
+                />
+            ) : hayFiltro && totalVisibles === 0 ? (
+                <EstadoPantalla
+                    variante="vacio"
+                    icono={<IconSearch className="h-7 w-7" />}
+                    titulo="Ninguna oportunidad coincide"
+                    descripcion={`Tenés ${filtrosActivos.length} ${filtrosActivos.length === 1 ? 'filtro activo' : 'filtros activos'}: ${filtrosActivos.join(', ')}.`}
+                    acciones={
+                        <button type="button" className="btn btn-cancel h-10 rounded-[10px]" onClick={limpiarFiltros}>
+                            Limpiar filtros
+                        </button>
+                    }
+                />
+            ) : (
+                <div className="flex min-h-0 flex-1 gap-3">
+                    <div
+                        ref={regionRef}
+                        role="region"
+                        aria-label={`Etapas del funnel ${funnelActivo?.nombre ?? ''}`}
+                        tabIndex={0}
+                        className="min-w-0 flex-1 snap-x snap-mandatory overflow-auto md:snap-none [scrollbar-color:#CFC4D6_transparent] dark:[scrollbar-color:#2A3350_transparent] focus-visible:ring-2 focus-visible:ring-primary/40 dark:focus-visible:ring-gold/50"
+                    >
+                        <div className="flex flex-nowrap items-start gap-3 pb-2">{abiertas.map(columna)}</div>
+                    </div>
+                    <aside
+                        aria-label="Cerrar oportunidad"
+                        className={`flex w-[216px] shrink-0 flex-col gap-3 overflow-y-auto border-l border-uk-line pb-2 pl-3 [scrollbar-color:#CFC4D6_transparent] dark:border-uk-line-dark dark:[scrollbar-color:#2A3350_transparent] max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-40 max-md:w-auto max-md:flex-row max-md:border-l-0 max-md:border-t max-md:bg-uk-page max-md:p-3 max-md:dark:bg-uk-page-dark ${arrastrando ? '' : 'max-md:hidden'}`}
+                    >
+                        <p className="px-1 text-[11px] font-extrabold uppercase tracking-wider text-uk-muted dark:text-uk-muted-dark max-md:hidden">Cerrar</p>
+                        {zonaCierre(ganada, 'ganada')}
+                        {zonaCierre(perdida, 'perdida')}
+                    </aside>
                 </div>
-                <aside
-                    aria-label="Cerrar oportunidad"
-                    className={`flex w-[216px] shrink-0 flex-col gap-3 overflow-y-auto border-l border-uk-line pb-2 pl-3 [scrollbar-color:#CFC4D6_transparent] dark:border-uk-line-dark dark:[scrollbar-color:#2A3350_transparent] max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-40 max-md:w-auto max-md:flex-row max-md:border-l-0 max-md:border-t max-md:bg-uk-page max-md:p-3 max-md:dark:bg-uk-page-dark ${arrastrando ? '' : 'max-md:hidden'}`}
-                >
-                    <p className="px-1 text-[11px] font-extrabold uppercase tracking-wider text-uk-muted dark:text-uk-muted-dark max-md:hidden">Cerrar</p>
-                    {zonaCierre(ganada, 'ganada')}
-                    {zonaCierre(perdida, 'perdida')}
-                </aside>
-            </div>
+            )}
         </div>
     );
 };

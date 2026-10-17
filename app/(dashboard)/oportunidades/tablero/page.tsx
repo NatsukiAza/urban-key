@@ -8,6 +8,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
     const pedido = sp.funnel && funnels.some((f) => f.id === sp.funnel) ? sp.funnel : null;
     const sugerido = funnelConMas && funnels.some((f) => f.id === funnelConMas) ? funnelConMas : null;
     const activeFunnelId = pedido ?? sugerido ?? funnels[0]?.id ?? '';
-    const [{ columnas }, options] = await Promise.all([getOportunidadesPorEtapa(activeFunnelId), getFormOptions()]);
-    return <OportunidadBoard columnas={columnas} funnels={funnels} activeFunnelId={activeFunnelId} conteoFunnels={conteoFunnels} usuarioId={usuario?.id ?? ''} puedeFiltrarResponsable={usuario?.rol === 'ADMINISTRADOR' || usuario?.rol === 'RESPONSABLE_COMERCIAL'} motivosPerdida={options.motivosPerdida} />;
+    const [{ columnas, error }, options] = await Promise.all([getOportunidadesPorEtapa(activeFunnelId), getFormOptions()]);
+    return <OportunidadBoard columnas={columnas} funnels={funnels} activeFunnelId={activeFunnelId} conteoFunnels={conteoFunnels} hayError={error} usuarioId={usuario?.id ?? ''} puedeFiltrarResponsable={usuario?.rol === 'ADMINISTRADOR' || usuario?.rol === 'RESPONSABLE_COMERCIAL'} motivosPerdida={options.motivosPerdida} />;
 }

@@ -196,8 +196,8 @@ export async function getOportunidad(id: string): Promise<Oportunidad | null> {
     }
 }
 
-export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funnelId: string; columnas: ColumnaEtapa[] }> {
-    if (!esUuid(funnelId)) return { funnelId, columnas: [] };
+export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funnelId: string; columnas: ColumnaEtapa[]; error: boolean }> {
+    if (!esUuid(funnelId)) return { funnelId, columnas: [], error: false };
     try {
         const supabase = await createClient();
 
@@ -252,10 +252,10 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
             // Una etapa desactivada solo se muestra si todavía tiene oportunidades.
             .filter((c) => c.activo || c.tasks.length > 0);
 
-        return { funnelId, columnas };
+        return { funnelId, columnas, error: false };
     } catch (err) {
         console.error('Error getOportunidadesPorEtapa', err);
-        return { funnelId, columnas: [] };
+        return { funnelId, columnas: [], error: true };
     }
 }
 
