@@ -6,6 +6,6 @@ export const tipoOperacionOptions: { label: string; value: TipoOperacion }[] = [
 ];
 
 export const tipoOperacionConfig: Record<TipoOperacion, { label: string; color: string }> = {
-    VENTA: { label: 'Venta', color: 'primary' },
-    ALQUILER: { label: 'Alquiler', color: 'info' },
+    VENTA: { label: 'Venta', color: 'neutral' },
+    ALQUILER: { label: 'Alquiler', color: 'neutral' },
 };

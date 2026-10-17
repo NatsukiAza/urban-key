@@ -19,8 +19,8 @@ const DetailHero = ({ title, badges, actions, facts }: { title: string; badges?:
             <dl className="mt-5 grid gap-4 border-t border-white-light pt-5 dark:border-[#1b2e4b] sm:grid-cols-3">
                 {facts.map((fact) => (
                     <div key={fact.label}>
-                        <dt className="text-xs uppercase tracking-wide text-white-dark">{fact.label}</dt>
-                        <dd className={fact.emphasis ? 'mt-1 text-2xl font-semibold text-gold-dark' : 'mt-1 font-semibold'}>{fact.value}</dd>
+                        <dt className="text-xs uppercase tracking-wide text-uk-muted dark:text-uk-muted-dark">{fact.label}</dt>
+                        <dd className={fact.emphasis ? 'mt-1 text-2xl font-semibold text-uk-money dark:text-uk-money-dark' : 'mt-1 font-semibold'}>{fact.value}</dd>
                     </div>
                 ))}
             </dl>

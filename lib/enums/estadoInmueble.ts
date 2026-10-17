@@ -10,6 +10,6 @@ export const estadoInmuebleOptions: { label: string; value: EstadoInmueble }[] =
 export const estadoInmuebleConfig: Record<EstadoInmueble, { label: string; color: string }> = {
     DISPONIBLE: { label: 'Disponible', color: 'success' },
     RESERVADO: { label: 'Reservado', color: 'warning' },
-    OPERADO: { label: 'Operado', color: 'info' },
-    RETIRADO: { label: 'Retirado', color: 'dark' },
+    OPERADO: { label: 'Operado', color: 'neutral' },
+    RETIRADO: { label: 'Retirado', color: 'neutral' },
 };

@@ -16,6 +16,9 @@ import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
 import { formatearImporte } from '@/lib/enums/moneda';
 import type { InmuebleDetalle as TDetalle } from '@/lib/inmueble/types';
 import DetailHero from '@/components/ui/DetailHero';
+import EstadoChip from '@/components/ui/EstadoChip';
+import ChipCategoria from '@/components/ui/ChipCategoria';
+import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 interface Props {
     detalle: TDetalle;
@@ -26,7 +29,7 @@ const fmtNumero = (v: number | null, sufijo = '') => (v != null ? `${v.toLocaleS
 
 const Campo = ({ label, children }: { label: string; children: React.ReactNode }) => (
     <div>
-        <div className="text-white-dark text-xs uppercase">{label}</div>
+        <div className="text-uk-muted dark:text-uk-muted-dark text-xs uppercase">{label}</div>
         <div className="font-semibold">{children}</div>
     </div>
 );
@@ -34,6 +37,7 @@ const Campo = ({ label, children }: { label: string; children: React.ReactNode }
 const InmuebleDetalle = ({ detalle }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
+    useBreadcrumbDetalle(detalle.direccion);
     useEffect(() => {
         dispatch(setPageTitle('Detalle de inmueble'));
     });
@@ -71,9 +75,9 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                 title={detalle.direccion}
                 badges={
                     <>
-                        <span className={`badge badge-outline-${estadoInmuebleConfig[detalle.estado].color}`}>{estadoInmuebleConfig[detalle.estado].label}</span>
-                        <span className={`badge badge-outline-${tipoOperacionConfig[detalle.tipoOperacion].color}`}>{tipoOperacionConfig[detalle.tipoOperacion].label}</span>
-                        <span className={`badge badge-outline-${tipoInmuebleConfig[detalle.tipoInmueble].color}`}>{tipoInmuebleConfig[detalle.tipoInmueble].label}</span>
+                        <EstadoChip label={estadoInmuebleConfig[detalle.estado].label} color={estadoInmuebleConfig[detalle.estado].color} />
+                        <ChipCategoria destacado>{tipoOperacionConfig[detalle.tipoOperacion].label}</ChipCategoria>
+                        <ChipCategoria>{tipoInmuebleConfig[detalle.tipoInmueble].label}</ChipCategoria>
                     </>
                 }
                 actions={
@@ -86,9 +90,6 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                             <IconTrashLines className="w-4.5 h-4.5" />
                             Dar de baja
                         </button>
-                        <Link href="/inmuebles" className="btn btn-outline-primary">
-                            Volver
-                        </Link>
                     </>
                 }
                 facts={[
@@ -99,7 +100,7 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                         value: (
                             <>
                                 {propietario}
-                                {detalle.propietario?.telefono ? <div className="text-xs font-normal text-white-dark">{detalle.propietario.telefono}</div> : null}
+                                {detalle.propietario?.telefono ? <div className="text-xs font-normal text-uk-muted dark:text-uk-muted-dark">{detalle.propietario.telefono}</div> : null}
                             </>
                         ),
                     },
@@ -131,10 +132,10 @@ const InmuebleDetalle = ({ detalle }: Props) => {
             <div className="panel">
                 <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                     <h2 className="text-lg font-semibold">Oportunidades del inmueble</h2>
-                    {abiertas > 0 && <span className="badge badge-outline-info">{abiertas} abierta{abiertas === 1 ? '' : 's'}</span>}
+                    {abiertas > 0 && <ChipCategoria>{abiertas} abierta{abiertas === 1 ? '' : 's'}</ChipCategoria>}
                 </div>
                 {detalle.oportunidades.length === 0 ? (
-                    <p className="text-white-dark">Este inmueble todavía no tiene oportunidades asociadas.</p>
+                    <p className="text-uk-muted dark:text-uk-muted-dark">Este inmueble todavía no tiene oportunidades asociadas.</p>
                 ) : (
                     <div className="table-responsive">
                         <table className="table-hover">
@@ -152,7 +153,7 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                                 {detalle.oportunidades.map((o) => (
                                     <tr key={o.id}>
                                         <td>
-                                            <Link href={`/oportunidades/${o.id}`} className="text-primary underline hover:no-underline font-semibold">
+                                            <Link href={`/oportunidades/${o.id}`} className="text-primary dark:text-uk-link-dark underline hover:no-underline font-semibold">
                                                 {o.titulo}
                                             </Link>
                                         </td>
@@ -161,7 +162,7 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                                         <td>{o.funnel || '—'}</td>
                                         <td>{o.etapa || '—'}</td>
                                         <td>
-                                            <span className={`badge badge-outline-${estadoOportunidadConfig[o.estado].color}`}>{estadoOportunidadConfig[o.estado].label}</span>
+                                            <EstadoChip label={estadoOportunidadConfig[o.estado].label} color={estadoOportunidadConfig[o.estado].color} />
                                         </td>
                                     </tr>
                                 ))}

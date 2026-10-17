@@ -18,7 +18,6 @@ import IconSearch from '../Icon/IconSearch';
 import IconXCircle from '../Icon/IconXCircle';
 import IconSun from '../Icon/IconSun';
 import IconMoon from '../Icon/IconMoon';
-import IconLaptop from '../Icon/IconLaptop';
 import IconMailDot from '../Icon/IconMailDot';
 import IconArrowLeft from '../Icon/IconArrowLeft';
 import IconInfoCircle from '../Icon/IconInfoCircle';
@@ -27,6 +26,7 @@ import IconUser from '../Icon/IconUser';
 import IconMail from '../Icon/IconMail';
 import IconLockDots from '../Icon/IconLockDots';
 import IconLogout from '../Icon/IconLogout';
+import Breadcrumb from './Breadcrumb';
 const Header = () => {
     const [perfil, setPerfil] = useState<Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'rol'> | null>(null);
 
@@ -139,7 +139,7 @@ const Header = () => {
     return (
         <header className={`z-40 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
             <div className="shadow-sm">
-                <div className="relative bg-white flex w-full items-center px-5 py-2.5 dark:bg-black">
+                <div className="relative flex min-h-[60px] w-full items-center border-b border-uk-line bg-white px-4 py-2.5 dark:border-[#232C45] dark:bg-[#121B2E] lg:px-8">
                     <div className="horizontal-logo flex lg:hidden justify-between items-center ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle hidden text-primary dark:text-white-light md:inline">UrbanKey</span>
@@ -158,17 +158,17 @@ const Header = () => {
                     <div className="ltr:mr-2 rtl:ml-2 hidden">
                         <ul className="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
                             <li>
-                                <Link href="/apps/calendar" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                                <Link href="/apps/calendar" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60">
                                     <IconCalendar />
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/apps/todolist" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                                <Link href="/apps/todolist" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60">
                                     <IconEdit />
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/apps/chat" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60">
+                                <Link href="/apps/chat" className="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60">
                                     <IconChatNotification />
                                 </Link>
                             </li>
@@ -176,6 +176,7 @@ const Header = () => {
                     </div>
                     <div className="sm:flex-1 ltr:sm:ml-0 ltr:ml-auto sm:rtl:mr-0 rtl:mr-auto flex items-center space-x-1.5 lg:space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
+                            <Breadcrumb />
                             <form
                                 className="!hidden"
                                 onSubmit={() => setSearch(false)}
@@ -203,62 +204,30 @@ const Header = () => {
                             </button>
                         </div>
                         <div>
-                            {themeConfig.theme === 'light' ? (
-                                <button
-                                    className={`${
-                                        themeConfig.theme === 'light' &&
-                                        'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                    }`}
-                                    onClick={() => {
-                                        dispatch(toggleTheme('dark'));
-                                    }}
-                                >
-                                    <IconSun />
-                                </button>
-                            ) : (
-                                ''
-                            )}
-                            {themeConfig.theme === 'dark' && (
-                                <button
-                                    className={`${
-                                        themeConfig.theme === 'dark' &&
-                                        'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                    }`}
-                                    onClick={() => {
-                                        dispatch(toggleTheme('system'));
-                                    }}
-                                >
-                                    <IconMoon />
-                                </button>
-                            )}
-                            {themeConfig.theme === 'system' && (
-                                <button
-                                    className={`${
-                                        themeConfig.theme === 'system' &&
-                                        'flex items-center p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60'
-                                    }`}
-                                    onClick={() => {
-                                        dispatch(toggleTheme('light'));
-                                    }}
-                                >
-                                    <IconLaptop />
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                className="flex h-10 w-10 items-center justify-center rounded-full bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 dark:hover:text-uk-link-dark"
+                                aria-label={themeConfig.isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                                title={themeConfig.isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                                onClick={() => dispatch(toggleTheme(themeConfig.isDarkMode ? 'light' : 'dark'))}
+                            >
+                                {themeConfig.isDarkMode ? <IconMoon /> : <IconSun />}
+                            </button>
                         </div>
                         <div className="dropdown hidden shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60"
                                 button={<img className="w-5 h-5 object-cover rounded-full" src={`/assets/images/flags/${flag.toUpperCase()}.svg`} alt="flag" />}
                             >
-                                <ul className="!px-2 text-dark dark:text-white-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
+                                <ul className="!px-2 text-dark dark:text-uk-muted-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
                                     {themeConfig.languageList.map((item: any) => {
                                         return (
                                             <li key={item.code}>
                                                 <button
                                                     type="button"
-                                                    className={`flex w-full hover:text-primary rounded-lg ${i18next.language === item.code ? 'bg-primary/10 text-primary' : ''}`}
+                                                    className={`flex w-full hover:text-primary dark:hover:text-uk-link-dark rounded-lg ${i18next.language === item.code ? 'bg-primary/10 text-primary dark:text-uk-link-dark' : ''}`}
                                                     onClick={() => {
                                                         i18next.changeLanguage(item.code);
                                                         // setFlag(item.code);
@@ -278,10 +247,10 @@ const Header = () => {
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60"
                                 button={<IconMailDot />}
                             >
-                                <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[375px] text-xs">
+                                <ul className="!py-0 text-dark dark:text-uk-muted-dark w-[300px] sm:w-[375px] text-xs">
                                     <li className="mb-5" onClick={(e) => e.stopPropagation()}>
                                         <div className="hover:!bg-transparent overflow-hidden relative rounded-t-md p-5 text-white w-full !h-[68px]">
                                             <div
@@ -307,10 +276,10 @@ const Header = () => {
                                                                 <div className="font-semibold text-sm dark:text-white-light/90">{message.title}</div>
                                                                 <div>{message.message}</div>
                                                             </span>
-                                                            <span className="font-semibold bg-white-dark/20 rounded text-dark/60 px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white-dark ltr:mr-2 rtl:ml-2">
+                                                            <span className="font-semibold bg-white-dark/20 rounded text-dark/60 px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-uk-muted-dark ltr:mr-2 rtl:ml-2">
                                                                 {message.time}
                                                             </span>
-                                                            <button type="button" className="text-neutral-300 hover:text-danger" onClick={() => removeMessage(message.id)}>
+                                                            <button type="button" className="text-neutral-300 hover:text-uk-lost dark:hover:text-uk-lost-dark" onClick={() => removeMessage(message.id)}>
                                                                 <IconXCircle />
                                                             </button>
                                                         </div>
@@ -318,7 +287,7 @@ const Header = () => {
                                                 })}
                                             </li>
                                             <li className="border-t border-white-light text-center dark:border-white/10 mt-5">
-                                                <button type="button" className="text-primary font-semibold group dark:text-gray-400 justify-center !py-4 !h-[48px]">
+                                                <button type="button" className="text-primary dark:text-uk-link-dark font-semibold group justify-center !py-4 !h-[48px]">
                                                     <span className="group-hover:underline ltr:mr-1 rtl:ml-1">VIEW ALL ACTIVITIES</span>
                                                     <IconArrowLeft className="group-hover:translate-x-1 transition duration-300 ltr:ml-1 rtl:mr-1" />
                                                 </button>
@@ -327,7 +296,7 @@ const Header = () => {
                                     ) : (
                                         <li className="mb-5" onClick={(e) => e.stopPropagation()}>
                                             <button type="button" className="!grid place-content-center hover:!bg-transparent text-lg min-h-[200px]">
-                                                <div className="mx-auto ring-4 ring-primary/30 rounded-full mb-4 text-primary">
+                                                <div className="mx-auto ring-4 ring-primary/30 rounded-full mb-4 text-primary dark:text-uk-link-dark">
                                                     <IconInfoCircle fill={true} className="w-10 h-10" />
                                                 </div>
                                                 No data available.
@@ -341,7 +310,7 @@ const Header = () => {
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="relative block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                btnClassName="relative block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary dark:hover:text-uk-link-dark hover:bg-white-light/90 dark:hover:bg-dark/60"
                                 button={
                                     <span>
                                         <IconBellBing />
@@ -352,7 +321,7 @@ const Header = () => {
                                     </span>
                                 }
                             >
-                                <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10">
+                                <ul className="!py-0 text-dark dark:text-uk-muted-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10">
                                     <li onClick={(e) => e.stopPropagation()}>
                                         <div className="flex items-center px-4 py-2 justify-between font-semibold">
                                             <h4 className="text-lg">Notification</h4>
@@ -382,7 +351,7 @@ const Header = () => {
                                                                 </div>
                                                                 <button
                                                                     type="button"
-                                                                    className="ltr:ml-auto rtl:mr-auto text-neutral-300 hover:text-danger opacity-0 group-hover:opacity-100"
+                                                                    className="ltr:ml-auto rtl:mr-auto text-neutral-300 hover:text-uk-lost dark:hover:text-uk-lost-dark opacity-0 group-hover:opacity-100"
                                                                     onClick={() => removeNotification(notification.id)}
                                                                 >
                                                                     <IconXCircle />
@@ -401,7 +370,7 @@ const Header = () => {
                                     ) : (
                                         <li onClick={(e) => e.stopPropagation()}>
                                             <button type="button" className="!grid place-content-center hover:!bg-transparent text-lg min-h-[200px]">
-                                                <div className="mx-auto ring-4 ring-primary/30 rounded-full mb-4 text-primary">
+                                                <div className="mx-auto ring-4 ring-primary/30 rounded-full mb-4 text-primary dark:text-uk-link-dark">
                                                     <IconInfoCircle fill={true} className="w-10 h-10" />
                                                 </div>
                                                 No data available.
@@ -416,13 +385,15 @@ const Header = () => {
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
+                                aria-label="Menú de usuario"
+                                title="Menú de usuario"
                                 button={
                                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white saturate-50 group-hover:saturate-100">
                                         {iniciales}
                                     </span>
                                 }
                             >
-                                <ul className="text-dark dark:text-white-dark !py-0 w-[230px] font-semibold dark:text-white-light/90">
+                                <ul className="text-dark dark:text-uk-muted-dark !py-0 w-[230px] font-semibold dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
                                             <span className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-base font-semibold text-white">
@@ -430,7 +401,7 @@ const Header = () => {
                                             </span>
                                             <div className="ltr:pl-4 rtl:pr-4 min-w-0">
                                                 <h4 className="truncate text-base">{perfil ? nombreCompleto(perfil) : 'Usuario'}</h4>
-                                                {perfil ? <span className="mt-1 inline-block text-xs bg-success-light rounded text-success px-1">{rolLabel[perfil.rol]}</span> : null}
+                                                {perfil ? <span className="mt-1 inline-block text-xs bg-[#E6F6EE] dark:bg-success/10 rounded text-uk-won dark:text-uk-won-dark px-1">{rolLabel[perfil.rol]}</span> : null}
                                                 <button type="button" className="block max-w-full truncate text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
                                                     {perfil?.email ?? ''}
                                                 </button>
@@ -456,7 +427,7 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li className="border-t border-white-light dark:border-white-light/10">
-                                        <button type="button" className="text-danger !py-3" onClick={signOut}>
+                                        <button type="button" className="text-uk-lost dark:text-uk-lost-dark !py-3" onClick={signOut}>
                                             <IconLogout className="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
                                             Cerrar sesión
                                         </button>

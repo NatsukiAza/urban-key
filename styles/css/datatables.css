@@ -19,7 +19,10 @@ table tr .mantine-Checkbox-root {
     @apply flex;
 }
 .datatables table thead tr th {
-    @apply !border-b-0 !bg-white-light/30  text-black dark:!bg-[#1a2941] dark:!text-white-dark;
+    @apply !border-b-0 !bg-white-light/30 text-black;
+}
+.dark .datatables table thead tr th {
+    @apply !bg-[#1a2941] !text-uk-muted-dark;
 }
 
 .datatables .table-bordered table thead tr th,
@@ -51,7 +54,7 @@ table tr .mantine-Checkbox-root {
     @apply bg-white-light/20 dark:!bg-[#1a2941]/40;
 }
 .datatables table {
-    @apply font-nunito !text-black dark:!text-white-dark;
+    @apply font-nunito !text-black dark:!text-uk-muted-dark;
 }
 .datatables .mantine-Text-root {
     @apply flex-none !font-nunito text-sm font-medium;
@@ -67,7 +70,7 @@ table tr .mantine-Checkbox-root {
     @apply hidden;
 }
 .mantine-Group-root .mantine-UnstyledButton-root {
-    @apply hover:bg-inherit dark:!border-[#191e3a] dark:text-white-dark;
+    @apply hover:bg-inherit dark:!border-[#191e3a] dark:text-uk-muted-dark;
 }
 
 .mantine-Table-root th.text-right .mantine-Group-root {
@@ -77,11 +80,11 @@ table tr .mantine-Checkbox-root {
     @apply flex-auto justify-end gap-1;
 }
 .mantine-Menu-dropdown {
-    @apply dark:!border-[#191e3a] dark:!bg-[#1a2941] dark:text-white-dark;
+    @apply dark:!border-[#191e3a] dark:!bg-[#1a2941] dark:text-uk-muted-dark;
 }
 
 .mantine-Checkbox-body {
-    @apply grid h-5 w-5 place-content-center overflow-hidden rounded  border-0  bg-transparent text-primary;
+    @apply grid h-5 w-5 place-content-center overflow-hidden rounded  border-0  bg-transparent text-primary dark:text-uk-link-dark;
 }
 .mantine-Checkbox-inner > .mantine-Checkbox-input {
     @apply border-2 border-white-light bg-transparent dark:!border-[#253b5c];
@@ -106,7 +109,7 @@ table tr .mantine-Checkbox-root {
     @apply text-center font-nunito !text-sm;
 }
 .mantine-Menu-item {
-    @apply hover:bg-primary hover:text-white dark:text-white-dark dark:hover:text-white;
+    @apply hover:bg-primary hover:text-white dark:text-uk-muted-dark dark:hover:text-white;
 }
 .mantine-Menu-arrow {
     @apply dark:!border-[#191e3a];
@@ -120,4 +123,22 @@ table tr .mantine-Checkbox-root {
 
 .table-hover.invoice-table > div:nth-child(2) {
     @apply !px-5;
+}
+
+.dark .mantine-Select-input {
+    @apply !border-uk-field-dark !bg-uk-card-dark !text-uk-ink-dark;
+}
+.dark .mantine-Select-dropdown {
+    @apply !border-uk-line-dark !bg-uk-card-dark;
+}
+.dark .mantine-Select-item {
+    @apply !text-uk-ink-dark;
+}
+
+/* Mantine hace sticky el thead y anima el fondo del th: el navegador deja capas con el color oscuro al volver a claro. Las tablas no tienen alto fijo, el sticky no aporta. */
+.datatables table thead {
+    position: static !important;
+}
+.datatables table thead tr th {
+    transition: none !important;
 }

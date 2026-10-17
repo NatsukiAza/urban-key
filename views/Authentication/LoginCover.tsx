@@ -84,13 +84,13 @@ const LoginCover = () => {
                 <div className="relative flex w-full max-w-[460px] flex-col items-center justify-center gap-4 rounded-2xl bg-white/85 px-6 py-6 shadow-2xl backdrop-blur-xl dark:bg-black/60 sm:px-10 sm:py-8">
                         <div className="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
                             <Link href="/" className="block lg:hidden">
-                                <span className="text-lg font-extrabold uppercase text-primary">UrbanKey</span>
+                                <span className="text-lg font-extrabold uppercase text-primary dark:text-uk-link-dark">UrbanKey</span>
                             </Link>
                             <div className="dropdown ms-auto hidden w-max">
                                 <Dropdown
                                     offset={[0, 8]}
                                     placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-white-dark hover:border-primary hover:text-primary dark:bg-black"
+                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-uk-muted dark:text-uk-muted-dark hover:border-primary hover:text-primary dark:bg-black"
                                     button={
                                         <>
                                             <div>
@@ -103,13 +103,13 @@ const LoginCover = () => {
                                         </>
                                     }
                                 >
-                                    <ul className="!px-2 text-dark dark:text-white-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
+                                    <ul className="!px-2 text-dark dark:text-uk-muted-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
                                         {themeConfig.languageList.map((item: any) => {
                                             return (
                                                 <li key={item.code}>
                                                     <button
                                                         type="button"
-                                                        className={`flex w-full hover:text-primary rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary' : ''}`}
+                                                        className={`flex w-full hover:text-primary dark:hover:text-uk-link-dark rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary dark:text-uk-link-dark' : ''}`}
                                                         onClick={() => {
                                                             i18next.changeLanguage(item.code);
                                                             setLocale(item.code);
@@ -127,19 +127,19 @@ const LoginCover = () => {
                         </div>
                         <div className="w-full max-w-[440px]">
                             <div className="mb-6">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-[#502558] md:text-4xl">Iniciar sesión</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Ingresá con tu correo y contraseña de UrbanKey</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary dark:text-uk-link-dark md:text-4xl">Iniciar sesión</h1>
+                                <p className="text-base font-bold leading-normal text-uk-muted dark:text-uk-muted-dark">Ingresá con tu correo y contraseña de UrbanKey</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
-                                    <label htmlFor="correo" className="text-[#502558]">Correo</label>
-                                    <div className="relative text-white-dark">
+                                    <label htmlFor="correo" className="text-primary dark:text-uk-link-dark">Correo</label>
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="correo"
                                             type="email"
                                             autoComplete="email"
                                             placeholder="tu@correo.com"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={correo}
                                             onChange={(event) => setCorreo(event.target.value)}
                                             required
@@ -150,14 +150,14 @@ const LoginCover = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="text-[#502558]">Contraseña</label>
-                                    <div className="relative text-white-dark">
+                                    <label htmlFor="password" className="text-primary dark:text-uk-link-dark">Contraseña</label>
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="password"
                                             type="password"
                                             autoComplete="current-password"
                                             placeholder="Contraseña"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={password}
                                             onChange={(event) => setPassword(event.target.value)}
                                             required
@@ -167,14 +167,14 @@ const LoginCover = () => {
                                         </span>
                                     </div>
                                 </div>
-                                {error ? <p className="text-danger">{error}</p> : null}
-                                <button type="submit" className="btn !mt-6 w-full border-0 bg-gradient-to-r from-[#502558] to-[#D8AC71] uppercase text-white shadow-[0_10px_20px_-10px_rgba(80,37,88,0.6)] transition-all duration-300 hover:from-[#D8AC71] hover:to-[#502558]" disabled={submitting}>
+                                {error ? <p className="text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
+                                <button type="submit" className="btn !mt-6 w-full btn-primary uppercase" disabled={submitting}>
                                     {submitting ? 'Ingresando...' : 'Ingresar'}
                                 </button>
                             </form>
                             <div className="mt-6 text-center dark:text-white">
                                 ¿No tenés cuenta?&nbsp;
-                                <Link href="/auth/cover-register" className="uppercase text-[#502558] underline transition hover:text-[#D8AC71] dark:hover:text-white">
+                                <Link href="/auth/cover-register" className="uppercase text-primary dark:text-uk-link-dark underline transition hover:text-black dark:hover:text-white">
                                     Registrate
                                 </Link>
                             </div>

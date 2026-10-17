@@ -50,7 +50,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                 <h2 className="text-xl font-semibold mb-2">Inmobiliaria</h2>
                 {esAdmin ? (
                     <>
-                        <p className="text-white-dark mb-5">Cargá la inmobiliaria una sola vez. Después vas a poder crear sus sucursales y asignar usuarios.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark mb-5">Cargá la inmobiliaria una sola vez. Después vas a poder crear sus sucursales y asignar usuarios.</p>
                         <form onSubmit={crearOrg} className="space-y-5">
                             <div>
                                 <label htmlFor="nombre">Nombre *</label>
@@ -68,7 +68,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                         </form>
                     </>
                 ) : (
-                    <p className="text-white-dark">Todavía no hay una inmobiliaria cargada. Pedile a un administrador que la dé de alta.</p>
+                    <p className="text-uk-muted dark:text-uk-muted-dark">Todavía no hay una inmobiliaria cargada. Pedile a un administrador que la dé de alta.</p>
                 )}
             </div>
         );
@@ -99,7 +99,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                             <button type="submit" className="btn btn-primary" disabled={guardando}>
                                 {guardando ? 'Guardando…' : 'Guardar'}
                             </button>
-                            <button type="button" className="btn btn-outline-danger" onClick={() => setEditandoOrg(false)}>
+                            <button type="button" className="btn btn-cancel" onClick={() => setEditandoOrg(false)}>
                                 Cancelar
                             </button>
                         </form>
@@ -113,7 +113,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                                     </button>
                                 )}
                             </div>
-                            <p className="text-white-dark text-sm">{esAdmin ? 'Todas las sucursales de la inmobiliaria.' : 'Tu sucursal asignada.'}</p>
+                            <p className="text-uk-muted dark:text-uk-muted-dark text-sm">{esAdmin ? 'Todas las sucursales de la inmobiliaria.' : 'Tu sucursal asignada.'}</p>
                         </>
                     )}
                 </div>
@@ -128,7 +128,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
             </div>
 
             {sucursales.length === 0 ? (
-                <div className="px-5 pb-5 text-white-dark">{esAdmin ? 'Todavía no hay sucursales. Creá la primera para después asignar usuarios.' : 'No estás asignado a una sucursal. Pedile a un administrador que te asigne.'}</div>
+                <div className="px-5 pb-5 text-uk-muted dark:text-uk-muted-dark">{esAdmin ? 'Todavía no hay sucursales. Creá la primera para después asignar usuarios.' : 'No estás asignado a una sucursal. Pedile a un administrador que te asigne.'}</div>
             ) : (
                 <div className="table-responsive">
                     <table className="table-hover">
@@ -152,11 +152,11 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                                     </td>
                                     <td className="text-center">
                                         <div className="flex items-center justify-center gap-2">
-                                            <Link href={`/sucursales/${s.id}`} className="hover:text-primary" title="Ver">
+                                            <Link href={`/sucursales/${s.id}`} className="hover:text-primary dark:hover:text-uk-link-dark" title="Ver">
                                                 <IconEye />
                                             </Link>
                                             {esAdmin && (
-                                                <Link href={`/sucursales/${s.id}/editar`} className="hover:text-primary" title="Editar">
+                                                <Link href={`/sucursales/${s.id}/editar`} className="hover:text-primary dark:hover:text-uk-link-dark" title="Editar">
                                                     <IconEdit />
                                                 </Link>
                                             )}

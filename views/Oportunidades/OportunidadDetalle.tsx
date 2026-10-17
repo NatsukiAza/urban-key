@@ -14,6 +14,8 @@ import type { OportunidadDetalle as TDetalle } from '@/lib/oportunidad/types';
 import type { Etapa, MotivoPerdida } from '@/lib/dominio';
 import DetailHero from '@/components/ui/DetailHero';
 import Timeline from '@/components/ui/Timeline';
+import EstadoChip from '@/components/ui/EstadoChip';
+import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 interface Props {
     detalle: TDetalle;
@@ -26,6 +28,7 @@ const fmtFecha = (iso: string | null) => (iso ? new Date(iso).toLocaleString('es
 const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
+    useBreadcrumbDetalle(detalle.titulo, detalle.funnel?.nombre);
     useEffect(() => {
         dispatch(setPageTitle('Detalle de oportunidad'));
     });
@@ -69,7 +72,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) =>
 
     const Campo = ({ label, children }: { label: string; children: React.ReactNode }) => (
         <div>
-            <div className="text-white-dark text-xs uppercase">{label}</div>
+            <div className="text-uk-muted dark:text-uk-muted-dark text-xs uppercase">{label}</div>
             <div className="font-semibold">{children}</div>
         </div>
     );
@@ -80,7 +83,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) =>
         <div className="space-y-5">
             <DetailHero
                 title={detalle.titulo}
-                badges={<span className={`badge badge-outline-${estadoOportunidadConfig[detalle.estado].color}`}>{estadoOportunidadConfig[detalle.estado].label}</span>}
+                badges={<EstadoChip label={estadoOportunidadConfig[detalle.estado].label} color={estadoOportunidadConfig[detalle.estado].color} />}
                 actions={
                     <>
                         {!cerrada && (
@@ -89,9 +92,6 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida }: Props) =>
                                 Editar
                             </Link>
                         )}
-                        <Link href="/oportunidades" className="btn btn-outline-primary">
-                            Volver
-                        </Link>
                     </>
                 }
                 facts={[

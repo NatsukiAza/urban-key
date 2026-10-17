@@ -58,7 +58,7 @@ const RegisterBoxed = () => {
                                 <Dropdown
                                     offset={[0, 8]}
                                     placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-white-dark hover:border-primary hover:text-primary dark:bg-black"
+                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-uk-muted dark:text-uk-muted-dark hover:border-primary hover:text-primary dark:bg-black"
                                     button={
                                         <>
                                             <div>
@@ -71,13 +71,13 @@ const RegisterBoxed = () => {
                                         </>
                                     }
                                 >
-                                    <ul className="!px-2 text-dark dark:text-white-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
+                                    <ul className="!px-2 text-dark dark:text-uk-muted-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
                                         {themeConfig.languageList.map((item: any) => {
                                             return (
                                                 <li key={item.code}>
                                                     <button
                                                         type="button"
-                                                        className={`flex w-full hover:text-primary rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary' : ''}`}
+                                                        className={`flex w-full hover:text-primary dark:hover:text-uk-link-dark rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary dark:text-uk-link-dark' : ''}`}
                                                         onClick={() => {
                                                             i18next.changeLanguage(item.code);
                                                             // setFlag(item.code);
@@ -96,14 +96,14 @@ const RegisterBoxed = () => {
                         </div>
                         <div className="mx-auto w-full max-w-[440px]">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign Up</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to register</p>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary dark:text-uk-link-dark md:text-4xl">Sign Up</h1>
+                                <p className="text-base font-bold leading-normal text-uk-muted dark:text-uk-muted-dark">Enter your email and password to register</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
                                     <label htmlFor="Name">Name</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Name" type="text" placeholder="Enter Name" className="form-input ps-10 placeholder:text-white-dark" />
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
+                                        <input id="Name" type="text" placeholder="Enter Name" className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark" />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconUser fill={true} />
                                         </span>
@@ -111,8 +111,8 @@ const RegisterBoxed = () => {
                                 </div>
                                 <div>
                                     <label htmlFor="Email">Email</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-white-dark" />
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
+                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark" />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
                                         </span>
@@ -120,8 +120,8 @@ const RegisterBoxed = () => {
                                 </div>
                                 <div>
                                     <label htmlFor="Password">Password</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" />
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
+                                        <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark" />
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconLockDots fill={true} />
                                         </span>
@@ -130,7 +130,7 @@ const RegisterBoxed = () => {
                                 <div>
                                     <label className="flex cursor-pointer items-center">
                                         <input type="checkbox" className="form-checkbox bg-white dark:bg-black" />
-                                        <span className="text-white-dark">Subscribe to weekly newsletter</span>
+                                        <span className="text-uk-muted dark:text-uk-muted-dark">Subscribe to weekly newsletter</span>
                                     </label>
                                 </div>
                                 <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
@@ -139,7 +139,7 @@ const RegisterBoxed = () => {
                             </form>
                             <div className="relative my-7 text-center md:mb-9">
                                 <span className="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
-                                <span className="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
+                                <span className="relative bg-white px-2 font-bold uppercase text-uk-muted dark:text-uk-muted-dark dark:bg-dark dark:text-white-light">or</span>
                             </div>
                             <div className="mb-10 md:mb-[60px]">
                                 <ul className="flex justify-center gap-3.5 text-white">
@@ -183,7 +183,7 @@ const RegisterBoxed = () => {
                             </div>
                             <div className="text-center dark:text-white">
                                 Already have an account ?&nbsp;
-                                <Link href="/auth/boxed-signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                <Link href="/auth/boxed-signin" className="uppercase text-primary dark:text-uk-link-dark underline transition hover:text-black dark:hover:text-white">
                                     SIGN IN
                                 </Link>
                             </div>

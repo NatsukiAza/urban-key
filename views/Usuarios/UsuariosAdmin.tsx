@@ -59,7 +59,7 @@ const UsuariosAdmin = ({ usuarios }: { usuarios: UsuarioListado[] }) => {
         <div className="space-y-6">
             <div className="panel">
                 <h1 className="mb-5 text-lg font-semibold dark:text-white-light">Usuarios</h1>
-                {usuarios.length === 0 ? <p className="text-white-dark">Todavía no hay usuarios.</p> : null}
+                {usuarios.length === 0 ? <p className="text-uk-muted dark:text-uk-muted-dark">Todavía no hay usuarios.</p> : null}
                 {usuarios.length > 0 ? (
                     <div className="table-responsive">
                         <table className="table-hover">
@@ -90,7 +90,7 @@ const UsuariosAdmin = ({ usuarios }: { usuarios: UsuarioListado[] }) => {
 
             <div className="panel">
                 <h2 className="mb-5 text-lg font-semibold dark:text-white-light">Nuevo empleado</h2>
-                <p className="mb-5 text-white-dark">La contraseña es temporal. En el primer ingreso la tiene que cambiar. No se envía por correo: copiala y pasásela.</p>
+                <p className="mb-5 text-uk-muted dark:text-uk-muted-dark">La contraseña es temporal. En el primer ingreso la tiene que cambiar. No se envía por correo: copiala y pasásela.</p>
                 <form className="grid gap-4 sm:grid-cols-2" onSubmit={submitForm}>
                     <div>
                         <label htmlFor="nombre">Nombre</label>
@@ -128,7 +128,7 @@ const UsuariosAdmin = ({ usuarios }: { usuarios: UsuarioListado[] }) => {
                             required
                         />
                     </div>
-                    {error ? <p className="text-danger sm:col-span-2">{error}</p> : null}
+                    {error ? <p className="text-uk-lost dark:text-uk-lost-dark sm:col-span-2">{error}</p> : null}
                     {temporal ? (
                         <p className="sm:col-span-2 text-[#502558]">
                             Usuario creado. Contraseña temporal: <span className="font-semibold">{temporal}</span>

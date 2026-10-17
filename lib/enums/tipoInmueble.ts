@@ -7,7 +7,7 @@ export const tipoInmuebleOptions: { label: string; value: TipoInmueble }[] = [
 ];
 
 export const tipoInmuebleConfig: Record<TipoInmueble, { label: string; color: string }> = {
-    CASA: { label: 'Casa', color: 'primary' },
-    DEPARTAMENTO: { label: 'Departamento', color: 'info' },
-    PH: { label: 'PH', color: 'secondary' },
+    CASA: { label: 'Casa', color: 'neutral' },
+    DEPARTAMENTO: { label: 'Departamento', color: 'neutral' },
+    PH: { label: 'PH', color: 'neutral' },
 };

@@ -16,10 +16,12 @@ import {
 import DetailHero from '@/components/ui/DetailHero';
 import Timeline from '@/components/ui/Timeline';
 import ContactoDetalleSkeleton from '@/views/Contactos/ContactoDetalleSkeleton';
+import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 const ContactoDetalle = ({ id }: { id: string }) => {
     const dispatch = useDispatch();
     const [contacto, setContacto] = useState<Contacto | null>(null);
+    useBreadcrumbDetalle(contacto ? nombreContacto(contacto) : undefined);
     const [observaciones, setObservaciones] = useState<Observacion[]>([]);
     const [texto, setTexto] = useState('');
     const [error, setError] = useState('');
@@ -90,8 +92,8 @@ const ContactoDetalle = ({ id }: { id: string }) => {
     if (!contacto) {
         return (
             <div className="panel">
-                <p className="text-danger">{error || 'No encontramos ese contacto.'}</p>
-                <Link href="/contactos" className="mt-4 inline-block text-primary hover:underline">
+                <p className="text-uk-lost dark:text-uk-lost-dark">{error || 'No encontramos ese contacto.'}</p>
+                <Link href="/contactos" className="mt-4 inline-block text-primary dark:text-uk-link-dark hover:underline">
                     Volver al listado
                 </Link>
             </div>
@@ -104,11 +106,6 @@ const ContactoDetalle = ({ id }: { id: string }) => {
         <div className="space-y-5">
             <DetailHero
                 title={nombreContacto(contacto)}
-                actions={
-                    <Link href="/contactos" className="btn btn-outline-primary">
-                        Volver
-                    </Link>
-                }
                 facts={[
                     { label: 'Email', value: contacto.email || '—' },
                     { label: 'Teléfono', value: contacto.telefono || '—' },
@@ -117,7 +114,7 @@ const ContactoDetalle = ({ id }: { id: string }) => {
             />
             <div className="panel">
                 <h2 className="mb-4 text-lg font-semibold">Datos</h2>
-                <p className="text-white-dark">{contacto.observaciones || 'Sin nota del contacto.'}</p>
+                <p className="text-uk-muted dark:text-uk-muted-dark">{contacto.observaciones || 'Sin nota del contacto.'}</p>
             </div>
 
             <div className="panel">
@@ -129,7 +126,7 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                         {guardandoNota ? 'Guardando...' : 'Agregar observación'}
                     </button>
                 </form>
-                {error ? <p className="mb-4 text-danger">{error}</p> : null}
+                {error ? <p className="mb-4 text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                 <Timeline
                     vacio="Todavía no hay observaciones."
                     items={observaciones.map((item) => ({

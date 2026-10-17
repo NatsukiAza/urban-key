@@ -41,22 +41,21 @@ const Sidebar = () => {
         });
     }, []);
 
+    const enSeccion = (base: string) => pathname === base || pathname.startsWith(`${base}/`);
+    const enTablero = enSeccion('/oportunidades/tablero');
+    const activo = {
+        inmuebles: enSeccion('/inmuebles'),
+        sucursales: enSeccion('/sucursales'),
+        contactos: enSeccion('/contactos'),
+        oportunidades: enSeccion('/oportunidades'),
+        usuarios: enSeccion('/usuarios'),
+    };
+    const seccionActual = activo.inmuebles ? 'inmuebles' : activo.oportunidades ? 'oportunidades' : '';
+    const props = (esActivo: boolean) => ({ 'aria-current': esActivo ? ('page' as const) : undefined, className: esActivo ? 'active' : '' });
+
     useEffect(() => {
-        const selector = document.querySelector('.sidebar ul a[href="' + pathname + '"]');
-        if (selector) {
-            selector.classList.add('active');
-            const ul: any = selector.closest('ul.sub-menu');
-            if (ul) {
-                let ele: any = ul.closest('li.menu').querySelectorAll('.nav-link') || [];
-                if (ele.length) {
-                    ele = ele[0];
-                    setTimeout(() => {
-                        ele.click();
-                    });
-                }
-            }
-        }
-    }, []);
+        setCurrentMenu(seccionActual);
+    }, [seccionActual]);
 
     useEffect(() => {
         if (window.innerWidth < 1024 && themeConfig.sidebar) {
@@ -68,10 +67,10 @@ const Sidebar = () => {
     return (
         <div className={semidark ? 'dark' : ''}>
             <nav
-                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-white-dark' : ''}`}
+                className={`sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300 ${semidark ? 'text-uk-muted dark:text-uk-muted-dark' : ''}`}
             >
                 <div className="h-full bg-white dark:bg-black bg-cover bg-center bg-no-repeat bg-[url('/assets/images/sidebar-bg.webp')] dark:bg-[url('/assets/images/sidebar-bg-dark.webp')]">
-                    <div className="sidebar-header flex justify-between items-center px-4 py-3">
+                    <div className="sidebar-header relative flex justify-between items-center px-4 py-3">
                         <Link href="/" className="main-logo flex items-center shrink-0">
                             <span className="logo-mini hidden text-2xl font-semibold align-middle text-white drop-shadow">U</span>
                             <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle text-white drop-shadow">UrbanKey</span>
@@ -87,13 +86,13 @@ const Sidebar = () => {
                         </button>
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
-                        <ul className="relative font-semibold space-y-0.5 p-4 py-0">
+                        <ul className="relative z-10 font-semibold space-y-0.5 px-[13px] py-0">
                             {/* La cartera de inmuebles es el insumo del embudo: va antes que Oportunidades. */}
                             <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'inmuebles' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('inmuebles')}>
+                                <button type="button" className={`${activo.inmuebles ? 'active' : ''} nav-link group w-full`} aria-current={activo.inmuebles ? 'page' : undefined} onClick={() => toggleMenu('inmuebles')}>
                                     <div className="flex items-center">
-                                        <IconHome duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Inmuebles')}</span>
+                                        <IconHome duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Inmuebles')}</span>
                                     </div>
 
                                     <div className={`text-white ${currentMenu !== 'inmuebles' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
@@ -102,37 +101,37 @@ const Sidebar = () => {
                                 </button>
 
                                 <AnimateHeight duration={300} height={currentMenu === 'inmuebles' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-white/80">
+                                    <ul className="sub-menu">
                                         <li>
-                                            <Link className="hover:text-white" href="/inmuebles">{t('Lista')}</Link>
+                                            <Link {...props(activo.inmuebles)} href="/inmuebles">{t('Lista')}</Link>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
                             </li>
 
                             <li className="nav-item">
-                                <Link href="/sucursales" className="group">
+                                <Link href="/sucursales" className={`group ${activo.sucursales ? 'active' : ''}`} aria-current={activo.sucursales ? 'page' : undefined}>
                                     <div className="flex items-center">
-                                        <IconMapPin duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Sucursales')}</span>
+                                        <IconMapPin duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Sucursales')}</span>
                                     </div>
                                 </Link>
                             </li>
 
                             <li className="nav-item">
-                                <Link href="/contactos" className="group">
+                                <Link href="/contactos" className={`group ${activo.contactos ? 'active' : ''}`} aria-current={activo.contactos ? 'page' : undefined}>
                                     <div className="flex items-center">
-                                        <IconUsers duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Contactos')}</span>
+                                        <IconUsers duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Contactos')}</span>
                                     </div>
                                 </Link>
                             </li>
 
                             <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'oportunidades' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('oportunidades')}>
+                                <button type="button" className={`${activo.oportunidades ? 'active' : ''} nav-link group w-full`} aria-current={activo.oportunidades ? 'page' : undefined} onClick={() => toggleMenu('oportunidades')}>
                                     <div className="flex items-center">
-                                        <IconTrendingUp duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Oportunidades')}</span>
+                                        <IconTrendingUp duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Oportunidades')}</span>
                                     </div>
 
                                     <div className={`text-white ${currentMenu !== 'oportunidades' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
@@ -141,12 +140,12 @@ const Sidebar = () => {
                                 </button>
 
                                 <AnimateHeight duration={300} height={currentMenu === 'oportunidades' ? 'auto' : 0}>
-                                    <ul className="sub-menu text-white/80">
+                                    <ul className="sub-menu">
                                         <li>
-                                            <Link className="hover:text-white" href="/oportunidades">{t('Lista')}</Link>
+                                            <Link {...props(activo.oportunidades && !enTablero)} href="/oportunidades">{t('Lista')}</Link>
                                         </li>
                                         <li>
-                                            <Link className="hover:text-white" href="/oportunidades/tablero">{t('Tablero')}</Link>
+                                            <Link {...props(enTablero)} href="/oportunidades/tablero">{t('Tablero')}</Link>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
@@ -154,10 +153,10 @@ const Sidebar = () => {
 
                             {rol === 'ADMINISTRADOR' ? (
                                 <li className="nav-item">
-                                    <Link href="/usuarios" className="group">
+                                    <Link href="/usuarios" className={`group ${activo.usuarios ? 'active' : ''}`} aria-current={activo.usuarios ? 'page' : undefined}>
                                         <div className="flex items-center">
-                                            <IconUser duotone={false} className="text-white group-hover:!text-white shrink-0 drop-shadow" />
-                                            <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Usuarios')}</span>
+                                            <IconUser duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                            <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Usuarios')}</span>
                                         </div>
                                     </Link>
                                 </li>

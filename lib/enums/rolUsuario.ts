@@ -7,7 +7,7 @@ export const rolUsuarioOptions: { label: string; value: RolUsuario }[] = [
 ];
 
 export const rolUsuarioConfig: Record<RolUsuario, { label: string; color: string }> = {
-    ADMINISTRADOR: { label: 'Administrador', color: 'primary' },
-    VENDEDOR: { label: 'Vendedor', color: 'info' },
-    RESPONSABLE_COMERCIAL: { label: 'Responsable comercial', color: 'success' },
+    ADMINISTRADOR: { label: 'Administrador', color: 'neutral' },
+    VENDEDOR: { label: 'Vendedor', color: 'neutral' },
+    RESPONSABLE_COMERCIAL: { label: 'Responsable comercial', color: 'neutral' },
 };

@@ -55,11 +55,11 @@
 
     .sidebar .nav-item > button,
     .sidebar .nav-item > a {
-        @apply mb-1 flex w-full items-center justify-between overflow-hidden whitespace-nowrap rounded-md p-2.5 text-[#506690] hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark;
+        @apply mb-1 flex min-h-[44px] w-full items-center justify-between overflow-hidden whitespace-nowrap rounded-[10px] px-3 py-2.5 text-sm font-semibold text-uk-sidebar-text hover:bg-white/5 hover:text-white;
     }
     .sidebar .nav-item > button.active,
     .sidebar .nav-item > a.active {
-        @apply bg-black/10 text-white;
+        @apply bg-white/10 font-bold text-white;
     }
 
     .sidebar .nav-item > button.active > div > span,
@@ -69,21 +69,20 @@
 
     .sidebar ul.sub-menu li button,
     .sidebar ul.sub-menu li a {
-        @apply flex w-full items-center px-9 py-2.5 text-white/80 before:h-0.5 before:w-2 before:rounded before:bg-white/60 hover:bg-black/10
-hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
+        @apply flex min-h-[44px] w-full items-center px-9 py-2.5 text-[13px] text-uk-sidebar-sub before:h-1.5 before:w-1.5 before:rounded-full before:bg-transparent hover:bg-white/5 hover:text-white ltr:before:mr-2 rtl:before:ml-2;
     }
     .sidebar ul.sub-menu li button.active,
     .sidebar ul.sub-menu li a.active {
-        @apply text-white before:!bg-white;
+        @apply font-bold text-white before:!bg-gold;
     }
 
     .sidebar .nav-item a div:first-child svg,
     .sidebar .nav-item button div:first-child svg {
-        @apply h-5 w-5 text-white;
+        @apply h-5 w-5 text-uk-sidebar-text;
     }
     .sidebar .nav-item > a.active div:first-child svg,
     .sidebar .nav-item > button.active div:first-child svg {
-        @apply text-white;
+        @apply text-gold;
     }
 
     .main-container .main-content {
@@ -118,15 +117,15 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     }
 
     .horizontal-menu .nav-link {
-        @apply flex items-center py-2.5 px-2 rounded-lg hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark xl:px-4;
+        @apply flex items-center py-2.5 px-2 rounded-lg hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-uk-muted-dark xl:px-4;
     }
 
     .horizontal-menu .nav-link.active {
-        @apply bg-[#000]/[0.08] text-black dark:bg-[#181f32] dark:text-white-dark;
+        @apply bg-[#000]/[0.08] text-black dark:bg-[#181f32] dark:text-uk-muted-dark;
     }
 
     .horizontal-menu ul.sub-menu {
-        @apply absolute top-full z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-white-dark;
+        @apply absolute top-full z-[10] hidden min-w-[180px] rounded bg-white p-0 py-2 text-dark shadow dark:bg-[#1b2e4b] dark:text-uk-muted-dark;
     }
 
     .horizontal-menu ul.sub-menu a,
@@ -279,10 +278,14 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     }
 
     .btn-primary {
-        @apply border-primary bg-primary text-white shadow-primary/60 dark:border-gold dark:bg-gold dark:text-black dark:shadow-gold/60;
+        @apply border-primary bg-primary text-white shadow-primary/60 dark:border-gold dark:bg-gold dark:text-[#2A1A00] dark:shadow-none;
     }
     .btn-outline-primary {
-        @apply border-[#502558] text-[#502558] shadow-none hover:bg-[#502558] hover:text-white dark:border-[#D8AC71] dark:text-[#D8AC71] dark:hover:bg-[#D8AC71] dark:hover:text-black;
+        @apply border-[#502558] text-[#502558] shadow-none hover:bg-[#502558] hover:text-white dark:border-uk-field-dark dark:text-uk-ink-dark dark:hover:bg-white/5 dark:hover:text-uk-ink-dark;
+    }
+
+    .btn-cancel {
+        @apply border-uk-field bg-transparent text-uk-muted shadow-none hover:bg-uk-col hover:text-uk-ink dark:border-uk-line-dark dark:text-uk-ink-dark dark:hover:bg-white/5;
     }
 
     .btn-secondary {
@@ -296,14 +299,14 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
         @apply border-success bg-success text-white shadow-success/60;
     }
     .btn-outline-success {
-        @apply border-success text-success shadow-none hover:bg-success hover:text-white;
+        @apply border-success text-uk-won dark:text-uk-won-dark shadow-none hover:bg-success hover:text-white;
     }
 
     .btn-danger {
         @apply border-danger bg-danger text-white shadow-danger/60;
     }
     .btn-outline-danger {
-        @apply border-danger text-danger shadow-none hover:bg-danger hover:text-white;
+        @apply border-danger text-uk-lost dark:text-uk-lost-dark shadow-none hover:bg-danger hover:text-white;
     }
 
     .btn-warning {
@@ -337,16 +340,16 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
         @apply relative my-1 rounded border border-transparent px-2 py-0.5 text-xs font-semibold text-white;
     }
     .badge-outline-primary {
-        @apply border-primary text-primary hover:bg-primary-light dark:hover:bg-primary dark:hover:text-white-light;
+        @apply border-primary text-primary dark:text-uk-link-dark hover:bg-primary-light dark:hover:bg-primary dark:hover:text-white-light;
     }
     .badge-outline-secondary {
         @apply border-secondary text-secondary hover:bg-secondary-light dark:hover:bg-secondary dark:hover:text-white-light;
     }
     .badge-outline-success {
-        @apply border-success text-success hover:bg-success-light dark:hover:bg-success dark:hover:text-white-light;
+        @apply border-success text-uk-won dark:text-uk-won-dark hover:bg-success-light dark:hover:bg-success dark:hover:text-white-light;
     }
     .badge-outline-danger {
-        @apply border-danger text-danger hover:bg-danger-light dark:hover:bg-danger dark:hover:text-white-light;
+        @apply border-danger text-uk-lost dark:text-uk-lost-dark hover:bg-danger-light dark:hover:bg-danger dark:hover:text-white-light;
     }
     .badge-outline-warning {
         @apply border-warning text-warning hover:bg-warning-light dark:hover:bg-warning dark:hover:text-white-light;
@@ -363,7 +366,7 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     .form-textarea,
     .form-select,
     .form-multiselect {
-        @apply w-full rounded-md border border-white-light bg-white px-4 py-2 text-sm font-semibold text-black !outline-none focus:border-gold focus:ring-transparent dark:border-[#17263c] dark:bg-[#121e32] dark:text-white-dark dark:focus:border-gold;
+        @apply w-full rounded-md border bg-white px-4 py-2 text-sm font-semibold text-uk-ink !outline-none focus:border-gold focus:ring-transparent border-uk-field dark:border-uk-field-dark dark:bg-uk-card-dark dark:text-uk-ink-dark dark:focus:border-gold;
     }
 
     .form-input-lg,
@@ -390,13 +393,13 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     .has-error .form-select,
     .has-error .form-multiselect,
     .has-error .multiselect__tags {
-        @apply border-danger bg-danger/[0.08] text-danger placeholder-danger/70 focus:border-danger;
+        @apply border-danger bg-danger/[0.08] text-uk-lost dark:text-uk-lost-dark placeholder-danger/70 focus:border-danger;
     }
     .has-error .form-label,
     .has-error .form-help,
     .has-error .form-icon,
     .has-error .multiselect__placeholder {
-        @apply text-danger;
+        @apply text-uk-lost dark:text-uk-lost-dark;
     }
     .has-error .multiselect__input {
         @apply bg-[#F7ECF0] !placeholder-danger/70;
@@ -411,13 +414,13 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     .has-success .form-select,
     .has-success .form-multiselect,
     .has-success .multiselect__tags {
-        @apply border-success bg-success/[0.08] text-success placeholder-success/70 focus:border-success;
+        @apply border-success bg-success/[0.08] text-uk-won dark:text-uk-won-dark placeholder-success/70 focus:border-success;
     }
     .has-success .form-label,
     .has-success .form-help,
     .has-success .form-icon,
     .has-success .multiselect__placeholder {
-        @apply text-success;
+        @apply text-uk-won dark:text-uk-won-dark;
     }
     .has-success .multiselect__input {
         @apply bg-[#F7ECF0] !placeholder-success/70;
@@ -496,11 +499,11 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
         @apply flex;
     }
     .dropdown ul {
-        @apply my-1 min-w-[120px] rounded bg-white p-0 py-2 shadow dark:bg-[#1b2e4b] text-black dark:text-white-dark;
+        @apply my-1 min-w-[120px] rounded bg-white p-0 py-2 shadow dark:bg-[#1b2e4b] text-black dark:text-uk-muted-dark;
     }
     .dropdown ul li > a,
     .dropdown ul li > button {
-        @apply flex items-center px-4 py-2 hover:bg-primary/10 hover:text-primary;
+        @apply flex items-center px-4 py-2 hover:bg-primary/10 hover:text-primary dark:hover:text-uk-link-dark;
     }
     .dropdown ul li > button {
         @apply w-full;
@@ -515,7 +518,11 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     }
     table thead tr,
     table tfoot tr {
-        @apply border-b-0 !bg-[#f6f8fa]  dark:!bg-[#1a2941];
+        @apply border-b-0 !bg-[#f6f8fa];
+    }
+    .dark table thead tr,
+    .dark table tfoot tr {
+        @apply !bg-[#1a2941];
     }
     table thead tr th,
     table tfoot tr th,
@@ -612,8 +619,19 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
     flex-direction: row !important;
     align-items: center;
     width: auto;
-    gap: 10px;
+    min-width: min(420px, calc(100vw - 2.5rem)) !important;
+    max-width: calc(100vw - 2.5rem);
+    gap: 12px;
     margin: 0 1.25rem 1.5rem 0 !important;
+}
+.swal2-popup.swal2-toast.uk-toast .swal2-html-container {
+    flex: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left;
+}
+.dark .swal2-popup.swal2-toast {
+    box-shadow: none !important;
 }
 .swal2-popup.swal2-toast.uk-toast .swal2-icon {
     width: 1.5em;
@@ -730,4 +748,59 @@ hover:text-white hover:before:!bg-white ltr:before:mr-2 rtl:before:ml-2;
 /* Hightlight JS */
 pre.hljs {
     @apply p-6 rounded-md overflow-x-auto !bg-[#191e3a];
+}
+
+/* Modales de cierre (lib/ui/modales.ts) */
+.swal2-popup.uk-modal {
+    width: 520px;
+    max-width: 92vw;
+    padding: 20px 24px !important;
+    box-shadow: 0 24px 60px -12px rgba(30, 15, 40, 0.35);
+}
+.swal2-popup.uk-modal .swal2-html-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit;
+    font-weight: inherit;
+    overflow: visible;
+}
+.swal2-popup.uk-modal .swal2-actions {
+    width: 100%;
+    margin: 20px 0 0;
+}
+.swal2-popup.uk-modal .swal2-footer {
+    margin: 0;
+    padding: 12px 0 0;
+    border-top: 0;
+    justify-content: flex-start;
+}
+.swal2-popup.uk-modal input[type='number'] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+.swal2-popup.uk-modal input[type='number']::-webkit-inner-spin-button,
+.swal2-popup.uk-modal input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.swal2-popup.uk-modal .form-input:focus,
+.swal2-popup.uk-modal .form-select:focus,
+.swal2-popup.uk-modal .form-textarea:focus {
+    border-color: #502558;
+    box-shadow: 0 0 0 3px rgba(80, 37, 88, 0.16);
+}
+.dark .swal2-popup.uk-modal .form-input:focus,
+.dark .swal2-popup.uk-modal .form-select:focus,
+.dark .swal2-popup.uk-modal .form-textarea:focus {
+    border-color: #d8ac71;
+    box-shadow: 0 0 0 3px rgba(216, 172, 113, 0.2);
+}
+.swal2-popup.uk-modal h2 {
+    color: #1b1424;
+}
+.dark .swal2-popup.uk-modal h2 {
+    color: #eef0f7;
+}
+.dark .swal2-popup.uk-modal {
+    border: 1px solid #2a3350;
 }

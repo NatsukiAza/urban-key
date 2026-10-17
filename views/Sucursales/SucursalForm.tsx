@@ -73,7 +73,7 @@ const SucursalForm = ({ sucursal }: Props) => {
                     </label>
                 )}
                 <div className="flex justify-end gap-4">
-                    <button type="button" className="btn btn-outline-danger" onClick={() => router.push(esEdicion ? `/sucursales/${sucursal.id}` : '/sucursales')}>
+                    <button type="button" className="btn btn-cancel" onClick={() => router.push(esEdicion ? `/sucursales/${sucursal.id}` : '/sucursales')}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary" disabled={guardando}>

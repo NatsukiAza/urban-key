@@ -21,6 +21,7 @@ import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/type
 import type { Usuario, Funnel, Origen, Etapa, MotivoPerdida } from '@/lib/dominio';
 import OportunidadesTableSkeleton from '@/views/Oportunidades/OportunidadesTableSkeleton';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
+import EstadoChip from '@/components/ui/EstadoChip';
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), {
     ssr: false,
@@ -264,7 +265,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
 
                 {rows.length === 0 ? (
                     <div className="px-5 py-10 text-center">
-                        <p className="text-white-dark">{hayFiltro ? 'Ninguna oportunidad coincide con los filtros.' : 'Todavía no hay oportunidades.'}</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark">{hayFiltro ? 'Ninguna oportunidad coincide con los filtros.' : 'Todavía no hay oportunidades.'}</p>
                         <Link href="/oportunidades/nuevo" className="btn btn-primary mt-4 inline-flex">
                             Nueva oportunidad
                         </Link>
@@ -281,7 +282,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                                 sortable: true,
                                 render: ({ id, titulo }: OportunidadRow) => (
                                     <Link href={`/oportunidades/${id}`}>
-                                        <div className="text-primary underline hover:no-underline font-semibold">{titulo}</div>
+                                        <div className="text-primary dark:text-uk-link-dark underline hover:no-underline font-semibold">{titulo}</div>
                                     </Link>
                                 ),
                             },
@@ -294,14 +295,14 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                                 accessor: 'estado',
                                 title: 'Estado',
                                 sortable: true,
-                                render: ({ estado }: OportunidadRow) => <span className={`badge badge-outline-${estadoOportunidadConfig[estado].color}`}>{estadoOportunidadConfig[estado].label}</span>,
+                                render: ({ estado }: OportunidadRow) => <EstadoChip label={estadoOportunidadConfig[estado].label} color={estadoOportunidadConfig[estado].color} />,
                             },
                             {
                                 accessor: 'valorEstimado',
                                 title: 'Valor',
                                 sortable: true,
                                 titleClassName: 'text-right',
-                                render: ({ valorEstimado, moneda }: OportunidadRow) => <div className="text-right font-semibold text-gold-dark">{formatearImporte(valorEstimado, moneda)}</div>,
+                                render: ({ valorEstimado, moneda }: OportunidadRow) => <div className="text-right font-semibold text-uk-money dark:text-uk-money-dark">{formatearImporte(valorEstimado, moneda)}</div>,
                             },
                             {
                                 accessor: 'action',
@@ -317,13 +318,13 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                                                 {avanzandoId === row.id ? 'Guardando...' : `Avanzar a ${destino.nombre}`}
                                             </button>
                                         )}
-                                        <Link href={`/oportunidades/${row.id}/editar`} className="flex hover:text-info" aria-label="Editar" title="Editar">
+                                        <Link href={`/oportunidades/${row.id}/editar`} className="flex hover:text-primary dark:hover:text-uk-link-dark" aria-label="Editar" title="Editar">
                                             <IconEdit className="w-4.5 h-4.5" />
                                         </Link>
-                                        <Link href={`/oportunidades/${row.id}`} className="flex hover:text-primary" aria-label="Ver" title="Ver">
+                                        <Link href={`/oportunidades/${row.id}`} className="flex hover:text-primary dark:hover:text-uk-link-dark" aria-label="Ver" title="Ver">
                                             <IconEye />
                                         </Link>
-                                        <button type="button" className="flex hover:text-danger" aria-label="Dar de baja" title="Dar de baja" onClick={() => eliminar(row.id)}>
+                                        <button type="button" className="flex hover:text-uk-lost dark:hover:text-uk-lost-dark" aria-label="Dar de baja" title="Dar de baja" onClick={() => eliminar(row.id)}>
                                             <IconTrashLines />
                                         </button>
                                     </div>

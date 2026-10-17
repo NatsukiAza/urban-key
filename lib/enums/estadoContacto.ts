@@ -8,8 +8,8 @@ export const estadoContactoOptions: { label: string; value: EstadoContacto }[] =
 ];
 
 export const estadoContactoConfig: Record<EstadoContacto, { label: string; color: string }> = {
-    POTENCIAL: { label: 'Potencial', color: 'info' },
+    POTENCIAL: { label: 'Potencial', color: 'neutral' },
     CLIENTE: { label: 'Cliente', color: 'success' },
-    INACTIVO: { label: 'Inactivo', color: 'secondary' },
+    INACTIVO: { label: 'Inactivo', color: 'neutral' },
     NO_CONTACTAR: { label: 'No contactar', color: 'danger' },
 };
