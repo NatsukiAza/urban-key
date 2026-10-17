@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   graphql_public: {
     Tables: {
@@ -186,6 +186,7 @@ export type Database = {
       etapas: {
         Row: {
           activo: boolean
+          actualizado_en: string
           creado_en: string
           descripcion: string | null
           es_final: boolean
@@ -197,6 +198,7 @@ export type Database = {
         }
         Insert: {
           activo?: boolean
+          actualizado_en?: string
           creado_en?: string
           descripcion?: string | null
           es_final?: boolean
@@ -208,6 +210,7 @@ export type Database = {
         }
         Update: {
           activo?: boolean
+          actualizado_en?: string
           creado_en?: string
           descripcion?: string | null
           es_final?: boolean
@@ -485,6 +488,7 @@ export type Database = {
           inmueble_id: string | null
           moneda: Database["public"]["Enums"]["moneda"]
           motivo_perdida_id: string | null
+          nota_cambio_etapa: string | null
           observaciones: string | null
           origen_id: string | null
           responsable_id: string
@@ -508,6 +512,7 @@ export type Database = {
           inmueble_id?: string | null
           moneda?: Database["public"]["Enums"]["moneda"]
           motivo_perdida_id?: string | null
+          nota_cambio_etapa?: string | null
           observaciones?: string | null
           origen_id?: string | null
           responsable_id: string
@@ -531,6 +536,7 @@ export type Database = {
           inmueble_id?: string | null
           moneda?: Database["public"]["Enums"]["moneda"]
           motivo_perdida_id?: string | null
+          nota_cambio_etapa?: string | null
           observaciones?: string | null
           origen_id?: string | null
           responsable_id?: string
@@ -724,11 +730,15 @@ export type Database = {
       }
       es_admin: { Args: never; Returns: boolean }
       es_usuario_activo: { Args: never; Returns: boolean }
-      sucursal_actual: { Args: never; Returns: string }
+      reordenar_etapas: {
+        Args: { p_etapa_ids: string[]; p_funnel_id: string }
+        Returns: undefined
+      }
       rol_actual: {
         Args: never
         Returns: Database["public"]["Enums"]["rol_usuario"]
       }
+      sucursal_actual: { Args: never; Returns: string }
       ve_todo: { Args: never; Returns: boolean }
       vincular_inmobiliaria_inicial: {
         Args: { p_nombre: string; p_usuario_id: string }
