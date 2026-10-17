@@ -15,6 +15,7 @@ import IconUsers from '../Icon/IconUsers';
 import IconUser from '../Icon/IconUser';
 import IconTrendingUp from '../Icon/IconTrendingUp';
 import IconMapPin from '../Icon/IconMapPin';
+import IconSettings from '../Icon/IconSettings';
 import { createClient } from '@/lib/supabase/client';
 import type { RolUsuario } from '@/lib/enums/rolUsuario';
 
@@ -160,6 +161,32 @@ const Sidebar = () => {
                                             <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Usuarios')}</span>
                                         </div>
                                     </Link>
+                                </li>
+                            ) : null}
+
+                            {rol === 'ADMINISTRADOR' ? (
+                                <li className="menu nav-item">
+                                    <button type="button" className={`${currentMenu === 'configuracion' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('configuracion')}>
+                                        <div className="flex items-center">
+                                            <IconSettings className="text-white group-hover:!text-white shrink-0 drop-shadow" />
+                                            <span className="ltr:pl-3 rtl:pr-3 text-white group-hover:text-white drop-shadow">{t('Configuración')}</span>
+                                        </div>
+
+                                        <div className={`text-white ${currentMenu !== 'configuracion' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+
+                                    <AnimateHeight duration={300} height={currentMenu === 'configuracion' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-white/80">
+                                            <li>
+                                                <Link className="hover:text-white" href="/configuracion/embudos">{t('Embudos')}</Link>
+                                            </li>
+                                            <li>
+                                                <Link className="hover:text-white" href="/configuracion/motivos-perdida">{t('Motivos de pérdida')}</Link>
+                                            </li>
+                                        </ul>
+                                    </AnimateHeight>
                                 </li>
                             ) : null}
                         </ul>

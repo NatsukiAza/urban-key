@@ -12,10 +12,12 @@ export interface Oportunidad {
     etapaId: string;
     estado: EstadoOportunidad;
     valorEstimado: number | null;
+    valorFinal: number | null;
     moneda: Moneda;
     origenId: string | null;
     observaciones: string | null;
     motivoPerdidaId: string | null;
+    fechaCierreEstimada: string | null;
     fechaCierreReal: string | null;
     activo: boolean;
     creadoEn: string;
@@ -36,6 +38,7 @@ export interface OportunidadInput {
     moneda?: Moneda;
     origenId?: string | null;
     observaciones?: string | null;
+    fechaCierreEstimada?: string | null;
 }
 
 export interface HistorialEtapa {
@@ -107,6 +110,7 @@ export interface ColumnaEtapa {
     title: string;
     orden: number;
     resultado: EstadoOportunidad;
+    activo: boolean;
     tasks: OportunidadCard[];
 }
 

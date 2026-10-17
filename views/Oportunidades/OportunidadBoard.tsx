@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { cambiarEtapa } from '@/lib/oportunidad/actions';
 import { showToast } from '@/lib/ui/toast';
@@ -15,6 +14,7 @@ import type { Funnel, MotivoPerdida } from '@/lib/dominio';
 import type { EstadoOportunidad } from '@/lib/enums/estadoOportunidad';
 import { inicialesDe } from '@/components/ui/Iniciales';
 import PageHeader from '@/components/ui/PageHeader';
+import { pedirDatosCierre } from './pedirDatosCierre';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
 
@@ -45,26 +45,20 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
 
     const aplicarMovimiento = async (cardId: string, destEtapaId: string) => {
         const destCol = columns.find((c) => c.id === destEtapaId);
-        let motivoPerdidaId: string | null = null;
-        if (destCol?.resultado === 'PERDIDA') {
-            const opciones = motivosPerdida.reduce((acc: Record<string, string>, m) => ({ ...acc, [m.id]: m.nombre }), {});
-            const { value, isConfirmed } = await Swal.fire({
-                title: 'Motivo de pérdida',
-                input: 'select',
-                inputOptions: opciones,
-                inputPlaceholder: 'Seleccionar motivo',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                inputValidator: (v) => (!v ? 'Tenés que elegir un motivo' : undefined),
-            });
-            if (!isConfirmed) {
-                router.refresh(); // revierte el movimiento optimista
-                return;
-            }
-            motivoPerdidaId = value;
+        const card = columns.flatMap((c) => c.tasks).find((t) => t.id === cardId);
+        if (!destCol || !card) return;
+        const cierre = await pedirDatosCierre({
+            resultado: destCol.resultado,
+            etapaNombre: destCol.title,
+            motivosPerdida,
+            valorEstimado: card.valorEstimado,
+            moneda: card.moneda,
+        });
+        if (!cierre) {
+            router.refresh(); // revierte el movimiento optimista
+            return;
         }
-        const res = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId, motivoPerdidaId });
+        const res = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId, ...cierre });
         showMessage(res.mensaje, res.ok ? 'success' : 'error');
         router.refresh(); // reconcilia con el store (revierte movimientos rechazados)
     };
@@ -85,13 +79,15 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
     };
 
     const columna = (column: ColumnaEtapa) => (
-        <div key={column.id} className={`panel w-80 flex-none ${tonoColumna(column.resultado)}`} data-group={column.id}>
-            <div className="flex justify-between mb-5">
-                <h4 className="text-base font-semibold flex items-center gap-2">
+        <div key={column.id} className={`panel flex w-60 flex-none flex-col !p-3 ${tonoColumna(column.resultado)} ${column.activo ? '' : 'opacity-60'}`} data-group={column.id}>
+            <div className="mb-3 flex items-start justify-between gap-2">
+                <h4 className="flex flex-wrap items-center gap-1.5 text-sm font-semibold leading-tight" title={column.activo ? undefined : 'Etapa desactivada'}>
                     {column.title}
-                    {column.resultado !== 'ABIERTA' && <span className={`badge badge-outline-${estadoOportunidadConfig[column.resultado].color}`}>{estadoOportunidadConfig[column.resultado].label}</span>}
+                    {column.resultado !== 'ABIERTA' && (
+                        <span className={`badge badge-outline-${estadoOportunidadConfig[column.resultado].color} px-1.5 py-0 text-[10px]`}>{estadoOportunidadConfig[column.resultado].label}</span>
+                    )}
                 </h4>
-                <span className="badge bg-primary/10 text-primary">{column.tasks.length}</span>
+                <span className="badge shrink-0 bg-primary/10 px-1.5 py-0 text-xs text-primary">{column.tasks.length}</span>
             </div>
             <ReactSortable
                 list={column.tasks}
@@ -107,23 +103,24 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
                     }
                 }}
                 animation={200}
-                group={{ name: 'oportunidades', pull: true, put: true }}
+                group={{ name: 'oportunidades', pull: true, put: column.activo }}
                 ghostClass="sortable-ghost"
                 dragClass="sortable-drag"
-                className="connect-sorting-content min-h-[150px]"
+                className="connect-sorting-content min-h-[80px] flex-1"
             >
                 {column.tasks.map((task) => (
                     <div className="sortable-list" key={task.id}>
                         <div
                             onClick={() => router.push(`/oportunidades/${task.id}`)}
-                            className={`mb-3 cursor-move select-none space-y-2 rounded-md border border-white-light bg-white p-3 shadow-sm ltr:border-l-4 dark:border-[#1b2e4b] dark:bg-black ${tonoTarjeta(column.resultado)}`}
+                            className={`mb-2 cursor-move select-none space-y-1 rounded-md border border-white-light bg-white px-2.5 py-2 shadow-sm ltr:border-l-4 dark:border-[#1b2e4b] dark:bg-black ${tonoTarjeta(column.resultado)}`}
+                            title={task.inmueble ? `${task.titulo}
+${task.inmueble}` : task.titulo}
                         >
-                            <div className="text-base font-medium">{task.titulo}</div>
-                            <div className="text-sm text-white-dark">{task.contacto}</div>
-                            {task.inmueble && <div className="text-xs text-white-dark">{task.inmueble}</div>}
-                            <div className="flex items-center justify-between gap-2 pt-1">
-                                <span className="text-sm font-semibold text-gold-dark">{task.valorEstimado != null ? formatearImporte(task.valorEstimado, task.moneda) : ''}</span>
-                                <span className="grid h-7 w-7 shrink-0 place-content-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary" title={task.responsable}>
+                            <div className="line-clamp-2 text-sm font-medium leading-snug">{task.titulo}</div>
+                            <div className="truncate text-xs text-white-dark">{task.contacto}</div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="truncate text-xs font-semibold text-gold-dark">{task.valorEstimado != null ? formatearImporte(task.valorEstimado, task.moneda) : ''}</span>
+                                <span className="grid h-6 w-6 shrink-0 place-content-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary" title={task.responsable}>
                                     {inicialesDe(task.responsable)}
                                 </span>
                             </div>
@@ -156,7 +153,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, motivosPerdida }:
             </div>
 
             <div className="min-h-0 flex-1 overflow-auto">
-                <div className="flex items-start flex-nowrap gap-5 pb-2">
+                <div className="flex min-h-full w-max flex-nowrap items-stretch gap-3 pb-2">
                     {abiertas.map(columna)}
                     {cierre.length > 0 && <div className="flex-none self-stretch border-l border-white-light dark:border-[#1b2e4b]" />}
                     {cierre.map(columna)}

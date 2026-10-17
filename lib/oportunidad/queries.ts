@@ -58,10 +58,12 @@ function aOportunidad(r: OportunidadDbRow): Oportunidad {
         etapaId: r.etapa_id,
         estado: r.estado,
         valorEstimado: r.valor_estimado,
+        valorFinal: r.valor_final,
         moneda: r.moneda,
         origenId: r.origen_id,
         observaciones: r.observaciones,
         motivoPerdidaId: r.motivo_perdida_id,
+        fechaCierreEstimada: r.fecha_cierre_estimada,
         fechaCierreReal: r.fecha_cierre_real,
         activo: r.activo,
         creadoEn: r.creado_en,
@@ -229,8 +231,11 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
             title: e.nombre,
             orden: e.orden,
             resultado: e.resultado,
+            activo: e.activo,
             tasks: porEtapa.get(e.id) ?? [],
-        }));
+        }))
+            // Una etapa desactivada solo se muestra si todavía tiene oportunidades.
+            .filter((c) => c.activo || c.tasks.length > 0);
 
         return { funnelId, columnas };
     } catch (err) {

@@ -21,6 +21,7 @@ import type { OportunidadRow, FiltroOportunidades } from '@/lib/oportunidad/type
 import type { Usuario, Funnel, Origen, Etapa, MotivoPerdida } from '@/lib/dominio';
 import OportunidadesTableSkeleton from '@/views/Oportunidades/OportunidadesTableSkeleton';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
+import { pedirDatosCierre } from './pedirDatosCierre';
 
 const DataTable = dynamic(() => import('mantine-datatable').then((mod) => mod.DataTable), {
     ssr: false,
@@ -72,41 +73,21 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
         const destino = etapaSiguiente(row, etapas);
         if (!destino || avanzandoId) return;
 
-        let motivoPerdidaId: string | null = null;
-        if (destino.resultado === 'GANADA') {
-            const { isConfirmed } = await Swal.fire({
-                title: '¿Cerrar como ganada?',
-                text: `La oportunidad pasa a “${destino.nombre}” y queda cerrada.`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Avanzar',
-                cancelButtonText: 'Cancelar',
-                padding: '2em',
-            });
-            if (!isConfirmed) return;
-        }
-        if (destino.resultado === 'PERDIDA') {
-            const opciones = motivosPerdida.reduce((acc: Record<string, string>, motivo) => ({ ...acc, [motivo.id]: motivo.nombre }), {});
-            const { value, isConfirmed } = await Swal.fire({
-                title: 'Motivo de pérdida',
-                input: 'select',
-                inputOptions: opciones,
-                inputPlaceholder: 'Seleccionar motivo',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar',
-                inputValidator: (v) => (!v ? 'Tenés que elegir un motivo' : undefined),
-            });
-            if (!isConfirmed) return;
-            motivoPerdidaId = value;
-        }
+        const cierre = await pedirDatosCierre({
+            resultado: destino.resultado,
+            etapaNombre: destino.nombre,
+            motivosPerdida,
+            valorEstimado: row.valorEstimado,
+            moneda: row.moneda,
+        });
+        if (!cierre) return;
 
         setAvanzandoId(row.id);
         const res = await cambiarEtapa({
             oportunidadId: row.id,
             etapaId: destino.id,
-            motivoPerdidaId,
-            observacion: 'Avance desde el listado',
+            ...cierre,
+            observacion: cierre.observacion ?? 'Avance desde el listado',
         });
         setAvanzandoId(null);
         showMessage(res.mensaje, res.ok ? 'success' : 'error');

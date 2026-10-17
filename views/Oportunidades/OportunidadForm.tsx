@@ -7,13 +7,28 @@ import { showToast } from '@/lib/ui/toast';
 import { crearOportunidad, actualizarOportunidad } from '@/lib/oportunidad/actions';
 import { monedaOptions } from '@/lib/enums/moneda';
 import type { FormOptions, Oportunidad } from '@/lib/oportunidad/types';
+import type { Moneda } from '@/lib/enums/moneda';
+
+export interface ValoresIniciales {
+    titulo?: string;
+    contactoId?: string;
+    inmuebleId?: string;
+    responsableId?: string;
+    funnelId?: string;
+    etapaId?: string;
+    valorEstimado?: number;
+    moneda?: Moneda;
+}
 
 interface Props {
     options: FormOptions;
     oportunidad?: Oportunidad | null;
+    iniciales?: ValoresIniciales;
+    volverA?: string;
+    puedeReasignar?: boolean;
 }
 
-const OportunidadForm = ({ options, oportunidad }: Props) => {
+const OportunidadForm = ({ options, oportunidad, iniciales, volverA, puedeReasignar = false }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const esEdicion = !!oportunidad;
@@ -22,16 +37,17 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
     });
 
     const [params, setParams] = useState({
-        titulo: oportunidad?.titulo ?? '',
-        contactoId: oportunidad?.contactoId ?? '',
-        inmuebleId: oportunidad?.inmuebleId ?? '',
-        responsableId: oportunidad?.responsableId ?? '',
-        funnelId: oportunidad?.funnelId ?? '',
-        etapaId: oportunidad?.etapaId ?? '',
-        valorEstimado: oportunidad?.valorEstimado != null ? String(oportunidad.valorEstimado) : '',
-        moneda: oportunidad?.moneda ?? 'ARS',
+        titulo: oportunidad?.titulo ?? iniciales?.titulo ?? '',
+        contactoId: oportunidad?.contactoId ?? iniciales?.contactoId ?? '',
+        inmuebleId: oportunidad?.inmuebleId ?? iniciales?.inmuebleId ?? '',
+        responsableId: oportunidad?.responsableId ?? iniciales?.responsableId ?? '',
+        funnelId: oportunidad?.funnelId ?? iniciales?.funnelId ?? '',
+        etapaId: oportunidad?.etapaId ?? iniciales?.etapaId ?? '',
+        valorEstimado: String(oportunidad?.valorEstimado ?? iniciales?.valorEstimado ?? ''),
+        moneda: oportunidad?.moneda ?? iniciales?.moneda ?? 'ARS',
         origenId: oportunidad?.origenId ?? '',
         observaciones: oportunidad?.observaciones ?? '',
+        fechaCierreEstimada: oportunidad?.fechaCierreEstimada ?? '',
     });
     const [guardando, setGuardando] = useState(false);
 
@@ -65,12 +81,14 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
             moneda: params.moneda,
             origenId: params.origenId || null,
             observaciones: params.observaciones || null,
+            fechaCierreEstimada: params.fechaCierreEstimada || null,
         };
         const res = esEdicion ? await actualizarOportunidad(oportunidad!.id, input) : await crearOportunidad(input);
         setGuardando(false);
         if (res.ok) {
             showMessage(res.mensaje);
-            const destino = esEdicion ? `/oportunidades/${oportunidad!.id}` : '/oportunidades';
+            const id = esEdicion ? oportunidad!.id : (res.data as { id: string } | undefined)?.id;
+            const destino = id ? `/oportunidades/${id}` : '/oportunidades';
             router.push(destino);
             router.refresh();
         } else {
@@ -113,7 +131,7 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
 
                 <div>
                     <label htmlFor="responsableId">Responsable *</label>
-                    <select id="responsableId" value={params.responsableId} onChange={change} className="form-select">
+                    <select id="responsableId" value={params.responsableId} onChange={change} className="form-select" disabled={!puedeReasignar}>
                         <option value="">Seleccionar…</option>
                         {options.usuarios.map((u) => (
                             <option key={u.id} value={u.id}>
@@ -175,13 +193,18 @@ const OportunidadForm = ({ options, oportunidad }: Props) => {
                     </select>
                 </div>
 
+                <div>
+                    <label htmlFor="fechaCierreEstimada">Fecha estimada de cierre</label>
+                    <input id="fechaCierreEstimada" value={params.fechaCierreEstimada} onChange={change} type="date" className="form-input" />
+                </div>
+
                 <div className="sm:col-span-2">
                     <label htmlFor="observaciones">Observaciones</label>
                     <textarea id="observaciones" value={params.observaciones} onChange={change} className="form-textarea min-h-[100px]" placeholder="Notas de la oportunidad" />
                 </div>
 
                 <div className="sm:col-span-2 flex justify-end gap-4 mt-2">
-                    <button type="button" className="btn btn-outline-danger" onClick={() => router.push('/oportunidades')}>
+                    <button type="button" className="btn btn-outline-danger" onClick={() => router.push(volverA ?? '/oportunidades')}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary" disabled={guardando}>

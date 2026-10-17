@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation';
 import OportunidadForm from '@/views/Oportunidades/OportunidadForm';
 import { getOportunidad, getFormOptions } from '@/lib/oportunidad/queries';
+import { getUsuarioActual } from '@/lib/auth/session';
+import { puedeReasignar } from '@/lib/auth/permisos';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const [oportunidad, options] = await Promise.all([getOportunidad(id), getFormOptions()]);
+    const [oportunidad, options, usuario] = await Promise.all([getOportunidad(id), getFormOptions(), getUsuarioActual()]);
     if (!oportunidad) notFound();
-    return <OportunidadForm options={options} oportunidad={oportunidad} />;
+    return <OportunidadForm options={options} oportunidad={oportunidad} puedeReasignar={puedeReasignar(usuario?.rol)} />;
 }
