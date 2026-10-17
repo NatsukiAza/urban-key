@@ -21,6 +21,8 @@ export const cambiarEtapaSchema = z.object({
     etapaId: z.string().min(1, 'La etapa es obligatoria'),
     observacion: z.string().nullish().transform((v) => v || null),
     motivoPerdidaId: z.string().nullish().transform((v) => v || null),
+    valorFinal: z.coerce.number().min(0, 'El valor no puede ser negativo').nullish().transform((v) => (v === undefined ? null : v)),
+    fechaCierre: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha de cierre no es válida').nullish().transform((v) => v || null),
 });
 
 export type OportunidadSchemaInput = z.input<typeof oportunidadSchema>;

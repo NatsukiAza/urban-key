@@ -155,7 +155,7 @@ export async function actualizarOportunidad(id: string, input: unknown): Promise
 export async function cambiarEtapa(input: unknown): Promise<ActionResult> {
     const parsed = cambiarEtapaSchema.safeParse(input);
     if (!parsed.success) return fallo(parsed.error.issues[0]?.message ?? 'Datos inválidos');
-    const { oportunidadId, etapaId, observacion, motivoPerdidaId } = parsed.data;
+    const { oportunidadId, etapaId, observacion, motivoPerdidaId, valorFinal, fechaCierre } = parsed.data;
 
     const usuario = await getUsuarioActual();
     if (!usuario) return fallo('No hay una sesión activa');
@@ -178,8 +178,9 @@ export async function cambiarEtapa(input: unknown): Promise<ActionResult> {
         .update({
             etapa_id: etapa.id,
             estado: resultado,
-            fecha_cierre_real: resultado === 'ABIERTA' ? null : new Date().toISOString(),
+            fecha_cierre_real: resultado === 'ABIERTA' ? null : fechaCierre ? `${fechaCierre}T12:00:00Z` : new Date().toISOString(),
             motivo_perdida_id: resultado === 'PERDIDA' ? motivoPerdidaId : null,
+            valor_final: resultado === 'GANADA' ? valorFinal : null,
             actualizado_por: usuario.id,
         })
         .eq('id', oportunidadId);

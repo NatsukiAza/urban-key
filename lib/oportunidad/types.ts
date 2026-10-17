@@ -107,6 +107,7 @@ export interface ColumnaEtapa {
     title: string;
     orden: number;
     resultado: EstadoOportunidad;
+    activa: boolean;
     tasks: OportunidadCard[];
 }
 
@@ -116,7 +117,10 @@ export interface OportunidadCard {
     contacto: string;
     inmueble: string | null;
     responsable: string;
+    responsableId: string;
     valorEstimado: number | null;
     moneda: Moneda;
     estado: EstadoOportunidad;
+    fechaCierreEstimada: string | null;
+    diasEnEtapa: number;
 }
