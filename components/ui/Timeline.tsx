@@ -33,20 +33,24 @@ const Timeline = ({ items, vacio, variante = 'simple' }: { items: ItemTimeline[]
                 const primero = index === 0;
                 const esUltimo = index === items.length - 1;
                 return (
-                    <li key={item.id} className="relative pb-5 pl-7 last:pb-0">
-                        {!esUltimo ? <span aria-hidden="true" className="absolute bottom-0 left-[5px] top-4 w-px bg-primary/25 dark:bg-white/15" /> : null}
+                    <li key={item.id} className="relative pb-6 pl-7 last:pb-0">
+                        {!esUltimo ? <span aria-hidden="true" className="absolute bottom-0 left-[6px] top-5 w-0.5 bg-primary/25 dark:bg-white/15" /> : null}
                         <span
                             aria-hidden="true"
-                            className={`absolute left-0 top-[5px] h-[11px] w-[11px] rounded-full border-2 ${
-                                primero ? 'border-primary bg-primary dark:border-gold dark:bg-gold' : item.ultimo ? 'border-primary/40 bg-transparent dark:border-white/30' : 'border-primary/40 bg-primary/40 dark:border-white/30 dark:bg-white/30'
+                            className={`absolute rounded-full ${
+                                primero
+                                    ? 'left-0 top-[3px] h-[14px] w-[14px] border-2 border-primary bg-primary shadow-[0_0_0_4px_#F6EEF7] dark:border-gold dark:bg-gold dark:shadow-[0_0_0_4px_rgba(216,172,113,.2)]'
+                                    : item.ultimo
+                                      ? 'left-[1.5px] top-[4.5px] h-[11px] w-[11px] border-2 border-[#CDB8D3] bg-transparent dark:border-white/30'
+                                      : 'left-[1.5px] top-[4.5px] h-[11px] w-[11px] bg-[#CDB8D3] dark:bg-white/30'
                             }`}
                         />
-                        <p className="text-[13px] text-uk-muted dark:text-uk-muted-dark [&_strong]:font-extrabold [&_strong]:text-uk-ink dark:[&_strong]:text-uk-ink-dark">{item.title}</p>
-                        <p className="mt-0.5 text-xs text-uk-muted dark:text-uk-muted-dark">
+                        <p className={`text-sm font-bold text-uk-muted dark:text-uk-muted-dark [&_strong]:font-extrabold ${primero ? '[&_strong]:text-primary dark:[&_strong]:text-gold' : '[&_strong]:text-uk-ink dark:[&_strong]:text-uk-ink-dark'}`}>{item.title}</p>
+                        <p className="mt-1.5 text-xs text-uk-muted dark:text-uk-muted-dark">
                             {item.meta}
                             {item.sinNota ? <> · <em>sin nota</em></> : null}
                         </p>
-                        {item.nota ? <p className="mt-2 rounded-lg bg-uk-page p-3 text-[13px] text-uk-ink dark:bg-uk-page-dark dark:text-uk-ink-dark">{item.nota}</p> : null}
+                        {item.nota ? <p className="mt-2 rounded-lg bg-uk-page px-3 py-2.5 text-sm leading-[1.5] text-uk-ink dark:bg-uk-page-dark dark:text-uk-ink-dark">{item.nota}</p> : null}
                     </li>
                 );
             })}

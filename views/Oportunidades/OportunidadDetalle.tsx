@@ -36,6 +36,12 @@ interface Props {
 
 const claseBotonBase = 'btn h-10 rounded-[10px] shadow-none';
 
+const Flecha = () => (
+    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mx-2.5 inline-block align-[-2px]">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+);
+
 const Dato = ({ etiqueta, children, className = '' }: { etiqueta: string; children: ReactNode; className?: string }) => (
     <div className={className}>
         <dt className="text-xs font-bold text-uk-muted dark:text-uk-muted-dark">{etiqueta}</dt>
@@ -151,7 +157,9 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
                 </>
             ) : (
                 <>
-                    {h.etapaAnterior?.nombre ?? '—'} → <strong>{h.etapaNueva?.nombre ?? '—'}</strong>
+                    {h.etapaAnterior?.nombre ?? '—'}
+                    <Flecha />
+                    <strong>{h.etapaNueva?.nombre ?? '—'}</strong>
                 </>
             ),
             meta: `${formatearFechaHora(h.creadoEn)} · ${h.usuario ? `${h.usuario.nombre} ${h.usuario.apellido}` : '—'}`,
@@ -281,7 +289,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
                 <section className="panel shadow-[0_2px_4px_rgba(30,15,40,.14)] min-w-0 flex-[2_1_480px] !p-6">
                     <div className="mb-5 flex items-baseline justify-between gap-3">
                         <h2 className="text-lg font-extrabold text-uk-ink dark:text-uk-ink-dark">Historial de etapas</h2>
-                        <span className="text-xs tabular-nums text-uk-muted dark:text-uk-muted-dark">
+                        <span className="text-[13px] tabular-nums text-uk-muted dark:text-uk-muted-dark">
                             {itemsHistorial.length} {itemsHistorial.length === 1 ? 'movimiento' : 'movimientos'}
                         </span>
                     </div>
