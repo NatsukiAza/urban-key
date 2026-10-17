@@ -86,7 +86,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
 
             <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div className="sm:col-span-2 lg:col-span-3">
-                    <h3 className="text-base font-semibold text-white-dark uppercase text-xs tracking-wide">Identificación</h3>
+                    <h3 className="text-base font-semibold text-uk-muted dark:text-uk-muted-dark uppercase text-xs tracking-wide">Identificación</h3>
                 </div>
 
                 <div className="sm:col-span-2">
@@ -117,7 +117,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 </div>
 
                 <div className="sm:col-span-2 lg:col-span-3 mt-2">
-                    <h3 className="text-base font-semibold text-white-dark uppercase text-xs tracking-wide">Clasificación</h3>
+                    <h3 className="text-base font-semibold text-uk-muted dark:text-uk-muted-dark uppercase text-xs tracking-wide">Clasificación</h3>
                 </div>
 
                 <div>
@@ -154,7 +154,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 </div>
 
                 <div className="sm:col-span-2 lg:col-span-3 mt-2">
-                    <h3 className="text-base font-semibold text-white-dark uppercase text-xs tracking-wide">Características</h3>
+                    <h3 className="text-base font-semibold text-uk-muted dark:text-uk-muted-dark uppercase text-xs tracking-wide">Características</h3>
                 </div>
 
                 <div>
@@ -190,7 +190,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 </div>
 
                 <div className="sm:col-span-2 lg:col-span-3 mt-2">
-                    <h3 className="text-base font-semibold text-white-dark uppercase text-xs tracking-wide">Valores</h3>
+                    <h3 className="text-base font-semibold text-uk-muted dark:text-uk-muted-dark uppercase text-xs tracking-wide">Valores</h3>
                 </div>
 
                 <div>
@@ -220,7 +220,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 </div>
 
                 <div className="sm:col-span-2 lg:col-span-3 flex justify-end gap-4 mt-2">
-                    <button type="button" className="btn btn-outline-danger" onClick={() => router.push('/inmuebles')}>
+                    <button type="button" className="btn btn-cancel" onClick={() => router.push('/inmuebles')}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary" disabled={guardando || sinPropietarios}>

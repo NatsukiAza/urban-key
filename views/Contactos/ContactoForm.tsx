@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -60,12 +59,7 @@ const ContactoForm = () => {
 
     return (
         <div className="panel">
-            <div className="mb-5 flex items-center justify-between gap-3">
-                <h1 className="text-lg font-semibold dark:text-white-light">Nuevo contacto</h1>
-                <Link href="/contactos" className="text-primary hover:underline">
-                    Volver al listado
-                </Link>
-            </div>
+            <h1 className="mb-5 text-lg font-semibold dark:text-white-light">Nuevo contacto</h1>
             <form className="space-y-5" onSubmit={submit}>
                 <div className="grid gap-5 sm:grid-cols-2">
                     <div>
@@ -108,9 +102,9 @@ const ContactoForm = () => {
                 <div>
                     <label htmlFor="nota">Nota del contacto</label>
                     <textarea id="nota" className="form-textarea" rows={3} value={observaciones} onChange={(event) => setObservaciones(event.target.value)} />
-                    <p className="mt-1 text-xs text-white-dark">Este texto queda en el contacto. Las observaciones posteriores se cargan en el detalle y no pisan esta nota.</p>
+                    <p className="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">Este texto queda en el contacto. Las observaciones posteriores se cargan en el detalle y no pisan esta nota.</p>
                 </div>
-                {error ? <p className="text-danger">{error}</p> : null}
+                {error ? <p className="text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                 <button type="submit" className="btn btn-primary" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar contacto'}
                 </button>

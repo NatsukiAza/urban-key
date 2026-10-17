@@ -7,7 +7,7 @@ export const estadoOportunidadOptions: { label: string; value: EstadoOportunidad
 ];
 
 export const estadoOportunidadConfig: Record<EstadoOportunidad, { label: string; color: string }> = {
-    ABIERTA: { label: 'Abierta', color: 'info' },
+    ABIERTA: { label: 'Abierta', color: 'primary' },
     GANADA: { label: 'Ganada', color: 'success' },
     PERDIDA: { label: 'Perdida', color: 'danger' },
 };

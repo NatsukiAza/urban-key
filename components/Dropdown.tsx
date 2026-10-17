@@ -47,6 +47,8 @@ const Dropdown = (props : any, forwardedRef: any) => {
                 ref={referenceRef}
                 type="button"
                 className={props.btnClassName}
+                aria-label={props['aria-label']}
+                title={props.title}
                 onClick={() => setVisibility(!visibility)}
             >
                 {props.button}

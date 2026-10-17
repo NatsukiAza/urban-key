@@ -15,6 +15,8 @@ import type { Etapa, MotivoPerdida, Usuario } from '@/lib/dominio';
 import DetailHero from '@/components/ui/DetailHero';
 import Timeline from '@/components/ui/Timeline';
 import { pedirDatosCierre } from './pedirDatosCierre';
+import EstadoChip from '@/components/ui/EstadoChip';
+import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 interface Props {
     detalle: TDetalle;
@@ -30,6 +32,7 @@ const fmtDia = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('
 const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, puedeReasignar }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
+    useBreadcrumbDetalle(detalle.titulo, detalle.funnel?.nombre);
     useEffect(() => {
         dispatch(setPageTitle('Detalle de oportunidad'));
     });
@@ -51,6 +54,8 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
             motivosPerdida,
             valorEstimado: detalle.valorEstimado,
             moneda: detalle.moneda,
+            titulo: detalle.titulo,
+            contacto: detalle.contacto ? `${detalle.contacto.nombre} ${detalle.contacto.apellido}` : undefined,
         });
         if (!cierre) return;
         const res = await cambiarEtapa({ oportunidadId: detalle.id, etapaId: etapa.id, ...cierre });
@@ -89,7 +94,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
 
     const Campo = ({ label, children }: { label: string; children: React.ReactNode }) => (
         <div>
-            <div className="text-white-dark text-xs uppercase">{label}</div>
+            <div className="text-uk-muted dark:text-uk-muted-dark text-xs uppercase">{label}</div>
             <div className="font-semibold">{children}</div>
         </div>
     );
@@ -101,7 +106,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
         <div className="space-y-5">
             <DetailHero
                 title={detalle.titulo}
-                badges={<span className={`badge badge-outline-${estadoOportunidadConfig[detalle.estado].color}`}>{estadoOportunidadConfig[detalle.estado].label}</span>}
+                badges={<EstadoChip label={estadoOportunidadConfig[detalle.estado].label} color={estadoOportunidadConfig[detalle.estado].color} />}
                 actions={
                     <>
                         {!cerrada && (
@@ -127,9 +132,6 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
                                 )}
                             </>
                         )}
-                        <Link href="/oportunidades" className="btn btn-outline-primary">
-                            Volver
-                        </Link>
                     </>
                 }
                 facts={[

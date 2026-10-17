@@ -59,17 +59,17 @@ const ContactosList = () => {
                 <div className="mb-4 border-b border-white-light px-5 pb-4 dark:border-[#1b2e4b]">
                     <input type="text" className="form-input w-full sm:w-56" placeholder="Buscar..." value={busqueda} onChange={(event) => setBusqueda(event.target.value)} />
                 </div>
-                {error ? <p className="px-5 text-danger">{error}</p> : null}
+                {error ? <p className="px-5 text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                 {cargando ? <ContactosTableSkeleton /> : null}
                 {!cargando && !error && contactos.length === 0 ? (
                     <div className="px-5 py-10 text-center">
-                        <p className="text-white-dark">Todavía no hay contactos.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark">Todavía no hay contactos.</p>
                         <Link href="/contactos/nuevo" className="btn btn-primary mt-4 inline-flex">
                             Nuevo contacto
                         </Link>
                     </div>
                 ) : null}
-                {!cargando && contactos.length > 0 && visibles.length === 0 ? <p className="px-5 pb-5 text-white-dark">Ningún contacto coincide con la búsqueda.</p> : null}
+                {!cargando && contactos.length > 0 && visibles.length === 0 ? <p className="px-5 pb-5 text-uk-muted dark:text-uk-muted-dark">Ningún contacto coincide con la búsqueda.</p> : null}
                 {visibles.length > 0 ? (
                     <div className="table-responsive">
                         <table className="table-hover">
@@ -86,7 +86,7 @@ const ContactosList = () => {
                                         <td>
                                             <Link href={`/contactos/${contacto.id}`} className="flex items-center gap-3">
                                                 <Iniciales nombre={contacto.nombre} apellido={contacto.apellido} />
-                                                <span className="font-semibold text-primary">
+                                                <span className="font-semibold text-primary dark:text-uk-link-dark">
                                                     {contacto.nombre} {contacto.apellido}
                                                 </span>
                                             </Link>

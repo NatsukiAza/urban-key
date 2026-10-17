@@ -10,6 +10,7 @@ import { asignarUsuarioASucursal, quitarUsuarioDeSucursal } from '@/lib/sucursal
 import { showToast } from '@/lib/ui/toast';
 import { rolUsuarioConfig } from '@/lib/enums/rolUsuario';
 import type { SucursalDetalle, UsuarioDeSucursal } from '@/lib/sucursal/types';
+import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 interface Props {
     detalle: SucursalDetalle;
@@ -19,7 +20,7 @@ interface Props {
 
 const Campo = ({ label, children }: { label: string; children: React.ReactNode }) => (
     <div>
-        <div className="text-white-dark text-xs uppercase">{label}</div>
+        <div className="text-uk-muted dark:text-uk-muted-dark text-xs uppercase">{label}</div>
         <div className="font-semibold">{children}</div>
     </div>
 );
@@ -27,6 +28,7 @@ const Campo = ({ label, children }: { label: string; children: React.ReactNode }
 const SucursalDetalleView = ({ detalle, esAdmin, candidatos }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
+    useBreadcrumbDetalle(detalle.nombre);
     const [usuarioId, setUsuarioId] = useState('');
     const [asignando, setAsignando] = useState(false);
 
@@ -124,7 +126,7 @@ const SucursalDetalleView = ({ detalle, esAdmin, candidatos }: Props) => {
                 )}
 
                 {detalle.usuarios.length === 0 ? (
-                    <p className="text-white-dark">Esta sucursal todavía no tiene usuarios.</p>
+                    <p className="text-uk-muted dark:text-uk-muted-dark">Esta sucursal todavía no tiene usuarios.</p>
                 ) : (
                     <div className="table-responsive">
                         <table className="table-hover">

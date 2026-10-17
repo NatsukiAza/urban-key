@@ -39,12 +39,12 @@ const Setting = () => {
                         </button>
 
                         <h4 className="mb-1 dark:text-white">TEMPLATE CUSTOMIZER</h4>
-                        <p className="text-white-dark">Set preferences that will be cookied for your live preview demonstration.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark">Set preferences that will be cookied for your live preview demonstration.</p>
                     </div>
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Color Scheme</h5>
-                        <p className="text-white-dark text-xs">Overall light or dark presentation.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Overall light or dark presentation.</p>
                         <div className="grid grid-cols-3 gap-2 mt-3">
                             <button type="button" className={`${themeConfig.theme === 'light' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleTheme('light'))}>
                                 <IconSun className="w-5 h-5 shrink-0 ltr:mr-2 rtl:ml-2" />
@@ -65,7 +65,7 @@ const Setting = () => {
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Navigation Position</h5>
-                        <p className="text-white-dark text-xs">Select the primary navigation paradigm for your app.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Select the primary navigation paradigm for your app.</p>
                         <div className="grid grid-cols-3 gap-2 mt-3">
                             <button type="button" className={`${themeConfig.menu === 'horizontal' ? 'btn-primary' : 'btn-outline-primary'} btn`} onClick={() => dispatch(toggleMenu('horizontal'))}>
                                 Horizontal
@@ -83,7 +83,7 @@ const Setting = () => {
                                 Collapsible
                             </button>
                         </div>
-                        <div className="mt-5 text-primary">
+                        <div className="mt-5 text-primary dark:text-uk-link-dark">
                             <label className="inline-flex mb-0">
                                 <input
                                     type="checkbox"
@@ -98,7 +98,7 @@ const Setting = () => {
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Layout Style</h5>
-                        <p className="text-white-dark text-xs">Select the primary layout style for your app.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Select the primary layout style for your app.</p>
                         <div className="flex gap-2 mt-3">
                             <button
                                 type="button"
@@ -116,7 +116,7 @@ const Setting = () => {
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Direction</h5>
-                        <p className="text-white-dark text-xs">Select the direction for your app.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Select the direction for your app.</p>
                         <div className="flex gap-2 mt-3">
                             <button type="button" className={`${themeConfig.rtlClass === 'ltr' ? 'btn-primary' : 'btn-outline-primary'} btn flex-auto`} onClick={() => dispatch(toggleRTL('ltr'))}>
                                 LTR
@@ -130,8 +130,8 @@ const Setting = () => {
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Navbar Type</h5>
-                        <p className="text-white-dark text-xs">Sticky or Floating.</p>
-                        <div className="mt-3 flex items-center gap-3 text-primary">
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Sticky or Floating.</p>
+                        <div className="mt-3 flex items-center gap-3 text-primary dark:text-uk-link-dark">
                             <label className="inline-flex mb-0">
                                 <input
                                     type="radio"
@@ -167,9 +167,9 @@ const Setting = () => {
 
                     <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
                         <h5 className="mb-1 text-base dark:text-white leading-none">Router Transition</h5>
-                        <p className="text-white-dark text-xs">Animation of main content.</p>
+                        <p className="text-uk-muted dark:text-uk-muted-dark text-xs">Animation of main content.</p>
                         <div className="mt-3">
-                            <select className="form-select border-primary text-primary" value={themeConfig.animation} onChange={(e) => dispatch(toggleAnimation(e.target.value))}>
+                            <select className="form-select border-primary text-primary dark:text-uk-link-dark" value={themeConfig.animation} onChange={(e) => dispatch(toggleAnimation(e.target.value))}>
                                 <option value=" ">None</option>
                                 <option value="animate__fadeIn">Fade</option>
                                 <option value="animate__fadeInDown">Fade Down</option>

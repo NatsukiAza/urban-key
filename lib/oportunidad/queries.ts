@@ -18,7 +18,7 @@ const SELECT_LISTA = `
 `;
 
 const SELECT_CARD = `
-    id, titulo, etapa_id, estado, valor_estimado, moneda,
+    id, titulo, etapa_id, estado, valor_estimado, moneda, fecha_cierre_estimada, creado_en, responsable_id,
     contacto:contactos(nombre, apellido),
     inmueble:inmuebles(direccion),
     responsable:${RESPONSABLE}(nombre, apellido)
@@ -209,6 +209,18 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
         if (etapasRes.error) throw etapasRes.error;
         if (opsRes.error) throw opsRes.error;
 
+        const ids = (opsRes.data ?? []).map((o) => o.id);
+        const historialRes = ids.length
+            ? await supabase.from('historial_etapas').select('oportunidad_id, etapa_nueva_id, creado_en').in('oportunidad_id', ids).order('creado_en', { ascending: false })
+            : { data: [], error: null };
+        if (historialRes.error) throw historialRes.error;
+
+        const entradaEnEtapa = new Map<string, string>();
+        for (const h of historialRes.data ?? []) {
+            if (!entradaEnEtapa.has(h.oportunidad_id)) entradaEnEtapa.set(h.oportunidad_id, h.creado_en);
+        }
+        const ahora = Date.now();
+
         const porEtapa = new Map<string, OportunidadCard[]>();
         for (const o of opsRes.data ?? []) {
             const card: OportunidadCard = {
@@ -217,9 +229,12 @@ export async function getOportunidadesPorEtapa(funnelId: string): Promise<{ funn
                 contacto: nombreCompleto(o.contacto),
                 inmueble: o.inmueble?.direccion ?? null,
                 responsable: nombreCompleto(o.responsable),
+                responsableId: o.responsable_id,
                 valorEstimado: o.valor_estimado,
                 moneda: o.moneda,
                 estado: o.estado,
+                fechaCierreEstimada: o.fecha_cierre_estimada,
+                diasEnEtapa: Math.max(0, Math.floor((ahora - new Date(entradaEnEtapa.get(o.id) ?? o.creado_en).getTime()) / 86_400_000)),
             };
             const lista = porEtapa.get(o.etapa_id);
             if (lista) lista.push(card);
@@ -300,6 +315,20 @@ export async function getFunnelConMasOportunidades(): Promise<string | null> {
     } catch (err) {
         console.error('Error getFunnelConMasOportunidades', err);
         return null;
+    }
+}
+
+export async function getConteoAbiertasPorFunnel(): Promise<Record<string, number>> {
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('oportunidades').select('funnel_id').eq('activo', true).eq('estado', 'ABIERTA');
+        if (error) throw error;
+        const conteo: Record<string, number> = {};
+        for (const fila of data ?? []) conteo[fila.funnel_id] = (conteo[fila.funnel_id] ?? 0) + 1;
+        return conteo;
+    } catch (err) {
+        console.error('Error getConteoAbiertasPorFunnel', err);
+        return {};
     }
 }
 

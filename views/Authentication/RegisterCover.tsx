@@ -79,27 +79,27 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                 <div className="relative flex w-full max-w-[460px] flex-col items-center justify-center gap-4 rounded-2xl bg-white/85 px-6 py-6 shadow-2xl backdrop-blur-xl dark:bg-black/60 sm:px-10 sm:py-8">
                     <div className="flex w-full max-w-[440px] items-center gap-2">
                         <Link href="/" className="block lg:hidden">
-                            <span className="text-lg font-extrabold uppercase text-primary">UrbanKey</span>
+                            <span className="text-lg font-extrabold uppercase text-primary dark:text-uk-link-dark">UrbanKey</span>
                         </Link>
                     </div>
                     <div className="w-full max-w-[440px]">
                         <div className="mb-6">
-                            <h1 className="text-3xl font-extrabold uppercase !leading-snug text-[#502558] md:text-4xl">Registro</h1>
-                            <p className="text-base font-bold leading-normal text-white-dark">Creá la inmobiliaria y tu usuario administrador de UrbanKey</p>
+                            <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary dark:text-uk-link-dark md:text-4xl">Registro</h1>
+                            <p className="text-base font-bold leading-normal text-uk-muted dark:text-uk-muted-dark">Creá la inmobiliaria y tu usuario administrador de UrbanKey</p>
                         </div>
                         {registroAbierto ? (
                             <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                                 <div>
-                                    <label htmlFor="inmobiliaria" className="text-[#502558]">
+                                    <label htmlFor="inmobiliaria" className="text-primary dark:text-uk-link-dark">
                                         Inmobiliaria
                                     </label>
-                                    <div className="relative text-white-dark">
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="inmobiliaria"
                                             type="text"
                                             autoComplete="organization"
                                             placeholder="Nombre de la inmobiliaria"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={inmobiliaria}
                                             onChange={(event) => setInmobiliaria(event.target.value)}
                                             required
@@ -110,16 +110,16 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="nombre" className="text-[#502558]">
+                                    <label htmlFor="nombre" className="text-primary dark:text-uk-link-dark">
                                         Nombre
                                     </label>
-                                    <div className="relative text-white-dark">
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="nombre"
                                             type="text"
                                             autoComplete="given-name"
                                             placeholder="Nombre"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={nombre}
                                             onChange={(event) => setNombre(event.target.value)}
                                             required
@@ -130,16 +130,16 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="apellido" className="text-[#502558]">
+                                    <label htmlFor="apellido" className="text-primary dark:text-uk-link-dark">
                                         Apellido
                                     </label>
-                                    <div className="relative text-white-dark">
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="apellido"
                                             type="text"
                                             autoComplete="family-name"
                                             placeholder="Apellido"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={apellido}
                                             onChange={(event) => setApellido(event.target.value)}
                                             required
@@ -150,16 +150,16 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="correo" className="text-[#502558]">
+                                    <label htmlFor="correo" className="text-primary dark:text-uk-link-dark">
                                         Correo
                                     </label>
-                                    <div className="relative text-white-dark">
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="correo"
                                             type="email"
                                             autoComplete="email"
                                             placeholder="tu@correo.com"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={correo}
                                             onChange={(event) => setCorreo(event.target.value)}
                                             required
@@ -170,16 +170,16 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="text-[#502558]">
+                                    <label htmlFor="password" className="text-primary dark:text-uk-link-dark">
                                         Contraseña
                                     </label>
-                                    <div className="relative text-white-dark">
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                         <input
                                             id="password"
                                             type="password"
                                             autoComplete="new-password"
                                             placeholder="Mínimo 6 caracteres"
-                                            className="form-input ps-10 placeholder:text-white-dark"
+                                            className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                             value={password}
                                             onChange={(event) => setPassword(event.target.value)}
                                             minLength={6}
@@ -190,24 +190,24 @@ const RegisterCover = ({ registroAbierto }: { registroAbierto: boolean }) => {
                                         </span>
                                     </div>
                                 </div>
-                                {error ? <p className="text-danger">{error}</p> : null}
+                                {error ? <p className="text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                                 <button
                                     type="submit"
-                                    className="btn !mt-6 w-full border-0 bg-gradient-to-r from-[#502558] to-[#D8AC71] uppercase text-white shadow-[0_10px_20px_-10px_rgba(80,37,88,0.6)] transition-all duration-300 hover:from-[#D8AC71] hover:to-[#502558]"
+                                    className="btn !mt-6 w-full btn-primary uppercase"
                                     disabled={submitting}
                                 >
                                     {submitting ? 'Creando inmobiliaria...' : 'Crear inmobiliaria'}
                                 </button>
                             </form>
                         ) : (
-                            <p className="text-base font-bold leading-normal text-white-dark">
+                            <p className="text-base font-bold leading-normal text-uk-muted dark:text-uk-muted-dark">
                                 La inmobiliaria ya está registrada. Pedile al administrador que te cree un usuario.
                             </p>
                         )}
-                        {error && !registroAbierto ? <p className="mt-4 text-danger">{error}</p> : null}
+                        {error && !registroAbierto ? <p className="mt-4 text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                         <div className="mt-6 text-center dark:text-white">
                             ¿Ya tenés cuenta?&nbsp;
-                            <Link href="/auth/cover-login" className="uppercase text-[#502558] underline transition hover:text-[#D8AC71] dark:hover:text-white">
+                            <Link href="/auth/cover-login" className="uppercase text-primary dark:text-uk-link-dark underline transition hover:text-black dark:hover:text-white">
                                 Iniciar sesión
                             </Link>
                         </div>

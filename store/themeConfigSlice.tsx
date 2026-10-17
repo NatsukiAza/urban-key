@@ -45,6 +45,7 @@ const initialState = {
     isDarkMode: false,
     sidebar: defaultState.sidebar,
     semidark: themeConfig.semidark,
+    breadcrumbDetalle: { padre: '', titulo: '' },
     languageList: [
         { code: 'zh', name: 'Chinese' },
         { code: 'da', name: 'Danish' },
@@ -133,12 +134,16 @@ const themeConfigSlice = createSlice({
             state.sidebar = !state.sidebar;
         },
 
+        setBreadcrumbDetalle(state, { payload }: { payload: { padre?: string; titulo?: string } }) {
+            state.breadcrumbDetalle = { padre: payload.padre ?? '', titulo: payload.titulo ?? '' };
+        },
+
         setPageTitle(state, { payload }) {
             document.title = `${payload} | UrbanKey`;
         },
     },
 });
 
-export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle } = themeConfigSlice.actions;
+export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setBreadcrumbDetalle } = themeConfigSlice.actions;
 
 export default themeConfigSlice.reducer;

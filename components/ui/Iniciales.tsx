@@ -9,7 +9,7 @@ export const inicialesDe = (nombre: string, apellido = '') => {
 };
 
 const Iniciales = ({ nombre, apellido = '' }: { nombre: string; apellido?: string }) => (
-    <span className="grid h-8 w-8 shrink-0 place-content-center rounded-full bg-primary/10 text-xs font-semibold text-primary">{inicialesDe(nombre, apellido)}</span>
+    <span className="grid h-8 w-8 shrink-0 place-content-center rounded-full bg-primary/10 text-xs font-semibold text-primary dark:text-uk-link-dark">{inicialesDe(nombre, apellido)}</span>
 );
 
 export default Iniciales;

@@ -64,7 +64,7 @@ const RecoverIdCover = () => {
                                 <Dropdown
                                     offset={[0, 8]}
                                     placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-white-dark hover:border-primary hover:text-primary dark:bg-black"
+                                    btnClassName="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white px-2 py-1.5 text-uk-muted dark:text-uk-muted-dark hover:border-primary hover:text-primary dark:bg-black"
                                     button={
                                         <>
                                             <div>
@@ -77,13 +77,13 @@ const RecoverIdCover = () => {
                                         </>
                                     }
                                 >
-                                    <ul className="!px-2 text-dark dark:text-white-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
+                                    <ul className="!px-2 text-dark dark:text-uk-muted-dark grid grid-cols-2 gap-2 font-semibold dark:text-white-light/90 w-[280px]">
                                         {themeConfig.languageList.map((item: any) => {
                                             return (
                                                 <li key={item.code}>
                                                     <button
                                                         type="button"
-                                                        className={`flex w-full hover:text-primary rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary' : ''}`}
+                                                        className={`flex w-full hover:text-primary dark:hover:text-uk-link-dark rounded-lg ${flag === item.code ? 'bg-primary/10 text-primary dark:text-uk-link-dark' : ''}`}
                                                         onClick={() => {
                                                             i18next.changeLanguage(item.code);
                                                             // setFlag(item.code);
@@ -108,8 +108,8 @@ const RecoverIdCover = () => {
                             <form className="space-y-5" onSubmit={submitForm}>
                                 <div>
                                     <label htmlFor="Email">Email</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input pl-10 placeholder:text-white-dark" />
+                                    <div className="relative text-uk-muted dark:text-uk-muted-dark">
+                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input pl-10 placeholder:text-uk-muted dark:text-uk-muted-dark" />
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
                                         </span>

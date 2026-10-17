@@ -9,7 +9,7 @@ export default function Page() {
     return (
         <div className="panel max-w-xl">
             <h2 className="text-xl font-semibold mb-2">No tenés permiso para ver esta pantalla</h2>
-            <p className="text-white-dark mb-5">Esta acción está reservada al administrador.</p>
+            <p className="text-uk-muted dark:text-uk-muted-dark mb-5">Esta acción está reservada al administrador.</p>
             <Link href="/" className="btn btn-primary">
                 Volver al inicio
             </Link>

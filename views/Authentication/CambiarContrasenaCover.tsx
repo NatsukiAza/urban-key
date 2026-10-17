@@ -46,21 +46,21 @@ const CambiarContrasenaCover = () => {
                 <div className="relative flex w-full max-w-[460px] flex-col items-center justify-center gap-4 rounded-2xl bg-white/85 px-6 py-6 shadow-2xl backdrop-blur-xl dark:bg-black/60 sm:px-10 sm:py-8">
                     <div className="w-full max-w-[440px]">
                         <div className="mb-6">
-                            <h1 className="text-3xl font-extrabold uppercase !leading-snug text-[#502558] md:text-4xl">Nueva contraseña</h1>
-                            <p className="text-base font-bold leading-normal text-white-dark">Es tu primer ingreso. Cambiá la contraseña temporal antes de usar UrbanKey.</p>
+                            <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary dark:text-uk-link-dark md:text-4xl">Nueva contraseña</h1>
+                            <p className="text-base font-bold leading-normal text-uk-muted dark:text-uk-muted-dark">Es tu primer ingreso. Cambiá la contraseña temporal antes de usar UrbanKey.</p>
                         </div>
                         <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
                             <div>
-                                <label htmlFor="password" className="text-[#502558]">
+                                <label htmlFor="password" className="text-primary dark:text-uk-link-dark">
                                     Contraseña nueva
                                 </label>
-                                <div className="relative text-white-dark">
+                                <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                     <input
                                         id="password"
                                         type="password"
                                         autoComplete="new-password"
                                         placeholder="Mínimo 6 caracteres"
-                                        className="form-input ps-10 placeholder:text-white-dark"
+                                        className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                         value={password}
                                         onChange={(event) => setPassword(event.target.value)}
                                         minLength={6}
@@ -72,16 +72,16 @@ const CambiarContrasenaCover = () => {
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="confirmacion" className="text-[#502558]">
+                                <label htmlFor="confirmacion" className="text-primary dark:text-uk-link-dark">
                                     Repetir contraseña
                                 </label>
-                                <div className="relative text-white-dark">
+                                <div className="relative text-uk-muted dark:text-uk-muted-dark">
                                     <input
                                         id="confirmacion"
                                         type="password"
                                         autoComplete="new-password"
                                         placeholder="Repetí la contraseña"
-                                        className="form-input ps-10 placeholder:text-white-dark"
+                                        className="form-input ps-10 placeholder:text-uk-muted dark:text-uk-muted-dark"
                                         value={confirmacion}
                                         onChange={(event) => setConfirmacion(event.target.value)}
                                         minLength={6}
@@ -92,10 +92,10 @@ const CambiarContrasenaCover = () => {
                                     </span>
                                 </div>
                             </div>
-                            {error ? <p className="text-danger">{error}</p> : null}
+                            {error ? <p className="text-uk-lost dark:text-uk-lost-dark">{error}</p> : null}
                             <button
                                 type="submit"
-                                className="btn !mt-6 w-full border-0 bg-gradient-to-r from-[#502558] to-[#D8AC71] uppercase text-white shadow-[0_10px_20px_-10px_rgba(80,37,88,0.6)] transition-all duration-300 hover:from-[#D8AC71] hover:to-[#502558]"
+                                className="btn !mt-6 w-full btn-primary uppercase"
                                 disabled={submitting}
                             >
                                 {submitting ? 'Guardando...' : 'Guardar contraseña'}

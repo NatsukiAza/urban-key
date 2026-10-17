@@ -204,7 +204,7 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, puedeReasig
                 </div>
 
                 <div className="sm:col-span-2 flex justify-end gap-4 mt-2">
-                    <button type="button" className="btn btn-outline-danger" onClick={() => router.push(volverA ?? '/oportunidades')}>
+                    <button type="button" className="btn btn-cancel" onClick={() => router.push(volverA ?? '/oportunidades')}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary" disabled={guardando}>
