@@ -49,3 +49,15 @@ export async function toastErrorMovimiento(etapaOrigen: string): Promise<boolean
     });
     return isConfirmed;
 }
+
+// Aviso de éxito de 7.1 sin acción (renombrar, crear, activar, etc.).
+export function toastExito(mensaje: string) {
+    void ukToast.fire({
+        icon: 'success',
+        iconColor: '#34D27B',
+        html: escapar(mensaje),
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: 'uk-toast rounded-xl !bg-uk-ink !text-white dark:!bg-[#2A3350]' },
+    });
+}

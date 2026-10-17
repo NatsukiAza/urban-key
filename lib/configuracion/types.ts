@@ -14,6 +14,7 @@ export interface EtapaConfig {
 export interface EmbudosConfig {
     funnels: Funnel[];
     etapas: EtapaConfig[];
+    error: boolean;
 }
 
 export interface MotivoPerdidaConfig {

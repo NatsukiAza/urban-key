@@ -31,21 +31,22 @@ export async function getEmbudosConfig(): Promise<EmbudosConfig> {
                     oportunidadesAbiertas: porEtapa.get(e.id) ?? 0,
                 }),
             ),
+            error: false,
         };
     } catch (err) {
         console.error('Error getEmbudosConfig', err);
-        return { funnels: [], etapas: [] };
+        return { funnels: [], etapas: [], error: true };
     }
 }
 
-export async function getMotivosPerdidaConfig(): Promise<MotivoPerdidaConfig[]> {
+export async function getMotivosPerdidaConfig(): Promise<{ motivos: MotivoPerdidaConfig[]; error: boolean }> {
     try {
         const supabase = await createClient();
         const { data, error } = await supabase.from('motivos_perdida').select('*').order('nombre');
         if (error) throw error;
-        return (data ?? []).map((m) => ({ id: m.id, nombre: m.nombre, activo: m.activo }));
+        return { motivos: (data ?? []).map((m) => ({ id: m.id, nombre: m.nombre, activo: m.activo })), error: false };
     } catch (err) {
         console.error('Error getMotivosPerdidaConfig', err);
-        return [];
+        return { motivos: [], error: true };
     }
 }

@@ -201,3 +201,41 @@ export async function modalDarDeBaja(titulo: string): Promise<boolean> {
     });
     return resultado.isConfirmed;
 }
+
+export async function modalNombre(datos: { titulo: string; etiqueta: string; placeholder: string; confirmar: string; existentes: string[] }): Promise<string | null> {
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            <h2 class="mb-4 text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${escapar(datos.titulo)}</h2>
+            <div>
+                <label for="uk-nombre" class="${claseLabel}">${escapar(datos.etiqueta)}</label>
+                <input id="uk-nombre" type="text" maxlength="60" autocomplete="off" placeholder="${escapar(datos.placeholder)}" class="${claseCampo}" />
+                <p id="uk-err-nombre" class="${claseError}"></p>
+            </div>`,
+        confirmButtonText: datos.confirmar,
+        focusCancel: false,
+        didOpen: () => document.getElementById('uk-nombre')?.focus(),
+        preConfirm: () => {
+            const nombre = valor('uk-nombre');
+            const err = document.getElementById('uk-err-nombre');
+            const mensaje = !nombre ? 'Escribí un nombre.' : datos.existentes.some((n) => n.trim().toLowerCase() === nombre.toLowerCase()) ? 'Ya existe uno con ese nombre. Elegí otro.' : '';
+            if (err) {
+                err.textContent = mensaje;
+                err.classList.toggle('hidden', !mensaje);
+            }
+            document.getElementById('uk-nombre')?.classList.toggle('!border-uk-lost', Boolean(mensaje));
+            return mensaje ? false : nombre;
+        },
+    });
+    return resultado.isConfirmed ? (resultado.value as string) : null;
+}
+
+export async function modalDesactivar(datos: { titulo: string; texto: string }): Promise<boolean> {
+    const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
+        html: `
+            <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${escapar(datos.titulo)}</h2>
+            <p class="mt-2 text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(datos.texto)}</p>`,
+        confirmButtonText: 'Desactivar',
+    });
+    return resultado.isConfirmed;
+}
+
