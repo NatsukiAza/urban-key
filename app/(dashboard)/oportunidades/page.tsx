@@ -1,5 +1,7 @@
 import OportunidadesList from '@/views/Oportunidades/OportunidadesList';
 import { getOportunidadesList, getFormOptions } from '@/lib/oportunidad/queries';
+import { getUsuarioActual } from '@/lib/auth/session';
+import { puedeReasignar } from '@/lib/auth/permisos';
 import type { FiltroOportunidades } from '@/lib/oportunidad/types';
 import type { EstadoOportunidad } from '@/lib/enums/estadoOportunidad';
 
@@ -12,7 +14,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
         origenId: sp.origenId,
         funnelId: sp.funnelId,
     };
-    const [rows, options] = await Promise.all([getOportunidadesList(filtro), getFormOptions()]);
+    const [rows, options, usuario] = await Promise.all([getOportunidadesList(filtro), getFormOptions(), getUsuarioActual()]);
     return (
         <OportunidadesList
             rows={rows}
@@ -22,6 +24,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
             origenes={options.origenes}
             etapas={options.etapas}
             motivosPerdida={options.motivosPerdida}
+            puedeReasignar={puedeReasignar(usuario?.rol)}
         />
     );
 }

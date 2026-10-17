@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Configuración de embudos — claro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F5F9}
+a{color:#502558}a:hover{color:#3A1A40}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="font-family: Nunito, sans-serif; color: #1B1424; background: #F7F5F9; min-height: 1000px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <nav aria-label="Principal" style="flex: 1 1 232px; max-width: 100%; min-width: 232px; background: #3A1A40; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px; box-sizing: border-box; position: relative; overflow: hidden">
+    <div style="padding: 0 8px 20px"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Urban<span style="color: #D8AC71">Key</span></span></div>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Inmuebles</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Sucursales</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/></svg>Contactos</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Oportunidades</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Usuarios</a>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <a href="#" aria-current="true" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.10); color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8AC71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Configuración</a>
+      <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 42px; border-radius: 8px; color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 700"><span style="width: 6px; height: 6px; border-radius: 3px; background: #D8AC71; margin-left: -14px"></span>Embudos</a>
+      <a href="Motivos.dc.html" style="display: flex; align-items: center; height: 36px; padding: 0 12px 0 42px; border-radius: 8px; color: #CDB8D3; text-decoration: none; font-size: 13px; font-weight: 600">Motivos de pérdida</a>
+    </div>
+    <svg aria-hidden="true" width="232" height="220" viewBox="0 0 232 220" style="position: absolute; left: 0; bottom: 0; opacity: 0.16" fill="#D8AC71"><rect x="20" y="120" width="34" height="100"/><rect x="60" y="80" width="40" height="140"/><rect x="108" y="140" width="28" height="80"/><rect x="142" y="60" width="44" height="160"/><rect x="192" y="110" width="30" height="110"/></svg>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #E7E2EC; box-sizing: border-box">
+      <nav aria-label="Ruta" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77">
+        <span>Configuración</span><span aria-hidden="true">/</span><span style="color: #1B1424; font-weight: 700">Embudos</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button aria-label="Cambiar a modo oscuro" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #E7E2EC; background: #FFFFFF; color: #5C5F77; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <button aria-label="Cuenta de administrador" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #502558; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer">EA</button>
+      </div>
+    </header>
+
+    <main style="padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1080px; width: 100%; box-sizing: border-box">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px">Configuración de embudos</h1>
+          <p style="margin: 0; font-size: 14px; color: #5C5F77">Las etapas no se borran: se desactivan, así las oportunidades y su historial se conservan.</p>
+        </div>
+        <button style="display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(80,37,88,0.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nueva etapa</button>
+      </div>
+
+      <div role="tablist" aria-label="Funnel" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #E7E2EC">
+        <button role="tab" aria-selected="true" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid #502558; background: transparent; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer">Captación Alquiler</button>
+        <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Captación Venta</button>
+        <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Interesados Alquiler</button>
+        <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Interesados Compra</button>
+      </div>
+
+      <!-- Etapas abiertas -->
+      <section style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 14px; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 800">Etapas abiertas</h2>
+          <p style="margin: 0; font-size: 13px; color: #5C5F77">Arrastrá desde ⠿ para cambiar el orden del tablero. Tocá un nombre para renombrarlo.</p>
+        </div>
+        <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 8px 0 2px; border: 1px solid #E7E2EC; border-radius: 10px">
+            <button aria-label="Reordenar Consulta" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77; font-variant-numeric: tabular-nums">1</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text; border-radius: 6px">Consulta</button>
+            <span style="font-size: 12px; color: #5C5F77; padding: 0 8px">Sin abiertas</span>
+            <button aria-label="Acciones de Consulta" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+          </li>
+
+          <!-- Editando -->
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 6px 8px 6px 2px; border: 1.5px solid #502558; border-radius: 10px; background: #FBF8FC; flex-wrap: wrap">
+            <button aria-label="Reordenar Relevamiento" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77">2</span>
+            <label style="flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 4px">
+              <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Nombre de la etapa</span>
+              <input type="text" value="Relevamiento del inmueble" style="height: 38px; padding: 0 10px; border: 1px solid #502558; border-radius: 8px; font-size: 15px; font-weight: 700; color: #1B1424; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(80,37,88,0.15)">
+              <span style="font-size: 11px; color: #5C5F77">Enter para guardar · Esc para cancelar</span>
+            </label>
+            <button style="height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer; margin-left: 8px">Cancelar</button>
+            <button style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #502558; color: #FFFFFF; font-size: 13px; font-weight: 800; cursor: pointer">Guardar</button>
+          </li>
+
+          <!-- Menú abierto -->
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 8px 0 2px; border: 1px solid #E7E2EC; border-radius: 10px; position: relative">
+            <button aria-label="Reordenar Publicación" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77">3</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Publicación</button>
+            <span style="font-size: 12px; font-weight: 700; color: #502558; background: #F6EEF7; border-radius: 10px; padding: 2px 8px; margin-right: 8px">2 abiertas</span>
+            <button aria-label="Acciones de Publicación" aria-expanded="true" style="width: 40px; height: 40px; border: 1px solid #502558; border-radius: 9px; background: #F6EEF7; color: #502558; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+            <div role="menu" style="position: absolute; right: 8px; top: 52px; z-index: 2; width: 260px; background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 12px; box-shadow: 0 16px 32px rgba(30,15,40,0.16); padding: 6px; display: flex; flex-direction: column">
+              <button role="menuitem" style="padding: 9px 10px; border: 0; border-radius: 8px; background: transparent; color: #1B1424; font-size: 13px; font-weight: 700; text-align: left; cursor: pointer">Renombrar</button>
+              <span style="height: 1px; background: #E7E2EC; margin: 4px 0"></span>
+              <button role="menuitem" style="padding: 9px 10px; border: 0; border-radius: 8px; background: #F7F5F9; color: #1B1424; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700">Desactivar…</span><span style="font-size: 12px; color: #5C5F77; line-height: 1.4">Deja de aparecer en el tablero. Las 2 abiertas se mantienen.</span></button>
+            </div>
+          </li>
+
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 8px 0 2px; border: 1px solid #E7E2EC; border-radius: 10px">
+            <button aria-label="Reordenar Negociación" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77">4</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Negociación</button>
+            <span style="font-size: 12px; font-weight: 700; color: #502558; background: #F6EEF7; border-radius: 10px; padding: 2px 8px; margin-right: 8px">1 abierta</span>
+            <button aria-label="Acciones de Negociación" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+          </li>
+
+          <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 0 8px 0 2px; border: 1px solid #E7E2EC; border-radius: 10px">
+            <button aria-label="Reordenar Reserva" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77">5</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Reserva</button>
+            <span style="font-size: 12px; color: #5C5F77; padding: 0 8px">Sin abiertas</span>
+            <button aria-label="Acciones de Reserva" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+          </li>
+        </ol>
+
+        <!-- Desactivadas -->
+        <details open style="border-top: 1px solid #F0ECF3; padding-top: 12px">
+          <summary style="cursor: pointer; font-size: 13px; font-weight: 800; color: #5C5F77; padding: 6px 0">Desactivadas (1)</summary>
+          <p style="margin: 4px 0 10px; font-size: 12px; color: #5C5F77">No aparecen en el tablero ni se ofrecen al mover oportunidades.</p>
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 8px 0 16px; border: 1px dashed #DCD5E2; border-radius: 10px; background: #FBFAFC">
+            <span style="flex: 1; font-size: 15px; font-weight: 700; color: #5C5F77">Tasación</span>
+            <span style="font-size: 12px; color: #5C5F77">Desactivada el 02/10/2026</span>
+            <button style="height: 36px; padding: 0 14px; border: 1px solid #502558; border-radius: 9px; background: #FFFFFF; color: #502558; font-size: 13px; font-weight: 800; cursor: pointer">Activar</button>
+          </div>
+        </details>
+      </section>
+
+      <!-- Etapas de cierre -->
+      <section style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 14px; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 800">Etapas de cierre</h2>
+          <p style="margin: 0; font-size: 13px; color: #5C5F77">Siempre van al final del tablero. Se pueden renombrar, pero no desactivar.</p>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+          <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 8px 0 16px; border: 1px solid #E7E2EC; border-radius: 10px">
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 12px; background: #E6F6EE; color: #047A3F; font-size: 12px; font-weight: 800">Ganada</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Contrato firmado</button>
+            <button aria-label="Renombrar Contrato firmado" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+          </li>
+          <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 8px 0 16px; border: 1px solid #E7E2EC; border-radius: 10px">
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 12px; background: #FDECEE; color: #C42B35; font-size: 12px; font-weight: 800">Perdida</span>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Perdida</button>
+            <button aria-label="Renombrar Perdida" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

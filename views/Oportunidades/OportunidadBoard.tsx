@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { cambiarEtapa } from '@/lib/oportunidad/actions';
 import { toastMovimiento, toastErrorMovimiento } from '@/lib/ui/toast';
-import { modalCerrarGanada, modalCerrarPerdida } from '@/lib/ui/modales';
+import { modalCerrarGanada, modalCerrarPerdida, modalMoverEtapa } from '@/lib/ui/modales';
 import { formatearMonto } from '@/lib/enums/moneda';
 import type { ColumnaEtapa, OportunidadCard } from '@/lib/oportunidad/types';
 import type { Funnel, MotivoPerdida } from '@/lib/dominio';
@@ -20,6 +20,7 @@ import IconInfoTriangle from '@/components/Icon/IconInfoTriangle';
 import IconTrendingUp from '@/components/Icon/IconTrendingUp';
 import IconSearch from '@/components/Icon/IconSearch';
 import EstadoPantalla from '@/components/ui/EstadoPantalla';
+import SwitchVista from '@/components/ui/SwitchVista';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
 
@@ -135,12 +136,18 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
         const tarjeta = columns.flatMap((c) => c.tasks).find((t) => t.id === cardId);
         const titulo = tarjeta?.titulo ?? origenRef.current?.snapshot.flatMap((c) => c.tasks).find((t) => t.id === cardId)?.titulo ?? '';
 
-        const res = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId });
+        const confirmacion = await modalMoverEtapa({ titulo, etapaOrigen: nombreEtapa(etapaOrigenId), etapaDestino: nombreEtapa(destEtapaId) });
+        if (!confirmacion) {
+            restaurar();
+            return;
+        }
+
+        const res = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId, observacion: confirmacion.observacion });
         if (!res.ok) {
             restaurar();
             void toastErrorMovimiento(nombreEtapa(etapaOrigenId)).then(async (reintentar) => {
                 if (!reintentar) return;
-                const nuevo = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId });
+                const nuevo = await cambiarEtapa({ oportunidadId: cardId, etapaId: destEtapaId, observacion: confirmacion.observacion });
                 if (!nuevo.ok) void toastErrorMovimiento(nombreEtapa(etapaOrigenId));
                 router.refresh();
             });
@@ -351,14 +358,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
                 description={<>Arrastrá una tarjeta para cambiar de etapa. Soltala en <strong>Ganada</strong> o <strong>Perdida</strong> para cerrarla.</>}
                 actions={
                     <>
-                        <div className="inline-flex rounded-[10px] bg-uk-col p-1 dark:bg-white/5">
-                            <Link href="/oportunidades" className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-bold text-uk-muted hover:text-uk-ink dark:text-uk-muted-dark dark:hover:text-uk-ink-dark">
-                                Lista
-                            </Link>
-                            <span aria-current="page" className="inline-flex h-9 items-center rounded-lg bg-white px-3 text-sm font-extrabold text-primary shadow-[0_1px_2px_rgba(30,15,40,.06)] dark:bg-uk-card-raised-dark dark:text-uk-link-dark">
-                                Tablero
-                            </span>
-                        </div>
+                        <SwitchVista vista="tablero" />
                         <Link href="/oportunidades/nuevo" className="btn btn-primary h-10 rounded-[10px]">
                             Nueva oportunidad
                         </Link>

@@ -1,5 +1,5 @@
 const estilos: Record<string, { pill: string; dot: string }> = {
-    primary: { pill: 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark', dot: 'bg-primary dark:bg-uk-link-dark' },
+    primary: { pill: 'bg-primary-light text-primary dark:bg-uk-link-dark/[.12] dark:text-uk-link-dark', dot: 'bg-primary dark:bg-uk-link-dark' },
     success: { pill: 'bg-[#E6F6EE] text-uk-won dark:bg-success/10 dark:text-uk-won-dark', dot: 'bg-success' },
     danger: { pill: 'bg-[#FDECEE] text-uk-lost dark:bg-danger/10 dark:text-uk-lost-dark', dot: 'bg-danger' },
     warning: { pill: 'bg-uk-warn-bg text-uk-warn dark:bg-warning/10 dark:text-uk-warn-dark', dot: 'bg-warning' },

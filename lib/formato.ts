@@ -28,3 +28,12 @@ export const diasRelativos = (dias: number): string => {
     const texto = `${n} ${n === 1 ? 'día' : 'días'}`;
     return dias > 0 ? `en ${texto}` : `hace ${texto}`;
 };
+
+const DIAS_AVISO_VENCIMIENTO = 3;
+
+// "20/10" si la fecha estimada de cierre ya pasó o faltan 3 días o menos; null si todavía falta.
+export const venceProximamente = (fecha: string | null | undefined): string | null => {
+    if (!fecha || diasHasta(fecha) > DIAS_AVISO_VENCIMIENTO) return null;
+    const d = aFecha(fecha);
+    return `${dosDigitos(d.getDate())}/${dosDigitos(d.getMonth() + 1)}`;
+};

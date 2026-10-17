@@ -78,6 +78,7 @@ export interface OportunidadRow {
     contacto: string;
     inmueble: string | null;
     responsable: string;
+    responsableId: string;
     funnelId: string;
     funnel: string;
     etapaId: string;
@@ -85,6 +86,8 @@ export interface OportunidadRow {
     estado: EstadoOportunidad;
     valorEstimado: number | null;
     moneda: Moneda;
+    fechaCierreEstimada: string | null;
+    motivoPerdida: string | null;
 }
 
 export interface FiltroOportunidades {

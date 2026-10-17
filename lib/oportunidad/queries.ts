@@ -9,7 +9,8 @@ type OportunidadDbRow = Database['public']['Tables']['oportunidades']['Row'];
 const RESPONSABLE = 'usuarios!oportunidades_responsable_id_fkey';
 
 const SELECT_LISTA = `
-    id, titulo, estado, valor_estimado, moneda, funnel_id,
+    id, titulo, estado, valor_estimado, moneda, funnel_id, fecha_cierre_estimada, responsable_id,
+    motivoPerdida:motivos_perdida(nombre),
     contacto:contactos(nombre, apellido),
     inmueble:inmuebles(direccion),
     responsable:${RESPONSABLE}(nombre, apellido),
@@ -125,6 +126,7 @@ export async function getOportunidadesList(filtro: FiltroOportunidades = {}): Pr
             contacto: nombreCompleto(o.contacto),
             inmueble: o.inmueble?.direccion ?? null,
             responsable: nombreCompleto(o.responsable),
+            responsableId: o.responsable_id,
             funnelId: o.funnel_id,
             funnel: o.funnel?.nombre ?? '',
             etapaId: o.etapa?.id ?? '',
@@ -132,6 +134,8 @@ export async function getOportunidadesList(filtro: FiltroOportunidades = {}): Pr
             estado: o.estado,
             valorEstimado: o.valor_estimado,
             moneda: o.moneda,
+            fechaCierreEstimada: o.fecha_cierre_estimada,
+            motivoPerdida: o.motivoPerdida?.nombre ?? null,
         }));
     } catch (err) {
         console.error('Error getOportunidadesList', err);

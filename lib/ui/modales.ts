@@ -169,3 +169,13 @@ export async function modalMoverEtapa(datos: { titulo: string; etapaOrigen: stri
     });
     return resultado.isConfirmed ? (resultado.value as { observacion: string | null }) : null;
 }
+
+export async function modalDarDeBaja(titulo: string): Promise<boolean> {
+    const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
+        html: `
+            <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">¿Dar de baja <strong>${escapar(titulo)}</strong>?</h2>
+            <p class="mt-2 text-sm text-uk-muted dark:text-uk-muted-dark">Deja de aparecer en el tablero y la lista. El historial se conserva.</p>`,
+        confirmButtonText: 'Dar de baja',
+    });
+    return resultado.isConfirmed;
+}
