@@ -8,5 +8,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     const { id } = await params;
     const [oportunidad, options, usuario] = await Promise.all([getOportunidad(id), getFormOptions(), getUsuarioActual()]);
     if (!oportunidad) notFound();
-    return <OportunidadForm options={options} oportunidad={oportunidad} puedeReasignar={puedeReasignar(usuario?.rol)} />;
+    return (
+        <OportunidadForm
+            options={options}
+            oportunidad={oportunidad}
+            funnelNombre={options.funnels.find((f) => f.id === oportunidad.funnelId)?.nombre}
+            usuarioActualId={usuario?.id}
+            puedeReasignar={puedeReasignar(usuario?.rol)}
+        />
+    );
 }

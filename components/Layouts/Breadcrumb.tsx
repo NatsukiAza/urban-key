@@ -24,7 +24,12 @@ const construir = (pathname: string, detalle: { padre: string; titulo: string })
     if (segundo === 'nuevo') {
         migajas.push({ label: 'Lista', href: base }, { label: 'Nuevo', href: pathname });
     } else if (segundo && tercero === 'editar') {
-        migajas.push({ label: 'Lista', href: base }, { label: 'Editar', href: pathname });
+        if (detalle.titulo) {
+            if (detalle.padre) migajas.push({ label: detalle.padre, href: base });
+            migajas.push({ label: detalle.titulo, href: pathname });
+        } else {
+            migajas.push({ label: 'Lista', href: base }, { label: 'Editar', href: pathname });
+        }
     } else if (segundo && !config.subsecciones?.[segundo]) {
         if (detalle.padre) migajas.push({ label: detalle.padre, href: base });
         migajas.push({ label: detalle.titulo || 'Detalle', href: pathname });

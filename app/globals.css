@@ -763,6 +763,8 @@ pre.hljs {
     color: inherit;
     font-weight: inherit;
     overflow: visible;
+    position: relative;
+    z-index: 3;
 }
 .swal2-popup.uk-modal .swal2-actions {
     width: 100%;

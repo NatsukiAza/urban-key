@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import { monedaConfig, type Moneda } from '@/lib/enums/moneda';
+import { montarFechaCierre, type ControlFecha } from '@/lib/ui/FechaCierreHost';
 
 const claseCampo = 'form-input h-[42px] w-full rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark';
 const claseError = 'mt-1 hidden text-xs font-bold text-uk-lost dark:text-uk-lost-dark';
@@ -48,7 +49,7 @@ const encabezado = (tipo: 'ganada' | 'perdida' | 'mover', titulo: string, subtit
 const campoFechaYObservacion = (placeholder: string) => `
     <div class="mt-4">
         <label for="uk-fecha" class="${claseLabel}">Fecha de cierre</label>
-        <input id="uk-fecha" type="date" class="${claseCampo}" value="${hoy()}" max="${hoy()}" />
+        <div id="uk-fecha-root"></div>
         <p id="uk-err-fecha" class="${claseError}">Elegí una fecha de cierre que no sea futura.</p>
     </div>
     <div class="mt-4">
@@ -56,10 +57,23 @@ const campoFechaYObservacion = (placeholder: string) => `
         <textarea id="uk-obs" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="${placeholder}"></textarea>
     </div>`;
 
+let controlFecha: ControlFecha = { valor: '' };
+let desmontarFecha: () => void = () => undefined;
+
+const prepararFecha = (): (() => void) => {
+    controlFecha = { valor: hoy() };
+    const contenedor = document.getElementById('uk-fecha-root');
+    return contenedor ? montarFechaCierre(contenedor, controlFecha, hoy()) : () => undefined;
+};
+
 const mostrarError = (id: string, visible: boolean) => {
     const el = document.getElementById(id);
     if (!el) return;
     el.classList.toggle('hidden', !visible);
+    if (id === 'uk-err-fecha') {
+        controlFecha.setInvalido?.(visible);
+        return;
+    }
     const campo = document.getElementById(id.replace('uk-err-', 'uk-'));
     campo?.classList.toggle('!border-uk-lost', visible);
     campo?.classList.toggle('dark:!border-uk-lost-dark', visible);
@@ -108,10 +122,14 @@ export async function modalCerrarGanada(datos: DatosModal & { valorEstimado: num
             ${campoFechaYObservacion('Ej.: cierre con escribanía')}`,
         confirmButtonText: 'Confirmar cierre',
         footer: pieDe(datos),
-        didOpen: () => document.getElementById('uk-valor')?.focus(),
+        didOpen: () => {
+            desmontarFecha = prepararFecha();
+            document.getElementById('uk-valor')?.focus();
+        },
+        willClose: () => desmontarFecha(),
         preConfirm: () => {
             const valorFinal = valor('uk-valor');
-            const fechaCierre = valor('uk-fecha');
+            const fechaCierre = controlFecha.valor;
             const sinValor = valorEstimado != null && (valorFinal === '' || Number(valorFinal) < 0);
             mostrarError('uk-err-valor', sinValor);
             const fechaInvalida = !fechaCierre || fechaCierre > hoy();
@@ -139,10 +157,14 @@ export async function modalCerrarPerdida(datos: DatosModal & { motivos: { id: st
             ${campoFechaYObservacion('Ej.: compró con otra inmobiliaria')}`,
         confirmButtonText: 'Cerrar como perdida',
         footer: pieDe(datos),
-        didOpen: () => document.getElementById('uk-motivo')?.focus(),
+        didOpen: () => {
+            desmontarFecha = prepararFecha();
+            document.getElementById('uk-motivo')?.focus();
+        },
+        willClose: () => desmontarFecha(),
         preConfirm: () => {
             const motivoPerdidaId = valor('uk-motivo');
-            const fechaCierre = valor('uk-fecha');
+            const fechaCierre = controlFecha.valor;
             mostrarError('uk-err-motivo', !motivoPerdidaId);
             const fechaInvalida = !fechaCierre || fechaCierre > hoy();
             mostrarError('uk-err-fecha', fechaInvalida);

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 
 export interface OpcionSelect {
     value: string;
@@ -21,9 +21,10 @@ interface Props {
     invalido?: boolean;
     onClear?: () => void;
     describedBy?: string;
+    icono?: ReactNode;
 }
 
-const Select = ({ value, onChange, opciones, ariaLabel, id, placeholder = 'Seleccionar', disabled = false, className = '', alto = 'sm', invalido = false, onClear, describedBy }: Props) => {
+const Select = ({ value, onChange, opciones, ariaLabel, id, placeholder = 'Seleccionar', disabled = false, className = '', alto = 'sm', invalido = false, onClear, describedBy, icono }: Props) => {
     const [abierto, setAbierto] = useState(false);
     const [activo, setActivo] = useState(0);
     const raiz = useRef<HTMLDivElement>(null);
@@ -124,15 +125,16 @@ const Select = ({ value, onChange, opciones, ariaLabel, id, placeholder = 'Selec
                 onKeyDown={teclado}
                 className={`flex w-full items-center justify-between gap-2 rounded-[9px] bg-white px-3 text-left font-semibold text-uk-ink hover:bg-uk-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-white dark:bg-uk-page-dark dark:text-uk-ink-dark dark:hover:bg-white/5 dark:focus-visible:ring-gold/50 dark:disabled:hover:bg-uk-page-dark ${
                     alto === 'lg' ? 'h-[42px] text-sm' : 'h-[38px] text-[13px]'
-                } ${onClear && value ? 'pr-16' : ''} ${
+                } ${onClear && value ? 'pr-11' : ''} ${icono ? '!pl-2.5' : ''} ${
                     invalido ? 'border-[1.5px] border-uk-lost dark:border-uk-lost-dark' : 'border border-uk-field dark:border-uk-field-dark'
                 }`}
             >
-                <span className={`truncate ${seleccionada ? '' : 'text-uk-muted dark:text-uk-muted-dark'}`}>
+                {icono ? <span className="flex shrink-0 items-center text-uk-muted dark:text-uk-muted-dark">{icono}</span> : null}
+                <span className={`flex-1 truncate ${seleccionada ? '' : 'text-uk-muted dark:text-uk-muted-dark'}`}>
                     {seleccionada?.label ?? placeholder}
                     {seleccionada?.detalle ? <span className="ml-1.5 text-xs font-semibold text-uk-muted dark:text-uk-muted-dark">· {seleccionada.detalle}</span> : null}
                 </span>
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`shrink-0 text-uk-muted transition-transform dark:text-uk-muted-dark ${abierto ? 'rotate-180' : ''}`}>
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`shrink-0 text-uk-muted transition-transform dark:text-uk-muted-dark ${abierto ? 'rotate-180' : ''} ${onClear && value && !disabled ? 'hidden' : ''}`}>
                     <path d="m6 9 6 6 6-6" />
                 </svg>
             </button>
@@ -142,7 +144,7 @@ const Select = ({ value, onChange, opciones, ariaLabel, id, placeholder = 'Selec
                     aria-label={`Quitar ${ariaLabel.toLowerCase()}`}
                     title={`Quitar ${ariaLabel.toLowerCase()}`}
                     onClick={() => onClear()}
-                    className="absolute right-8 top-1/2 grid h-[30px] w-[30px] -translate-y-1/2 place-content-center rounded-[7px] text-uk-muted hover:bg-uk-col dark:text-uk-muted-dark dark:hover:bg-white/10"
+                    className="absolute right-1.5 top-1/2 grid h-[30px] w-[30px] -translate-y-1/2 place-content-center rounded-[7px] text-uk-muted hover:bg-uk-col hover:text-uk-ink dark:text-uk-muted-dark dark:hover:bg-white/10 dark:hover:text-uk-ink-dark"
                 >
                     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M6 6l12 12M18 6 6 18" />

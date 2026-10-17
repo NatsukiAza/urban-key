@@ -177,6 +177,14 @@ Mismo componente en Kanban y en Configuración de embudos. Los 4 funnels son fij
 - Error: borde `border-uk-lost` + mensaje debajo `text-xs font-bold text-uk-lost` que diga qué hacer ("Elegí un motivo para poder cerrarla.").
 - Montos: input con prefijo de moneda (`USD`/`ARS` en `bg-gold-light text-uk-money font-extrabold`).
 
+### 5.4b Selector de fecha
+Referencia: `docs/mockups/12-selector-fecha.html`. Componente compartido: `components/ui/DatePicker.tsx`. No usar `<input type="date">` nativo.
+- Campo del alto de los demás (`h-[42px]`): ícono de calendario a la izquierda, fecha `dd/mm/aaaa` (`tabular-nums`) y ✕ para borrar. Se puede escribir o abrir el calendario (al enfocar o con el ícono).
+- Foco: borde violeta de 1,5 px con halo (`rgba(80,37,88,.12)`; en oscuro lila `#D7B8DE` con halo al 16 %). Ayuda debajo: "Sin fecha elegida", "Hoy", "Mañana", "Ayer", "En N días", "Hace N días".
+- Calendario de 260 px, `rounded-[14px]`, semana desde el lunes, celdas de 30 px. Día elegido lleno (violeta; dorado en oscuro), hoy con borde, días del mes vecino atenuados, días fuera de `min`/`max` deshabilitados. Pie: "O escribí dd/mm/aaaa" y "Borrar". Cierra con Escape o clic afuera.
+- Valor: `yyyy-mm-dd`. Fecha estimada de cierre: `min = hoy`. Fecha de cierre real (modales 6.5): `max = hoy`.
+- En modales de SweetAlert se monta con `lib/ui/FechaCierreHost.tsx`.
+
 ### 5.5 Formato de datos (helpers compartidos)
 - Moneda: `USD 210.000` / `ARS 420.000` (código + espacio + miles con punto, sin decimales). Nunca `$` solo: es ambiguo entre ARS y USD.
 - Sin valor: `— Sin valor` en `text-uk-muted`.

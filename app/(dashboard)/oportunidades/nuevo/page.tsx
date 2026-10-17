@@ -1,4 +1,4 @@
-import OportunidadForm, { type ValoresIniciales } from '@/views/Oportunidades/OportunidadForm';
+import OportunidadForm, { type ValoresIniciales, type PrecargaForm } from '@/views/Oportunidades/OportunidadForm';
 import { getFormOptions } from '@/lib/oportunidad/queries';
 import { getUsuarioActual } from '@/lib/auth/session';
 import { puedeReasignar } from '@/lib/auth/permisos';
@@ -22,11 +22,7 @@ function armarValoresIniciales(options: FormOptions, sp: Record<string, string |
     const funnelId = options.funnels.find((f) => f.id === sp.funnelId)?.id ?? options.funnels.find((f) => f.tipo === tipo)?.id;
     const primeraEtapa = options.etapas.filter((e) => e.funnelId === funnelId && e.resultado === 'ABIERTA').sort((a, b) => a.orden - b.orden)[0];
 
-    const contacto = options.interesados.find((c) => c.id === contactoId);
-    const titulo = [contacto && `${contacto.nombre} ${contacto.apellido}`, inmueble?.direccion].filter(Boolean).join(' — ');
-
     return {
-        titulo: titulo || undefined,
         contactoId,
         inmuebleId: inmueble?.id,
         responsableId: options.usuarios.some((u) => u.id === responsableId) ? responsableId : undefined,
@@ -37,9 +33,36 @@ function armarValoresIniciales(options: FormOptions, sp: Record<string, string |
     };
 }
 
+function armarPrecarga(options: FormOptions, sp: Record<string, string | undefined>, iniciales: ValoresIniciales): PrecargaForm | undefined {
+    const contacto = options.interesados.find((c) => c.id === sp.contactoId);
+    const inmueble = options.inmuebles.find((i) => i.id === sp.inmuebleId);
+    if (contacto) {
+        return {
+            origen: 'contacto',
+            nombre: `${contacto.nombre} ${contacto.apellido}`,
+            volverHref: `/contactos/${contacto.id}`,
+            contactoFijo: true,
+            inmuebleFijo: Boolean(iniciales.inmuebleId),
+        };
+    }
+    if (inmueble) {
+        return { origen: 'inmueble', nombre: inmueble.direccion, volverHref: `/inmuebles/${inmueble.id}`, contactoFijo: Boolean(iniciales.contactoId), inmuebleFijo: true };
+    }
+    return undefined;
+}
+
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
     const [sp, options, usuario] = await Promise.all([searchParams, getFormOptions(), getUsuarioActual()]);
     const iniciales = armarValoresIniciales(options, sp, usuario?.id);
     const volverA = sp.contactoId ? `/contactos/${sp.contactoId}` : sp.inmuebleId ? `/inmuebles/${sp.inmuebleId}` : undefined;
-    return <OportunidadForm options={options} iniciales={iniciales} volverA={volverA} puedeReasignar={puedeReasignar(usuario?.rol)} />;
+    return (
+        <OportunidadForm
+            options={options}
+            iniciales={iniciales}
+            volverA={volverA}
+            precarga={armarPrecarga(options, sp, iniciales)}
+            usuarioActualId={usuario?.id}
+            puedeReasignar={puedeReasignar(usuario?.rol)}
+        />
+    );
 }
