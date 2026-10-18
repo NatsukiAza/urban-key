@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import type { Metadata } from 'next';
 import SucursalesList from '@/views/Sucursales/SucursalesList';
 import { getUsuarioActual } from '@/lib/auth/session';
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+    await connection();
     const [usuario, inmobiliaria, sucursales] = await Promise.all([getUsuarioActual(), getInmobiliaria(), getSucursales()]);
     return <SucursalesList inmobiliaria={inmobiliaria} sucursales={sucursales} esAdmin={usuario?.rol === 'ADMINISTRADOR'} />;
 }

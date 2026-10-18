@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import { redirect } from 'next/navigation';
 import SucursalForm from '@/views/Sucursales/SucursalForm';
 import { getUsuarioActual } from '@/lib/auth/session';
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+    await connection();
     const usuario = await getUsuarioActual();
     if (usuario?.rol !== 'ADMINISTRADOR') redirect('/no-autorizado');
     const inmobiliaria = await getInmobiliaria();

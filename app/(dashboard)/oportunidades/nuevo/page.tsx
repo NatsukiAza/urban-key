@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import OportunidadForm, { type ValoresIniciales, type PrecargaForm } from '@/views/Oportunidades/OportunidadForm';
 import { getFormOptions } from '@/lib/oportunidad/queries';
 import { getUsuarioActual } from '@/lib/auth/session';
@@ -52,6 +53,8 @@ function armarPrecarga(options: FormOptions, sp: Record<string, string | undefin
 }
 
 export default async function Page({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+    // Las consultas arrancan en paralelo con searchParams y tragan el error de lectura de sesión durante el build.
+    await connection();
     const [sp, options, usuario] = await Promise.all([searchParams, getFormOptions(), getUsuarioActual()]);
     const iniciales = armarValoresIniciales(options, sp, usuario?.id);
     const volverA = sp.contactoId ? `/contactos/${sp.contactoId}` : sp.inmuebleId ? `/inmuebles/${sp.inmuebleId}` : undefined;
