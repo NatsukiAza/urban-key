@@ -31,6 +31,7 @@ export type Contacto = {
     sucursal_id: string | null;
     activo: boolean;
     creado_por: string | null;
+    creado_en: string;
 };
 
 export type Observacion = {
@@ -52,7 +53,7 @@ export type ContactoInput = {
     observaciones: string;
 };
 
-const CONTACTO_COLUMNS = 'id, nombre, apellido, email, telefono, estado, es_propietario, es_interesado, observaciones, sucursal_id, activo, creado_por';
+const CONTACTO_COLUMNS = 'id, nombre, apellido, email, telefono, estado, es_propietario, es_interesado, observaciones, sucursal_id, activo, creado_por, creado_en';
 
 export function nombreContacto(contacto: Pick<Contacto, 'nombre' | 'apellido'>) {
     return `${contacto.nombre} ${contacto.apellido}`.trim();
@@ -96,6 +97,9 @@ export async function crearContacto(supabase: SupabaseClient, input: ContactoInp
     if (!user) {
         return { error: 'No hay una sesión activa.' };
     }
+    if (!input.email.trim() && !input.telefono.trim()) {
+        return { error: 'Cargá al menos un teléfono o un email.' };
+    }
 
     const { data, error } = await supabase
         .from('contactos')
@@ -119,6 +123,50 @@ export async function crearContacto(supabase: SupabaseClient, input: ContactoInp
     }
 
     return { contacto: data };
+}
+
+export async function actualizarContacto(supabase: SupabaseClient, id: string, input: ContactoInput): Promise<{ contacto: Contacto } | { error: string }> {
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!input.email.trim() && !input.telefono.trim()) {
+        return { error: 'Cargá al menos un teléfono o un email.' };
+    }
+
+    const { data, error } = await supabase
+        .from('contactos')
+        .update({
+            nombre: input.nombre.trim(),
+            apellido: input.apellido.trim(),
+            email: input.email.trim() || null,
+            telefono: input.telefono.trim() || null,
+            estado: input.estado,
+            es_propietario: input.es_propietario,
+            es_interesado: input.es_interesado,
+            observaciones: input.observaciones.trim() || null,
+            actualizado_por: user?.id ?? null,
+        })
+        .eq('id', id)
+        .select(CONTACTO_COLUMNS)
+        .single();
+
+    if (error || !data) {
+        return { error: mensajeGuardado(error ?? {}, 'guardar los cambios') };
+    }
+
+    return { contacto: data };
+}
+
+// Devuelve el contacto activo que ya usa ese email (sin distinguir mayúsculas), ignorando `excluirId`.
+export async function buscarContactoPorEmail(supabase: SupabaseClient, email: string, excluirId?: string): Promise<{ id: string; nombre: string; apellido: string } | null> {
+    const limpio = email.trim();
+    if (!limpio) return null;
+    const patron = limpio.replace(/([\\%_])/g, '\\$1');
+    let consulta = supabase.from('contactos').select('id, nombre, apellido').eq('activo', true).ilike('email', patron);
+    if (excluirId) consulta = consulta.neq('id', excluirId);
+    const { data } = await consulta.limit(1).maybeSingle();
+    return data ?? null;
 }
 
 export async function actualizarEstadoContacto(supabase: SupabaseClient, id: string, estado: EstadoContacto): Promise<{ contacto: Contacto } | { error: string }> {
@@ -200,4 +248,74 @@ export async function agregarObservacion(supabase: SupabaseClient, contactoId: s
     }
 
     return { ok: true };
+}
+
+export type OportunidadDeContacto = {
+    id: string;
+    titulo: string;
+    estado: 'ABIERTA' | 'GANADA' | 'PERDIDA';
+    valorEstimado: number | null;
+    moneda: 'ARS' | 'USD';
+    etapa: string;
+    funnel: string;
+    inmueble: string;
+};
+
+export type InmuebleDeContacto = {
+    id: string;
+    direccion: string;
+    localidad: string | null;
+    tipoOperacion: 'VENTA' | 'ALQUILER';
+    tipoInmueble: 'CASA' | 'DEPARTAMENTO' | 'PH';
+    estado: 'DISPONIBLE' | 'RESERVADO' | 'OPERADO' | 'RETIRADO';
+    ambientes: number | null;
+    m2: number | null;
+    precio: number | null;
+    moneda: 'ARS' | 'USD';
+};
+
+export async function listarOportunidadesDeContacto(supabase: SupabaseClient, contactoId: string): Promise<OportunidadDeContacto[]> {
+    const { data } = await supabase
+        .from('oportunidades')
+        .select('id, titulo, estado, valor_estimado, moneda, etapa:etapas(nombre), funnel:funnels(nombre), inmueble:inmuebles(direccion, localidad)')
+        .eq('contacto_id', contactoId)
+        .eq('activo', true)
+        .order('creado_en', { ascending: false });
+    return (data ?? []).map((o: any) => ({
+        id: o.id,
+        titulo: o.titulo,
+        estado: o.estado,
+        valorEstimado: o.valor_estimado,
+        moneda: o.moneda,
+        etapa: o.etapa?.nombre ?? '',
+        funnel: o.funnel?.nombre ?? '',
+        inmueble: o.inmueble ? [o.inmueble.direccion, o.inmueble.localidad].filter(Boolean).join(', ') : '',
+    }));
+}
+
+export async function listarInmueblesDeContacto(supabase: SupabaseClient, contactoId: string): Promise<InmuebleDeContacto[]> {
+    const { data } = await supabase
+        .from('inmuebles')
+        .select('id, direccion, localidad, tipo_operacion, tipo_inmueble, estado, ambientes, m2, precio, moneda')
+        .eq('contacto_id', contactoId)
+        .eq('activo', true)
+        .order('creado_en', { ascending: false });
+    return (data ?? []).map((i: any) => ({
+        id: i.id,
+        direccion: i.direccion,
+        localidad: i.localidad,
+        tipoOperacion: i.tipo_operacion,
+        tipoInmueble: i.tipo_inmueble,
+        estado: i.estado,
+        ambientes: i.ambientes,
+        m2: i.m2,
+        precio: i.precio,
+        moneda: i.moneda,
+    }));
+}
+
+export async function nombreDeUsuario(supabase: SupabaseClient, usuarioId: string | null): Promise<string | null> {
+    if (!usuarioId) return null;
+    const { data } = await supabase.from('usuarios').select('nombre, apellido').eq('id', usuarioId).maybeSingle();
+    return data ? `${data.nombre} ${data.apellido}`.trim() : null;
 }

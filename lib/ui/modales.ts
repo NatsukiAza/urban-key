@@ -192,11 +192,11 @@ export async function modalMoverEtapa(datos: { titulo: string; etapaOrigen: stri
     return resultado.isConfirmed ? (resultado.value as { observacion: string | null }) : null;
 }
 
-export async function modalDarDeBaja(titulo: string): Promise<boolean> {
+export async function modalDarDeBaja(titulo: string, texto = 'Deja de aparecer en el tablero y la lista. El historial se conserva.'): Promise<boolean> {
     const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
         html: `
             <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">¿Dar de baja <strong>${escapar(titulo)}</strong>?</h2>
-            <p class="mt-2 text-sm text-uk-muted dark:text-uk-muted-dark">Deja de aparecer en el tablero y la lista. El historial se conserva.</p>`,
+            <p class="mt-2 text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(texto)}</p>`,
         confirmButtonText: 'Dar de baja',
     });
     return resultado.isConfirmed;
@@ -239,3 +239,57 @@ export async function modalDesactivar(datos: { titulo: string; texto: string }):
     return resultado.isConfirmed;
 }
 
+
+export interface DatosNuevoContacto {
+    nombre: string;
+    apellido: string;
+    telefono: string;
+    email: string;
+}
+
+const camposContacto = [
+    { id: 'nombre', etiqueta: 'Nombre', obligatorio: true },
+    { id: 'apellido', etiqueta: 'Apellido', obligatorio: true },
+    { id: 'telefono', etiqueta: 'Teléfono', obligatorio: false },
+    { id: 'email', etiqueta: 'Email', obligatorio: false },
+];
+
+export async function modalNuevoContacto(datos: { titulo: string; ayuda: string; confirmar: string; busqueda?: string }): Promise<DatosNuevoContacto | null> {
+    const [primero, ...resto] = (datos.busqueda ?? '').trim().split(/\s+/).filter(Boolean);
+    const inicial: Record<string, string> = { nombre: primero ?? '', apellido: resto.join(' ') };
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${escapar(datos.titulo)}</h2>
+            <p class="mb-4 mt-1 text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(datos.ayuda)}</p>
+            <div class="grid gap-4 sm:grid-cols-2">
+                ${camposContacto
+                    .map(
+                        (c) => `
+                <div>
+                    <label for="uk-${c.id}" class="${claseLabel}">${c.etiqueta}</label>
+                    <input id="uk-${c.id}" type="${c.id === 'email' ? 'email' : c.id === 'telefono' ? 'tel' : 'text'}" autocomplete="off" value="${escapar(inicial[c.id] ?? '')}" class="${claseCampo}" />
+                    <p id="uk-err-${c.id}" class="${claseError}"></p>
+                </div>`
+                    )
+                    .join('')}
+            </div>
+            <p id="uk-err-contacto" class="${claseError}">Cargá al menos un teléfono o un email.</p>`,
+        confirmButtonText: datos.confirmar,
+        focusCancel: false,
+        didOpen: () => document.getElementById(inicial.nombre ? 'uk-apellido' : 'uk-nombre')?.focus(),
+        preConfirm: () => {
+            const v = { nombre: valor('uk-nombre'), apellido: valor('uk-apellido'), telefono: valor('uk-telefono'), email: valor('uk-email') };
+            const errNombre = document.getElementById('uk-err-nombre');
+            const errApellido = document.getElementById('uk-err-apellido');
+            if (errNombre) errNombre.textContent = 'Cargá el nombre.';
+            if (errApellido) errApellido.textContent = 'Cargá el apellido.';
+            mostrarError('uk-err-nombre', !v.nombre);
+            mostrarError('uk-err-apellido', !v.apellido);
+            const sinContacto = !v.telefono && !v.email;
+            document.getElementById('uk-err-contacto')?.classList.toggle('hidden', !sinContacto);
+            if (!v.nombre || !v.apellido || sinContacto) return false;
+            return v;
+        },
+    });
+    return resultado.isConfirmed ? (resultado.value as DatosNuevoContacto) : null;
+}

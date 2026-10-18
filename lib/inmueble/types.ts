@@ -50,6 +50,8 @@ export interface OportunidadDeInmueble {
     funnel: string;
     etapa: string;
     estado: EstadoOportunidad;
+    valorEstimado: number | null;
+    moneda: Moneda;
 }
 
 export interface InmuebleDetalle extends Inmueble {

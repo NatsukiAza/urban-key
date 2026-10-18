@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
@@ -12,9 +11,10 @@ import { tipoInmuebleConfig } from '@/lib/enums/tipoInmueble';
 import type { FormOptions, Oportunidad } from '@/lib/oportunidad/types';
 import type { Moneda } from '@/lib/enums/moneda';
 import Select from '@/components/ui/Select';
+import BuscadorContacto from '@/components/ui/BuscadorContacto';
+import { Bloque, Campo, claseInput, claseInvalido, claseTextarea, formatearMiles, FormularioTarjeta, PieFormulario } from '@/components/ui/FormPartes';
 import DatePicker from '@/components/ui/DatePicker';
 import IconHome from '@/components/Icon/IconHome';
-import IconUser from '@/components/Icon/IconUser';
 import { inicialesDe } from '@/components/ui/Iniciales';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
@@ -50,52 +50,10 @@ interface Props {
 
 type Errores = Partial<Record<'titulo' | 'funnelId' | 'etapaId' | 'contactoId' | 'responsableId', string>>;
 
-const claseInput = 'form-input h-[42px] w-full rounded-[9px] text-sm dark:!bg-uk-page-dark dark:!border-uk-field-dark dark:!text-uk-ink-dark';
-const claseInvalido = '!border-[1.5px] !border-uk-lost dark:!border-uk-lost-dark';
-
-const Obligatorio = () => (
-    <>
-        <span aria-hidden="true" className="ml-0.5 text-uk-lost dark:text-uk-lost-dark">
-            *
-        </span>
-        <span className="sr-only"> (obligatorio)</span>
-    </>
-);
-
-const Campo = ({ id, etiqueta, obligatorio, error, ayuda, className = '', children }: { id: string; etiqueta: string; obligatorio?: boolean; error?: string; ayuda?: string; className?: string; children: ReactNode }) => (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-        <label htmlFor={id} className="!mb-0 text-[13px] font-bold text-uk-ink dark:text-uk-ink-dark">
-            {etiqueta}
-            {obligatorio ? <Obligatorio /> : null}
-        </label>
-        {children}
-        {error ? (
-            <p id={`${id}-error`} className="text-xs font-bold text-uk-lost dark:text-uk-lost-dark">
-                {error}
-            </p>
-        ) : ayuda ? (
-            <p className="text-xs font-semibold text-uk-muted dark:text-uk-muted-dark">{ayuda}</p>
-        ) : null}
-    </div>
-);
-
-const Bloque = ({ titulo, ayuda, ultimo = false, children }: { titulo: string; ayuda: string; ultimo?: boolean; children: ReactNode }) => (
-    <fieldset className={`m-0 flex min-w-0 flex-wrap gap-6 border-0 p-6 ${ultimo ? '' : 'border-b border-b-uk-col dark:border-b-[#232C45]'}`}>
-        <legend className="sr-only">{titulo}</legend>
-        <div className="flex max-w-[240px] flex-[1_1_200px] flex-col gap-1">
-            <h2 className="text-base font-extrabold text-uk-ink dark:text-uk-ink-dark">{titulo}</h2>
-            <p className="text-[13px] leading-normal text-uk-muted dark:text-uk-muted-dark">{ayuda}</p>
-        </div>
-        <div className="grid min-w-0 flex-[999_1_420px] grid-cols-1 gap-5 md:grid-cols-2">{children}</div>
-    </fieldset>
-);
-
 const hoyIso = (() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 })();
-
-const formatearMiles = (digitos: string) => (digitos ? Number(digitos).toLocaleString('es-AR') : '');
 
 const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, usuarioActualId, funnelNombre, puedeReasignar = false }: Props) => {
     const dispatch = useDispatch();
@@ -214,7 +172,7 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                 </div>
             ) : null}
 
-            <form onSubmit={submit} noValidate className="flex flex-col rounded-[14px] border border-uk-line bg-white shadow-[0_2px_4px_rgba(30,15,40,.14)] dark:border-[#232C45] dark:bg-uk-card-dark dark:shadow-none">
+            <FormularioTarjeta onSubmit={submit}>
                 <Bloque titulo="Básico" ayuda="Con qué nombre la vas a reconocer en el tablero y en qué funnel arranca.">
                     <Campo obligatorio id="titulo" etiqueta="Título" error={errores.titulo} className="md:col-span-2">
                         <input
@@ -284,25 +242,13 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                                 </button>
                             </div>
                         ) : (
-                            <Select
+                            <BuscadorContacto
                                 id="contactoId"
-                                alto="lg"
-                                icono={
-                                    contacto ? (
-                                        <span className="grid h-[26px] w-[26px] place-content-center rounded-full bg-primary-light text-[10px] font-extrabold text-primary dark:bg-[#3A2541] dark:text-[#E9D3EE]">
-                                            {inicialesDe(contacto.nombre, contacto.apellido)}
-                                        </span>
-                                    ) : (
-                                        <IconUser className="h-4 w-4" duotone={false} />
-                                    )
-                                }
-                                ariaLabel="Contacto"
-                                placeholder="Elegí un contacto"
-                                invalido={Boolean(errores.contactoId)}
-                                describedBy={errores.contactoId ? 'contactoId-error' : undefined}
+                                contactos={options.interesados}
                                 value={params.contactoId}
                                 onChange={(v) => set('contactoId', v)}
-                                opciones={options.interesados.map((c) => ({ value: c.id, label: `${c.nombre} ${c.apellido}` }))}
+                                invalido={Boolean(errores.contactoId)}
+                                describedBy={errores.contactoId ? 'contactoId-error' : undefined}
                             />
                         )}
                     </Campo>
@@ -378,20 +324,20 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                             value={params.observaciones}
                             onChange={(e) => set('observaciones', e.target.value)}
                             placeholder="Ej.: quiere vender antes de fin de año"
-                            className="form-textarea w-full resize-y rounded-[9px] text-sm dark:!border-uk-field-dark dark:!bg-uk-page-dark dark:!text-uk-ink-dark"
+                            className={claseTextarea}
                         />
                     </Campo>
                 </Bloque>
 
-                <div className="z-10 flex flex-wrap justify-end gap-2 rounded-b-[14px] border-t border-uk-line bg-[#FBFAFC] px-6 py-4 dark:border-[#232C45] dark:bg-[#121A2C] max-md:sticky max-md:bottom-0 max-md:rounded-none">
+                <PieFormulario>
                     <button type="button" className="btn btn-cancel h-[42px] rounded-[10px] px-[18px]" onClick={() => router.push(volverA ?? (esEdicion ? `/oportunidades/${oportunidad!.id}` : '/oportunidades'))}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary h-[42px] rounded-[10px] px-5 font-extrabold" disabled={guardando}>
                         {guardando ? 'Guardando…' : esEdicion ? 'Guardar cambios' : 'Crear oportunidad'}
                     </button>
-                </div>
-            </form>
+                </PieFormulario>
+            </FormularioTarjeta>
         </div>
     );
 };

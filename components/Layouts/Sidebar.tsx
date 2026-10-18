@@ -52,7 +52,7 @@ const Sidebar = () => {
         usuarios: enSeccion('/usuarios'),
         configuracion: enSeccion('/configuracion'),
     };
-    const seccionActual = activo.inmuebles ? 'inmuebles' : activo.oportunidades ? 'oportunidades' : activo.configuracion ? 'configuracion' : '';
+    const seccionActual = activo.oportunidades ? 'oportunidades' : activo.configuracion ? 'configuracion' : '';
     const props = (esActivo: boolean) => ({ 'aria-current': esActivo ? ('page' as const) : undefined, className: esActivo ? 'active' : '' });
 
     useEffect(() => {
@@ -90,32 +90,20 @@ const Sidebar = () => {
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative z-10 font-semibold space-y-0.5 px-[13px] py-0">
                             {/* La cartera de inmuebles es el insumo del embudo: va antes que Oportunidades. */}
-                            <li className="menu nav-item">
-                                <button type="button" className={`${activo.inmuebles ? 'active' : ''} nav-link group w-full`} aria-current={activo.inmuebles ? 'page' : undefined} onClick={() => toggleMenu('inmuebles')}>
+                            <li className="nav-item">
+                                <Link href="/inmuebles" className={`group ${activo.inmuebles ? 'active' : ''}`} aria-current={activo.inmuebles ? 'page' : undefined}>
                                     <div className="flex items-center">
                                         <IconHome duotone={false} className="text-white group-hover:!text-white shrink-0" />
                                         <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Inmuebles')}</span>
                                     </div>
-
-                                    <div className={`text-white ${currentMenu !== 'inmuebles' ? 'rtl:rotate-90 -rotate-90' : ''}`}>
-                                        <IconCaretDown />
-                                    </div>
-                                </button>
-
-                                <AnimateHeight duration={300} height={currentMenu === 'inmuebles' ? 'auto' : 0}>
-                                    <ul className="sub-menu">
-                                        <li>
-                                            <Link {...props(activo.inmuebles)} href="/inmuebles">{t('Lista')}</Link>
-                                        </li>
-                                    </ul>
-                                </AnimateHeight>
+                                </Link>
                             </li>
 
                             <li className="nav-item">
                                 <Link href="/sucursales" className={`group ${activo.sucursales ? 'active' : ''}`} aria-current={activo.sucursales ? 'page' : undefined}>
                                     <div className="flex items-center">
                                         <IconMapPin duotone={false} className="text-white group-hover:!text-white shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Sucursales')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{rol && rol !== 'ADMINISTRADOR' ? t('Sucursal') : t('Sucursales')}</span>
                                     </div>
                                 </Link>
                             </li>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Nuevo contacto</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F5F9}
+a{color:#502558}a:hover{color:#3A1A40}
+button,input,select,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="font-family: Nunito, sans-serif; color: #1B1424; background: #F7F5F9; min-height: 980px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <nav aria-label="Principal" style="flex: 1 1 232px; max-width: 100%; min-width: 232px; background: #3A1A40; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px; box-sizing: border-box; position: relative; overflow: hidden">
+    <div style="padding: 0 8px 20px"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Urban<span style="color: #D8AC71">Key</span></span></div>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Inmuebles</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Sucursal</a>
+    <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.10); color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8AC71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/></svg>Contactos</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Oportunidades</a>
+    <svg aria-hidden="true" width="232" height="220" viewBox="0 0 232 220" style="position: absolute; left: 0; bottom: 0; opacity: 0.16" fill="#D8AC71"><rect x="20" y="120" width="34" height="100"/><rect x="60" y="80" width="40" height="140"/><rect x="108" y="140" width="28" height="80"/><rect x="142" y="60" width="44" height="160"/><rect x="192" y="110" width="30" height="110"/></svg>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #E7E2EC; box-sizing: border-box">
+      <nav aria-label="Ruta" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77">
+        <a href="#" style="color: #5C5F77; text-decoration: none">Contactos</a><span aria-hidden="true">/</span><span style="color: #1B1424; font-weight: 700">Nuevo</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button aria-label="Cambiar a modo oscuro" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #E7E2EC; background: #FFFFFF; color: #5C5F77; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <button aria-label="Cuenta de Ximena Pastori" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #502558; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer">XP</button>
+      </div>
+    </header>
+
+    <main style="padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1080px; width: 100%; box-sizing: border-box">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px">Nuevo contacto</h1>
+        <p style="margin: 0; font-size: 14px; color: #5C5F77">Con nombre y un teléfono o email ya lo podés guardar.</p>
+      </div>
+
+      <form style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 14px; display: flex; flex-direction: column">
+
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Datos personales</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Datos personales</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Cómo aparece en la lista y en las oportunidades.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Nombre
+              <input type="text" value="Pablo" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Apellido
+              <input type="text" value="Molina" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Cómo contactarlo</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Cómo contactarlo</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Cargá al menos uno de los dos.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">
+              <label for="tel">Teléfono</label>
+              <div style="display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+                <span style="display: flex; align-items: center; padding: 0 10px; background: #F7F5F9; color: #5C5F77; font-size: 13px; font-weight: 700; border-right: 1px solid #DCD5E2">+54</span>
+                <input id="tel" type="tel" value="11 5555-1004" style="flex: 1; min-width: 0; border: 0; padding: 0 12px; font-size: 14px; color: #1B1424; font-variant-numeric: tabular-nums">
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #5C5F77">Con código de área, sin 0 ni 15.</span>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Email
+              <input type="email" value="pablo.molina@mail.com" aria-describedby="dup" style="height: 42px; padding: 0 12px; border: 1.5px solid #E2A03F; border-radius: 9px; font-size: 14px; color: #1B1424">
+            </label>
+            <div id="dup" role="status" style="grid-column: span 2; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: #FFF6E8; border: 1px solid #F3D29E; font-size: 13px; color: #5C3A00; flex-wrap: wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A4B00" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+              <span style="flex: 1; min-width: 220px">Ya hay un contacto con este email: <strong>Pablo Molina</strong>.</span>
+              <a href="#" style="font-weight: 800; color: #6B3A00">Ver contacto</a>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Clasificación</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Clasificación</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Sirve para filtrar y para sugerir el funnel.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+              <legend style="font-size: 13px; font-weight: 700; padding: 0; margin-bottom: 6px">Rol</legend>
+              <div role="radiogroup" style="display: flex; flex-wrap: wrap; gap: 6px">
+                <button type="button" role="radio" aria-checked="true" style="height: 36px; padding: 0 14px; border: 1.5px solid #502558; border-radius: 18px; background: #F6EEF7; color: #502558; font-size: 13px; font-weight: 800; cursor: pointer">Vendedor</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 36px; padding: 0 14px; border: 1px solid #DCD5E2; border-radius: 18px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer">Comprador</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 36px; padding: 0 14px; border: 1px solid #DCD5E2; border-radius: 18px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer">Locador</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 36px; padding: 0 14px; border: 1px solid #DCD5E2; border-radius: 18px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer">Inquilino</button>
+              </div>
+            </fieldset>
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+              <legend style="font-size: 13px; font-weight: 700; padding: 0; margin-bottom: 6px">Estado</legend>
+              <div role="radiogroup" style="display: inline-flex; padding: 4px; background: #EDE8F1; border-radius: 10px; align-self: flex-start">
+                <button type="button" role="radio" aria-checked="true" style="height: 32px; padding: 0 14px; border: 0; border-radius: 7px; background: #FFFFFF; color: #502558; font-size: 13px; font-weight: 800; box-shadow: 0 1px 2px rgba(30,15,40,0.12); cursor: pointer">Potencial</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 32px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; color: #5C5F77; font-size: 13px; font-weight: 700; cursor: pointer">Operado</button>
+              </div>
+            </fieldset>
+          </div>
+        </fieldset>
+
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Notas</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Notas</h2>
+          </div>
+          <label style="flex: 999 1 420px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700"><span>Observaciones <span style="font-weight: 600; color: #5C5F77; font-size: 12px">Opcional</span></span>
+            <textarea rows="3" placeholder="Ej.: prefiere que lo llamen después de las 18" style="padding: 10px 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; resize: vertical; color: #1B1424"></textarea>
+          </label>
+        </fieldset>
+
+        <div style="padding: 16px 24px; border-top: 1px solid #E7E2EC; background: #FBFAFC; border-radius: 0 0 14px 14px; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap">
+          <button type="button" style="height: 42px; padding: 0 18px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 14px; font-weight: 700; cursor: pointer">Cancelar</button>
+          <button type="button" style="height: 42px; padding: 0 18px; border: 1px solid #502558; border-radius: 10px; background: #FFFFFF; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer">Guardar y crear oportunidad</button>
+          <button type="submit" style="height: 42px; padding: 0 20px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(80,37,88,0.25)">Crear contacto</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

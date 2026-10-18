@@ -405,7 +405,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                         />
                     </div>
                 ) : (
-                    <div className="datatables lista-oportunidades pagination-padding">
+                    <div className="datatables tabla-lista pagination-padding">
                         <DataTable
                             className="whitespace-nowrap table-hover"
                             records={records}

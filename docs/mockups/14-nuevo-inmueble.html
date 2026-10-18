@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Nuevo inmueble</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F5F9}
+a{color:#502558}a:hover{color:#3A1A40}
+button,input,select,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="font-family: Nunito, sans-serif; color: #1B1424; background: #F7F5F9; min-height: 1280px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <nav aria-label="Principal" style="flex: 1 1 232px; max-width: 100%; min-width: 232px; background: #3A1A40; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px; box-sizing: border-box; position: relative; overflow: hidden">
+    <div style="padding: 0 8px 20px"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Urban<span style="color: #D8AC71">Key</span></span></div>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <a href="#" aria-current="true" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.10); color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8AC71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Inmuebles</a>
+      <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 42px; border-radius: 8px; color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 700"><span style="width: 6px; height: 6px; border-radius: 3px; background: #D8AC71; margin-left: -14px"></span>Lista</a>
+    </div>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Sucursal</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/></svg>Contactos</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Oportunidades</a>
+    <svg aria-hidden="true" width="232" height="220" viewBox="0 0 232 220" style="position: absolute; left: 0; bottom: 0; opacity: 0.16" fill="#D8AC71"><rect x="20" y="120" width="34" height="100"/><rect x="60" y="80" width="40" height="140"/><rect x="108" y="140" width="28" height="80"/><rect x="142" y="60" width="44" height="160"/><rect x="192" y="110" width="30" height="110"/></svg>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #E7E2EC; box-sizing: border-box">
+      <nav aria-label="Ruta" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77">
+        <a href="#" style="color: #5C5F77; text-decoration: none">Inmuebles</a><span aria-hidden="true">/</span><span style="color: #1B1424; font-weight: 700">Nuevo</span>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button aria-label="Cambiar a modo oscuro" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #E7E2EC; background: #FFFFFF; color: #5C5F77; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <button aria-label="Cuenta de Ximena Pastori" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #502558; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer">XP</button>
+      </div>
+    </header>
+
+    <main style="padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1080px; width: 100%; box-sizing: border-box">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px">Nuevo inmueble</h1>
+        <p style="margin: 0; font-size: 14px; color: #5C5F77">Los campos sin “Opcional” son obligatorios.</p>
+      </div>
+
+      <form style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 14px; display: flex; flex-direction: column">
+
+        <!-- Operación y tipo -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Operación y tipo</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Operación y tipo</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Define en qué listados y funnels aparece.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: flex; flex-direction: column; gap: 20px">
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+              <legend style="font-size: 13px; font-weight: 700; padding: 0; margin-bottom: 6px">Operación</legend>
+              <div role="radiogroup" style="display: inline-flex; padding: 4px; background: #EDE8F1; border-radius: 10px; align-self: flex-start">
+                <button type="button" role="radio" aria-checked="true" style="height: 34px; padding: 0 22px; border: 0; border-radius: 7px; background: #FFFFFF; color: #502558; font-size: 14px; font-weight: 800; box-shadow: 0 1px 2px rgba(30,15,40,0.12); cursor: pointer">Venta</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 34px; padding: 0 22px; border: 0; border-radius: 7px; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Alquiler</button>
+              </div>
+            </fieldset>
+            <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+              <legend style="font-size: 13px; font-weight: 700; padding: 0; margin-bottom: 6px">Tipo</legend>
+              <div role="radiogroup" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+                <button type="button" role="radio" aria-checked="true" style="height: 72px; border: 1.5px solid #502558; border-radius: 10px; background: #F6EEF7; color: #502558; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg>Departamento</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 72px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Casa</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 72px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V9l5-4 5 4v12"/><path d="M13 21V12l4-3 4 3v9"/></svg>PH</button>
+                <button type="button" role="radio" aria-checked="false" style="height: 72px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l2-5h14l2 5"/><path d="M4 9v12h16V9"/><path d="M3 9h18"/></svg>Local</button>
+              </div>
+            </fieldset>
+          </div>
+        </fieldset>
+
+        <!-- Ubicación -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ubicación</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Ubicación</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">La dirección es el nombre del inmueble en toda la app.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <label style="grid-column: span 2; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Dirección
+              <input type="text" value="Av. Rivadavia 18500" placeholder="Calle y número" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700"><span>Piso y depto <span style="font-weight: 600; color: #5C5F77; font-size: 12px">Opcional</span></span>
+              <input type="text" value="3° B" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Localidad
+              <select style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424; background: #FFFFFF"><option>Morón</option><option>Castelar</option><option>Haedo</option><option>Ramos Mejía</option><option>Ituzaingó</option></select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Características -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Características</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Características</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Se muestran como “3 amb. · 2 dorm. · 78 m²”.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">
+              <span id="amb">Ambientes</span>
+              <div role="group" aria-labelledby="amb" style="display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+                <button type="button" aria-label="Restar ambiente" style="width: 42px; border: 0; border-right: 1px solid #DCD5E2; background: #F7F5F9; color: #502558; font-size: 18px; font-weight: 800; cursor: pointer">−</button>
+                <input type="text" inputmode="numeric" value="3" aria-labelledby="amb" style="flex: 1; min-width: 0; border: 0; text-align: center; font-size: 15px; font-weight: 800; color: #1B1424">
+                <button type="button" aria-label="Sumar ambiente" style="width: 42px; border: 0; border-left: 1px solid #DCD5E2; background: #F7F5F9; color: #502558; font-size: 18px; font-weight: 800; cursor: pointer">+</button>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">
+              <span id="dorm">Dormitorios <span style="font-weight: 600; color: #5C5F77; font-size: 12px">Opcional</span></span>
+              <div role="group" aria-labelledby="dorm" style="display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+                <button type="button" aria-label="Restar dormitorio" style="width: 42px; border: 0; border-right: 1px solid #DCD5E2; background: #F7F5F9; color: #502558; font-size: 18px; font-weight: 800; cursor: pointer">−</button>
+                <input type="text" inputmode="numeric" value="2" aria-labelledby="dorm" style="flex: 1; min-width: 0; border: 0; text-align: center; font-size: 15px; font-weight: 800; color: #1B1424">
+                <button type="button" aria-label="Sumar dormitorio" style="width: 42px; border: 0; border-left: 1px solid #DCD5E2; background: #F7F5F9; color: #502558; font-size: 18px; font-weight: 800; cursor: pointer">+</button>
+              </div>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Superficie total
+              <div style="display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+                <input type="text" inputmode="numeric" value="78" style="flex: 1; min-width: 0; border: 0; padding: 0 12px; font-size: 15px; font-weight: 800; color: #1B1424; font-variant-numeric: tabular-nums">
+                <span style="display: flex; align-items: center; padding: 0 12px; background: #F7F5F9; color: #5C5F77; font-size: 13px; font-weight: 700; border-left: 1px solid #DCD5E2">m²</span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Precio y estado -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Precio y estado</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Precio y estado</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">En alquiler, cargá el valor mensual.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">
+              <span>Precio de venta</span>
+              <div style="display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+                <div role="radiogroup" aria-label="Moneda" style="display: flex; padding: 4px; gap: 2px; background: #FBF6EE; border-right: 1px solid #DCD5E2">
+                  <button type="button" role="radio" aria-checked="true" style="height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: #FFFFFF; color: #7A5A2E; font-size: 12px; font-weight: 800; box-shadow: 0 1px 2px rgba(30,15,40,0.12); cursor: pointer">USD</button>
+                  <button type="button" role="radio" aria-checked="false" style="height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: #7A5A2E; font-size: 12px; font-weight: 700; cursor: pointer">ARS</button>
+                </div>
+                <input type="text" inputmode="numeric" aria-label="Precio" value="145.000" style="flex: 1; min-width: 0; border: 0; padding: 0 12px; font-size: 15px; font-weight: 800; color: #1B1424; font-variant-numeric: tabular-nums">
+              </div>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Estado
+              <select style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424; background: #FFFFFF"><option>Disponible</option><option>Reservado</option><option>No disponible</option></select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Propietario -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid #F0ECF3">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Propietario</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Propietario</h2>
+            <p style="margin: 0; font-size: 13px; color: #5C5F77; line-height: 1.5">Buscalo entre tus contactos o crealo sin salir de acá.</p>
+          </div>
+          <div style="flex: 999 1 420px; display: flex; flex-direction: column; gap: 6px; position: relative">
+            <label for="prop" style="font-size: 13px; font-weight: 700">Contacto</label>
+            <div style="height: 42px; border: 1.5px solid #502558; border-radius: 9px; display: flex; align-items: center; gap: 8px; padding: 0 12px; box-shadow: 0 0 0 3px rgba(80,37,88,0.12)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input id="prop" type="search" value="Mar" role="combobox" aria-expanded="true" style="flex: 1; min-width: 0; border: 0; font-size: 14px; color: #1B1424; outline: none">
+            </div>
+            <ul role="listbox" style="list-style: none; margin: 0; padding: 6px; background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 12px; box-shadow: 0 16px 32px rgba(30,15,40,0.14); display: flex; flex-direction: column">
+              <li role="option" aria-selected="true" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #F6EEF7; cursor: pointer">
+                <span style="width: 28px; height: 28px; border-radius: 14px; background: #FFFFFF; color: #502558; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">MR</span>
+                <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700"><mark style="background: transparent; color: #502558; font-weight: 800">Mar</mark>ta Ruiz</span><span style="font-size: 12px; color: #5C5F77">marta.ruiz@mail.com · 11 5555-1001</span></span>
+              </li>
+              <li style="height: 1px; background: #E7E2EC; margin: 4px 0"></li>
+              <li role="option" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: #502558; font-size: 14px; font-weight: 800">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Crear contacto “Mar”
+              </li>
+            </ul>
+          </div>
+        </fieldset>
+
+        <!-- Observaciones -->
+        <fieldset style="margin: 0; border: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Observaciones</legend>
+          <div style="flex: 1 1 200px; max-width: 240px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800">Observaciones</h2>
+          </div>
+          <label style="flex: 999 1 420px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700"><span>Observaciones <span style="font-weight: 600; color: #5C5F77; font-size: 12px">Opcional</span></span>
+            <textarea rows="3" placeholder="Ej.: apto crédito, balcón al frente" style="padding: 10px 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; resize: vertical; color: #1B1424"></textarea>
+          </label>
+        </fieldset>
+
+        <div style="padding: 16px 24px; border-top: 1px solid #E7E2EC; background: #FBFAFC; border-radius: 0 0 14px 14px; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap">
+          <button type="button" style="height: 42px; padding: 0 18px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 14px; font-weight: 700; cursor: pointer">Cancelar</button>
+          <button type="button" style="height: 42px; padding: 0 18px; border: 1px solid #502558; border-radius: 10px; background: #FFFFFF; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer">Guardar y crear oportunidad</button>
+          <button type="submit" style="height: 42px; padding: 0 20px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(80,37,88,0.25)">Crear inmueble</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -3,36 +3,34 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
 import { setPageTitle } from '@/store/themeConfigSlice';
-import IconEdit from '@/components/Icon/IconEdit';
-import IconTrashLines from '@/components/Icon/IconTrashLines';
 import { darDeBajaInmueble } from '@/lib/inmueble/actions';
 import { showToast } from '@/lib/ui/toast';
+import { modalDarDeBaja } from '@/lib/ui/modales';
 import { tipoOperacionConfig } from '@/lib/enums/tipoOperacion';
 import { tipoInmuebleConfig } from '@/lib/enums/tipoInmueble';
 import { estadoInmuebleConfig } from '@/lib/enums/estadoInmueble';
 import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
-import { formatearImporte } from '@/lib/enums/moneda';
+import { formatearImporte, formatearMonto } from '@/lib/enums/moneda';
+import { formatearTelefono } from '@/lib/formato';
 import type { InmuebleDetalle as TDetalle } from '@/lib/inmueble/types';
-import DetailHero from '@/components/ui/DetailHero';
 import EstadoChip from '@/components/ui/EstadoChip';
 import ChipCategoria from '@/components/ui/ChipCategoria';
+import MenuFilaTabla from '@/components/ui/MenuFilaTabla';
+import { inicialesDe } from '@/components/ui/Iniciales';
+import { Avatar, BotonEditar, BotonNuevaOportunidad, DatoLista, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta, EnlaceTarjeta } from '@/components/ui/FichaPartes';
+import IconBuilding from '@/components/Icon/IconBuilding';
+import IconHome from '@/components/Icon/IconHome';
+import IconPhone from '@/components/Icon/IconPhone';
+import IconMail from '@/components/Icon/IconMail';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 
 interface Props {
     detalle: TDetalle;
 }
 
-const fmtFecha = (iso: string | null) => (iso ? new Date(iso).toLocaleString('es-AR') : '—');
 const fmtNumero = (v: number | null, sufijo = '') => (v != null ? `${v.toLocaleString('es-AR')}${sufijo}` : '—');
-
-const Campo = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div>
-        <div className="text-uk-muted dark:text-uk-muted-dark text-xs uppercase">{label}</div>
-        <div className="font-semibold">{children}</div>
-    </div>
-);
+const telHref = (t: string) => `tel:${t.replace(/[^\d+]/g, '')}`;
 
 const InmuebleDetalle = ({ detalle }: Props) => {
     const dispatch = useDispatch();
@@ -42,134 +40,186 @@ const InmuebleDetalle = ({ detalle }: Props) => {
         dispatch(setPageTitle('Detalle de inmueble'));
     });
 
-    const showMessage = (msg = '', type: any = 'success') => showToast(msg, type);
-
     const abiertas = detalle.oportunidades.filter((o) => o.estado === 'ABIERTA').length;
+    const editarHref = `/inmuebles/${detalle.id}/editar`;
 
     const darDeBaja = async () => {
-        const result = await Swal.fire({
-            title: '¿Dar de baja el inmueble?',
-            text: 'Se conserva el historial (baja lógica).',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Dar de baja',
-            cancelButtonText: 'Cancelar',
-            padding: '2em',
-        });
-        if (!result.isConfirmed) return;
+        if (abiertas > 0) {
+            showToast('No se puede dar de baja: tiene oportunidades abiertas.', 'error');
+            return;
+        }
+        const confirmado = await modalDarDeBaja(detalle.direccion, 'Se conserva el historial. No se puede si tiene oportunidades abiertas.');
+        if (!confirmado) return;
         const res = await darDeBajaInmueble(detalle.id);
+        showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
         if (res.ok) {
-            showMessage(res.mensaje);
             router.push('/inmuebles');
             router.refresh();
-        } else {
-            showMessage(res.mensaje, 'error');
         }
     };
 
-    const propietario = detalle.propietario ? `${detalle.propietario.nombre} ${detalle.propietario.apellido}` : '—';
+    const propietario = detalle.propietario;
+    const nombrePropietario = propietario ? `${propietario.nombre} ${propietario.apellido}` : null;
+    const roles = propietario ? [propietario.esPropietario ? 'Propietario' : null, propietario.esInteresado ? 'Interesado' : null].filter(Boolean).join(' · ') : '';
+    const esAlquiler = detalle.tipoOperacion === 'ALQUILER';
+    const precioPorM2 = !esAlquiler && detalle.precio != null && detalle.m2 ? Math.round(detalle.precio / detalle.m2) : null;
+
+    const distribucion =
+        detalle.ambientes == null ? (
+            '—'
+        ) : detalle.ambientes === 1 ? (
+            'Monoamb.'
+        ) : (
+            <>
+                {detalle.ambientes} amb.{' '}
+                <span className="text-[13px] font-semibold text-uk-muted dark:text-uk-muted-dark">{detalle.dormitorios != null ? `· ${detalle.dormitorios} dorm.` : '· dorm. sin cargar'}</span>
+            </>
+        );
 
     return (
-        <div className="space-y-5">
-            <DetailHero
-                title={detalle.direccion}
-                badges={
+        <div className="mx-auto flex max-w-[1240px] flex-col gap-5">
+            <FichaHero
+                avatar={
+                    <Avatar cuadrado>
+                        {detalle.tipoInmueble === 'CASA' ? <IconHome className="h-7 w-7" duotone={false} /> : <IconBuilding className="h-7 w-7" />}
+                    </Avatar>
+                }
+                titulo={detalle.direccion}
+                junto={<EstadoChip label={estadoInmuebleConfig[detalle.estado].label} color={estadoInmuebleConfig[detalle.estado].color} />}
+                debajo={
                     <>
-                        <EstadoChip label={estadoInmuebleConfig[detalle.estado].label} color={estadoInmuebleConfig[detalle.estado].color} />
+                        {detalle.localidad ? (
+                            <>
+                                <span>{detalle.localidad}</span>
+                                <span aria-hidden="true">·</span>
+                            </>
+                        ) : null}
                         <ChipCategoria destacado>{tipoOperacionConfig[detalle.tipoOperacion].label}</ChipCategoria>
                         <ChipCategoria>{tipoInmuebleConfig[detalle.tipoInmueble].label}</ChipCategoria>
                     </>
                 }
-                actions={
+                acciones={
                     <>
-                        <Link href={`/inmuebles/${detalle.id}/editar`} className="btn btn-primary gap-2">
-                            <IconEdit className="w-4.5 h-4.5" />
-                            Editar
-                        </Link>
-                        <button type="button" className="btn btn-outline-danger gap-2" onClick={darDeBaja} disabled={abiertas > 0} title={abiertas > 0 ? 'Tiene oportunidades abiertas' : undefined}>
-                            <IconTrashLines className="w-4.5 h-4.5" />
-                            Dar de baja
-                        </button>
+                        <BotonEditar href={editarHref} etiqueta="Editar inmueble" />
+                        <MenuFilaTabla ariaLabel="Más acciones" items={[{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }]} />
+                        <BotonNuevaOportunidad href={`/oportunidades/nuevo?inmuebleId=${detalle.id}`} />
                     </>
                 }
-                facts={[
-                    { label: 'Precio', value: formatearImporte(detalle.precio, detalle.moneda), emphasis: true },
-                    { label: 'Localidad', value: detalle.localidad || '—' },
+                datos={[
                     {
-                        label: 'Propietario',
-                        value: (
+                        etiqueta: esAlquiler ? 'Alquiler mensual' : 'Precio',
+                        valor: detalle.precio != null ? formatearMonto(detalle.precio, detalle.moneda) : '—',
+                        grande: true,
+                    },
+                    { etiqueta: 'Distribución', valor: distribucion },
+                    {
+                        etiqueta: 'Superficie',
+                        valor: (
                             <>
-                                {propietario}
-                                {detalle.propietario?.telefono ? <div className="text-xs font-normal text-uk-muted dark:text-uk-muted-dark">{detalle.propietario.telefono}</div> : null}
+                                {fmtNumero(detalle.m2, ' m²')}
+                                {precioPorM2 != null ? <span className="text-[13px] font-semibold text-uk-muted dark:text-uk-muted-dark"> · {formatearMonto(precioPorM2, detalle.moneda)}/m²</span> : null}
                             </>
+                        ),
+                    },
+                    {
+                        etiqueta: 'Propietario',
+                        valor: propietario ? (
+                            <span className="flex items-center gap-2">
+                                <span className="grid h-7 w-7 shrink-0 place-content-center rounded-full bg-primary-light text-[11px] font-extrabold text-primary dark:bg-white/10 dark:text-uk-link-dark">{inicialesDe(propietario.nombre, propietario.apellido)}</span>
+                                <Link href={`/contactos/${propietario.id}`} className="truncate hover:underline">
+                                    {nombrePropietario}
+                                </Link>
+                            </span>
+                        ) : (
+                            '—'
                         ),
                     },
                 ]}
             />
 
-            <div className="panel">
-                <h2 className="mb-4 text-lg font-semibold">Características</h2>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <Campo label="Nombre interno">{detalle.nombre || '—'}</Campo>
-                <Campo label="Ambientes">{fmtNumero(detalle.ambientes)}</Campo>
-                <Campo label="Dormitorios">{fmtNumero(detalle.dormitorios)}</Campo>
-                <Campo label="Baños">{fmtNumero(detalle.banos)}</Campo>
-                <Campo label="Superficie">{fmtNumero(detalle.m2, ' m²')}</Campo>
-
-                <Campo label="Cochera">{detalle.cochera ? 'Sí' : 'No'}</Campo>
-                <Campo label="Antigüedad">{detalle.antiguedad != null ? (detalle.antiguedad === 0 ? 'A estrenar' : `${detalle.antiguedad} años`) : '—'}</Campo>
-                <Campo label="Expensas">{formatearImporte(detalle.expensas, detalle.moneda)}</Campo>
-                <Campo label="Alta">{fmtFecha(detalle.creadoEn)}</Campo>
-
-                <div className="sm:col-span-2 lg:col-span-4">
-                    <Campo label="Descripción">
-                        <span className="font-normal whitespace-pre-line">{detalle.descripcion || '—'}</span>
-                    </Campo>
+            <div className="flex flex-wrap items-start gap-5">
+                <div className="flex min-w-0 flex-[999_1_520px] flex-col gap-5">
+                    <Tarjeta titulo="Oportunidades con este inmueble" derecha={abiertas > 0 ? <span className="text-[13px] text-uk-muted dark:text-uk-muted-dark">{abiertas} {abiertas === 1 ? 'abierta' : 'abiertas'}</span> : undefined}>
+                        {detalle.oportunidades.length === 0 ? (
+                            <p className="text-sm text-uk-muted dark:text-uk-muted-dark">Este inmueble todavía no tiene oportunidades asociadas.</p>
+                        ) : (
+                            detalle.oportunidades.map((o) => (
+                                <FilaRelacionada
+                                    key={o.id}
+                                    href={`/oportunidades/${o.id}`}
+                                    titulo={o.titulo}
+                                    detalle={[o.contacto, o.etapa, o.funnel].filter(Boolean).join(' · ')}
+                                    medio={<EstadoChip label={estadoOportunidadConfig[o.estado].label} color={estadoOportunidadConfig[o.estado].color} />}
+                                    importe={o.valorEstimado != null ? formatearMonto(o.valorEstimado, o.moneda) : undefined}
+                                />
+                            ))
+                        )}
+                    </Tarjeta>
                 </div>
-            </div>
-            </div>
 
-            <div className="panel">
-                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <h2 className="text-lg font-semibold">Oportunidades del inmueble</h2>
-                    {abiertas > 0 && <ChipCategoria>{abiertas} abierta{abiertas === 1 ? '' : 's'}</ChipCategoria>}
-                </div>
-                {detalle.oportunidades.length === 0 ? (
-                    <p className="text-uk-muted dark:text-uk-muted-dark">Este inmueble todavía no tiene oportunidades asociadas.</p>
-                ) : (
-                    <div className="table-responsive">
-                        <table className="table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Contacto</th>
-                                    <th>Responsable</th>
-                                    <th>Funnel</th>
-                                    <th>Etapa</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {detalle.oportunidades.map((o) => (
-                                    <tr key={o.id}>
-                                        <td>
-                                            <Link href={`/oportunidades/${o.id}`} className="text-primary dark:text-uk-link-dark underline hover:no-underline font-semibold">
-                                                {o.titulo}
-                                            </Link>
-                                        </td>
-                                        <td>{o.contacto || '—'}</td>
-                                        <td>{o.responsable || '—'}</td>
-                                        <td>{o.funnel || '—'}</td>
-                                        <td>{o.etapa || '—'}</td>
-                                        <td>
-                                            <EstadoChip label={estadoOportunidadConfig[o.estado].label} color={estadoOportunidadConfig[o.estado].color} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <aside className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
+                    {propietario ? (
+                        <Tarjeta compacta titulo="Propietario">
+                            <div className="flex items-center gap-3">
+                                <span className="grid h-10 w-10 shrink-0 place-content-center rounded-full bg-primary-light text-sm font-extrabold text-primary dark:bg-white/10 dark:text-uk-link-dark">{inicialesDe(propietario.nombre, propietario.apellido)}</span>
+                                <div className="flex min-w-0 flex-col">
+                                    <Link href={`/contactos/${propietario.id}`} className="truncate text-[15px] font-extrabold text-primary hover:underline dark:text-uk-link-dark">
+                                        {nombrePropietario}
+                                    </Link>
+                                    {roles ? <span className="text-xs text-uk-muted dark:text-uk-muted-dark">{roles}</span> : null}
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2 text-sm">
+                                {propietario.telefono ? (
+                                    <a href={telHref(propietario.telefono)} className="flex items-center gap-2 tabular-nums text-uk-ink hover:underline dark:text-uk-ink-dark">
+                                        <IconPhone className="h-[15px] w-[15px] text-uk-muted dark:text-uk-muted-dark" />
+                                        {formatearTelefono(propietario.telefono)}
+                                    </a>
+                                ) : null}
+                                {propietario.email ? (
+                                    <a href={`mailto:${propietario.email}`} className="flex min-w-0 items-center gap-2 text-uk-ink hover:underline dark:text-uk-ink-dark">
+                                        <IconMail className="h-[15px] w-[15px] shrink-0 text-uk-muted dark:text-uk-muted-dark" />
+                                        <span className="truncate">{propietario.email}</span>
+                                    </a>
+                                ) : null}
+                            </div>
+                        </Tarjeta>
+                    ) : null}
+
+                    <Tarjeta compacta titulo="Datos" derecha={<EnlaceTarjeta href={editarHref}>Editar</EnlaceTarjeta>}>
+                        <ListaDatos>
+                            <DatoLista etiqueta="Dirección" ancho>
+                                {[detalle.direccion, detalle.localidad].filter(Boolean).join(', ')}
+                            </DatoLista>
+                            <DatoLista etiqueta="Operación">{tipoOperacionConfig[detalle.tipoOperacion].label}</DatoLista>
+                            <DatoLista etiqueta="Tipo">{tipoInmuebleConfig[detalle.tipoInmueble].label}</DatoLista>
+                            <DatoLista etiqueta="Ambientes">{fmtNumero(detalle.ambientes)}</DatoLista>
+                            <DatoLista etiqueta="Dormitorios">
+                                {detalle.dormitorios != null ? (
+                                    detalle.dormitorios
+                                ) : (
+                                    <SinDato>
+                                        Sin cargar ·{' '}
+                                        <Link href={editarHref} className="font-extrabold not-italic text-primary hover:underline dark:text-uk-link-dark">
+                                            Completar
+                                        </Link>
+                                    </SinDato>
+                                )}
+                            </DatoLista>
+                            <DatoLista etiqueta="Baños">{fmtNumero(detalle.banos)}</DatoLista>
+                            <DatoLista etiqueta="Cochera">{detalle.cochera ? 'Sí' : 'No'}</DatoLista>
+                            <DatoLista etiqueta="Antigüedad">{detalle.antiguedad != null ? (detalle.antiguedad === 0 ? 'A estrenar' : `${detalle.antiguedad} años`) : '—'}</DatoLista>
+                            <DatoLista etiqueta="Expensas">{formatearImporte(detalle.expensas, detalle.moneda)}</DatoLista>
+                            <DatoLista etiqueta="Nombre interno">{detalle.nombre || '—'}</DatoLista>
+                            <DatoLista etiqueta="Alta" ancho>
+                                {new Date(detalle.creadoEn).toLocaleDateString('es-AR')}
+                            </DatoLista>
+                            <DatoLista etiqueta="Observaciones" ancho>
+                                {detalle.descripcion ? <span className="whitespace-pre-line font-normal leading-normal">{detalle.descripcion}</span> : <SinDato>Sin observaciones</SinDato>}
+                            </DatoLista>
+                        </ListaDatos>
+                    </Tarjeta>
+                </aside>
             </div>
         </div>
     );

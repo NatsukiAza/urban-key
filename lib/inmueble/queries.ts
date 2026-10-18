@@ -14,7 +14,7 @@ const SELECT_DETALLE = `
     *,
     propietario:contactos(*),
     oportunidades(
-        id, titulo, estado, activo,
+        id, titulo, estado, activo, valor_estimado, moneda,
         contacto:contactos(nombre, apellido),
         responsable:${RESPONSABLE}(nombre, apellido),
         funnel:funnels(nombre),
@@ -92,6 +92,8 @@ export async function getInmuebleDetalle(id: string): Promise<InmuebleDetalle | 
                 funnel: o.funnel?.nombre ?? '',
                 etapa: o.etapa?.nombre ?? '',
                 estado: o.estado,
+                valorEstimado: o.valor_estimado,
+                moneda: o.moneda,
             }));
 
         return {

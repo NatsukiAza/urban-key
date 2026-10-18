@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Usuarios</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F5F9}
+a{color:#502558}a:hover{color:#3A1A40}
+button,input{font-family:inherit}
+</style>
+</helmet>
+<div style="font-family: Nunito, sans-serif; color: #1B1424; background: #F7F5F9; min-height: 900px; display: flex; flex-wrap: wrap; align-items: stretch; position: relative; overflow: hidden">
+
+  <nav aria-label="Principal" style="flex: 1 1 232px; max-width: 100%; min-width: 232px; background: #3A1A40; color: #FFFFFF; display: flex; flex-direction: column; gap: 4px; padding: 20px 12px; box-sizing: border-box; position: relative; overflow: hidden">
+    <div style="padding: 0 8px 20px"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Urban<span style="color: #D8AC71">Key</span></span></div>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg>Inmuebles</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Sucursales</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/></svg>Contactos</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Oportunidades</a>
+    <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; background: rgba(255,255,255,0.10); color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8AC71" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Usuarios</a>
+    <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 10px; color: #E9DDEC; text-decoration: none; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Configuración</a>
+    <svg aria-hidden="true" width="232" height="220" viewBox="0 0 232 220" style="position: absolute; left: 0; bottom: 0; opacity: 0.16" fill="#D8AC71"><rect x="20" y="120" width="34" height="100"/><rect x="60" y="80" width="40" height="140"/><rect x="108" y="140" width="28" height="80"/><rect x="142" y="60" width="44" height="160"/><rect x="192" y="110" width="30" height="110"/></svg>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #E7E2EC; box-sizing: border-box">
+      <nav aria-label="Ruta" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5C5F77"><span style="color: #1B1424; font-weight: 700">Usuarios</span></nav>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <button aria-label="Cambiar a modo oscuro" style="width: 40px; height: 40px; border-radius: 20px; border: 1px solid #E7E2EC; background: #FFFFFF; color: #5C5F77; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <button aria-label="Cuenta de Emiliano Alonso" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #502558; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer">EA</button>
+      </div>
+    </header>
+
+    <main style="padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 20px; min-width: 0">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px">Usuarios</h1>
+          <p style="margin: 0; font-size: 14px; color: #5C5F77">3 usuarios · 3 activos. Quiénes pueden entrar a UrbanKey y con qué permisos.</p>
+        </div>
+        <button style="display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(80,37,88,0.25)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo usuario</button>
+      </div>
+
+      <section style="background: #FFFFFF; border: 1px solid #E7E2EC; border-radius: 14px; min-width: 0">
+        <div style="padding: 16px 20px; border-bottom: 1px solid #E7E2EC; display: flex; gap: 8px; flex-wrap: wrap">
+          <label style="position: relative; display: flex; align-items: center; flex: 1 1 240px; max-width: 320px">
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar usuarios</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C5F77" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 12px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" placeholder="Buscar por nombre o correo" style="height: 38px; width: 100%; padding: 0 12px 0 36px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 13px; box-sizing: border-box">
+          </label>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px">
+            <thead>
+              <tr style="background: #F7F5F9; text-align: left">
+                <th scope="col" style="padding: 12px 20px; font-size: 12px; font-weight: 800">Usuario</th>
+                <th scope="col" style="padding: 12px; font-size: 12px; font-weight: 700; color: #5C5F77">Rol</th>
+                <th scope="col" style="padding: 12px; font-size: 12px; font-weight: 700; color: #5C5F77">Estado</th>
+                <th scope="col" style="padding: 12px 20px 12px 12px; width: 60px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-top: 1px solid #F0ECF3">
+                <td style="padding: 12px 20px"><div style="display: flex; align-items: center; gap: 12px"><span style="width: 36px; height: 36px; border-radius: 18px; background: #502558; color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">EA</span><span style="display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 800">Emiliano Alonso <span style="font-weight: 600; color: #5C5F77">(vos)</span></span><span style="font-size: 12px; color: #5C5F77">eaalonso97@gmail.com</span></span></div></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 6px; background: #F6EEF7; color: #502558; font-size: 12px; font-weight: 800"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Administrador</span></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #00AB55"></span>Activo</span></td>
+                <td style="padding: 10px 20px 10px 12px"><button aria-label="Acciones de Emiliano Alonso" style="width: 34px; height: 34px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></td>
+              </tr>
+              <tr style="border-top: 1px solid #F0ECF3">
+                <td style="padding: 12px 20px"><div style="display: flex; align-items: center; gap: 12px"><span style="width: 36px; height: 36px; border-radius: 18px; background: #F6EEF7; color: #502558; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">SA</span><span style="display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 800">Santino Azarola</span><span style="font-size: 12px; color: #5C5F77">yassuicidemoe@gmail.com</span></span></div></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px; background: #F0ECF3; color: #5C5F77; font-size: 12px; font-weight: 800">Vendedor</span></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #00AB55"></span>Activo</span></td>
+                <td style="padding: 10px 20px 10px 12px"><button aria-label="Acciones de Santino Azarola" style="width: 34px; height: 34px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></td>
+              </tr>
+              <tr style="border-top: 1px solid #F0ECF3">
+                <td style="padding: 12px 20px"><div style="display: flex; align-items: center; gap: 12px"><span style="width: 36px; height: 36px; border-radius: 18px; background: #F6EEF7; color: #502558; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">XP</span><span style="display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 800">Ximena Pastori</span><span style="font-size: 12px; color: #5C5F77">pastoriximena@gmail.com</span></span></div></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px; background: #F0ECF3; color: #5C5F77; font-size: 12px; font-weight: 800">Vendedor</span></td>
+                <td style="padding: 12px"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #00AB55"></span>Activo</span></td>
+                <td style="padding: 10px 20px 10px 12px"><button aria-label="Acciones de Ximena Pastori" style="width: 34px; height: 34px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Overlay + panel lateral -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27,20,36,0.38)"></div>
+  <aside role="dialog" aria-labelledby="t-nuevo" style="position: absolute; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100%; background: #FFFFFF; box-shadow: -16px 0 40px rgba(30,15,40,0.2); display: flex; flex-direction: column">
+    <div style="padding: 20px 24px; border-bottom: 1px solid #E7E2EC; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 id="t-nuevo" style="margin: 0; font-size: 20px; font-weight: 800">Nuevo usuario</h2>
+        <p style="margin: 0; font-size: 13px; color: #5C5F77">Va a poder entrar con su correo y una contraseña temporal.</p>
+      </div>
+      <button aria-label="Cerrar" style="width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+    </div>
+    <form style="flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Nombre
+          <input type="text" value="Lucía" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Apellido
+          <input type="text" value="Gómez" style="height: 42px; padding: 0 12px; border: 1px solid #DCD5E2; border-radius: 9px; font-size: 14px; color: #1B1424">
+        </label>
+      </div>
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">Correo
+        <input type="email" value="lucia.gomez@" aria-invalid="true" style="height: 42px; padding: 0 12px; border: 1.5px solid #C42B35; border-radius: 9px; font-size: 14px; color: #1B1424">
+        <span style="font-size: 12px; font-weight: 700; color: #C42B35">Revisá el correo: falta lo que va después de la @.</span>
+      </label>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 13px; font-weight: 700; padding: 0; margin-bottom: 8px">Rol</legend>
+        <label style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1.5px solid #502558; border-radius: 10px; background: #FBF8FC; cursor: pointer">
+          <input type="radio" name="rol" checked style="margin: 3px 0 0; accent-color: #502558">
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">Vendedor</span><span style="font-size: 12px; color: #5C5F77">Opera sus propias oportunidades.</span></span>
+        </label>
+        <label style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid #DCD5E2; border-radius: 10px; cursor: pointer">
+          <input type="radio" name="rol" style="margin: 3px 0 0; accent-color: #502558">
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">Responsable comercial</span><span style="font-size: 12px; color: #5C5F77">Ve las del equipo y puede reasignarlas.</span></span>
+        </label>
+        <label style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid #DCD5E2; border-radius: 10px; cursor: pointer">
+          <input type="radio" name="rol" style="margin: 3px 0 0; accent-color: #502558">
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">Administrador</span><span style="font-size: 12px; color: #5C5F77">Ve todo y configura el sistema.</span></span>
+        </label>
+      </fieldset>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">
+        <label for="pw">Contraseña temporal</label>
+        <div style="display: flex; gap: 8px">
+          <div style="flex: 1; display: flex; height: 42px; border: 1px solid #DCD5E2; border-radius: 9px; overflow: hidden">
+            <input id="pw" type="text" value="Kasa-7392" style="flex: 1; min-width: 0; border: 0; padding: 0 12px; font-size: 14px; font-weight: 800; color: #1B1424; font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.5px">
+            <button type="button" aria-label="Ocultar contraseña" style="width: 40px; border: 0; border-left: 1px solid #DCD5E2; background: #F7F5F9; color: #5C5F77; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <button type="button" style="height: 42px; padding: 0 12px; border: 1px solid #502558; border-radius: 9px; background: #FFFFFF; color: #502558; font-size: 13px; font-weight: 800; cursor: pointer">Generar</button>
+        </div>
+        <span style="font-size: 12px; font-weight: 600; color: #5C5F77">Mínimo 6 caracteres. En el primer ingreso la tiene que cambiar.</span>
+      </div>
+      <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; background: #F6EEF7; font-size: 13px; color: #3A1A40; line-height: 1.5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#502558" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        <span>No se envía por correo. Cuando lo crees vas a poder copiarla para pasársela.</span>
+      </div>
+    </form>
+    <div style="padding: 16px 24px; border-top: 1px solid #E7E2EC; display: flex; justify-content: flex-end; gap: 8px">
+      <button style="height: 42px; padding: 0 18px; border: 1px solid #DCD5E2; border-radius: 10px; background: #FFFFFF; color: #1B1424; font-size: 14px; font-weight: 700; cursor: pointer">Cancelar</button>
+      <button style="height: 42px; padding: 0 20px; border: 0; border-radius: 10px; background: #502558; color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer">Crear usuario</button>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

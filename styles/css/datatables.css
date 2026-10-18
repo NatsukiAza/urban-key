@@ -144,37 +144,37 @@ table tr .mantine-Checkbox-root {
 }
 
 /* Lista de oportunidades (6.2) */
-.lista-oportunidades table thead tr th {
+.tabla-lista table thead tr th {
     @apply !text-xs !font-bold !text-uk-muted dark:!text-uk-muted-dark;
 }
-.lista-oportunidades table thead tr th[aria-sort],
-.lista-oportunidades table thead tr th:has(svg path[d='M12 5l0 14']),
-.lista-oportunidades table thead tr th:has(svg path[d='M12 5l0 14 M18 13l-6 6']) {
+.tabla-lista table thead tr th[aria-sort],
+.tabla-lista table thead tr th:has(svg path[d='M12 5l0 14']),
+.tabla-lista table thead tr th:has(svg path[d='M12 5l0 14 M18 13l-6 6']) {
     @apply !font-extrabold !text-uk-ink dark:!text-uk-ink-dark;
 }
 /* La flecha de orden solo se ve en la columna ordenada y al pasar el mouse. */
-.lista-oportunidades table thead tr th:not(:hover) svg:has(path[d='M8 7l4 -4l4 4']) {
+.tabla-lista table thead tr th:not(:hover) svg:has(path[d='M8 7l4 -4l4 4']) {
     opacity: 0;
 }
-.lista-oportunidades table tbody tr {
+.tabla-lista table tbody tr {
     @apply border-t border-uk-col dark:border-uk-line-dark;
 }
-.lista-oportunidades table tbody tr:hover {
+.tabla-lista table tbody tr:hover {
     @apply !bg-uk-page dark:!bg-white/5;
 }
-.lista-oportunidades table tbody tr td {
+.tabla-lista table tbody tr td {
     @apply !align-middle;
 }
 @media (max-width: 767px) {
-    .lista-oportunidades table th:first-child,
-    .lista-oportunidades table td:first-child {
+    .tabla-lista table th:first-child,
+    .tabla-lista table td:first-child {
         position: sticky;
         left: 0;
         z-index: 1;
         background: #fff;
     }
-    .dark .lista-oportunidades table th:first-child,
-    .dark .lista-oportunidades table td:first-child {
+    .dark .tabla-lista table th:first-child,
+    .dark .tabla-lista table td:first-child {
         background: #161d31;
     }
 }
@@ -198,60 +198,60 @@ table tr .mantine-Checkbox-root {
 .dark .mantine-Menu-item {
     @apply !text-uk-ink-dark hover:!bg-white/10 hover:!text-uk-ink-dark;
 }
-.lista-oportunidades table > thead > tr > th,
-.lista-oportunidades table > tbody > tr > td {
+.tabla-lista table > thead > tr > th,
+.tabla-lista table > tbody > tr > td {
     @apply !px-3 !py-3.5;
 }
-.lista-oportunidades table > thead > tr > th {
+.tabla-lista table > thead > tr > th {
     @apply !py-3;
 }
-.lista-oportunidades table > thead > tr > th:first-child,
-.lista-oportunidades table > tbody > tr > td:first-child {
+.tabla-lista table > thead > tr > th:first-child,
+.tabla-lista table > tbody > tr > td:first-child {
     @apply !pl-5;
 }
-.lista-oportunidades table > thead > tr > th:last-child,
-.lista-oportunidades table > tbody > tr > td:last-child {
+.tabla-lista table > thead > tr > th:last-child,
+.tabla-lista table > tbody > tr > td:last-child {
     @apply !pr-5;
 }
 
 /* Pie de la tabla (cantidad, selector de página y paginación): alineado con el padding de la tarjeta */
-.lista-oportunidades div:has(> [role='navigation']) {
+.tabla-lista div:has(> [role='navigation']) {
     @apply !border-t !border-solid !border-uk-line !px-5 !py-3.5 dark:!border-uk-line-dark;
 }
 
 /* Lista de oportunidades en oscuro (05-lista-oscuro.html) */
-.dark .lista-oportunidades table thead tr,
-.dark .lista-oportunidades table thead tr th {
+.dark .tabla-lista table thead tr,
+.dark .tabla-lista table thead tr th {
     background-color: #121a2c !important;
 }
-.dark .lista-oportunidades table tbody tr {
+.dark .tabla-lista table tbody tr {
     border-color: #232c45 !important;
     background-color: transparent !important;
 }
-.dark .lista-oportunidades table tbody tr:hover {
+.dark .tabla-lista table tbody tr:hover {
     background-color: #1a2238 !important;
 }
 
 /* Paginación: botones cuadrados de 34 px, como en los mockups */
-.lista-oportunidades .mantine-Pagination-item {
+.tabla-lista .mantine-Pagination-item {
     @apply !h-[34px] !w-[34px] !rounded-[9px] !border !border-solid !border-uk-line !bg-white !text-uk-muted hover:!bg-uk-col;
 }
-.lista-oportunidades .mantine-Pagination-item[data-active] {
+.tabla-lista .mantine-Pagination-item[data-active] {
     @apply !border-transparent !bg-primary !font-extrabold !text-white;
 }
-.lista-oportunidades .mantine-Pagination-item:disabled {
+.tabla-lista .mantine-Pagination-item:disabled {
     @apply !text-[#CFC4D6];
 }
-.dark .lista-oportunidades .mantine-Pagination-item {
+.dark .tabla-lista .mantine-Pagination-item {
     @apply !border-uk-line-dark !bg-transparent !text-uk-muted-dark hover:!bg-white/5;
 }
-.dark .lista-oportunidades .mantine-Pagination-item[data-active] {
+.dark .tabla-lista .mantine-Pagination-item[data-active] {
     @apply !border-transparent !bg-gold !text-[#2A1A00];
 }
-.dark .lista-oportunidades .mantine-Pagination-item:disabled {
+.dark .tabla-lista .mantine-Pagination-item:disabled {
     @apply !text-[#4A5373];
 }
-.dark .lista-oportunidades div:has(> [role='navigation']) {
+.dark .tabla-lista div:has(> [role='navigation']) {
     border-color: #232c45 !important;
 }
 

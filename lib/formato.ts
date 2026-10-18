@@ -37,3 +37,16 @@ export const venceProximamente = (fecha: string | null | undefined): string | nu
     const d = aFecha(fecha);
     return `${dosDigitos(d.getDate())}/${dosDigitos(d.getMonth() + 1)}`;
 };
+
+// "1155551006", "11-5555-1006" o "+54 9 11 5555 1006" -> "11 5555-1006". Si no se puede normalizar, devuelve el dato tal cual.
+export const formatearTelefono = (valor: string | null | undefined): string => {
+    if (!valor || !valor.trim()) return '—';
+    let d = valor.replace(/\D/g, '');
+    if (d.startsWith('54')) d = d.slice(2);
+    if (d.startsWith('9') && d.length === 11) d = d.slice(1);
+    if (d.startsWith('0')) d = d.slice(1);
+    if (d.length === 10 && d.startsWith('11')) return `${d.slice(0, 2)} ${d.slice(2, 6)}-${d.slice(6)}`;
+    if (d.length === 10) return `${d.slice(0, 3)} ${d.slice(3, 6)}-${d.slice(6)}`;
+    if (d.length === 8) return `${d.slice(0, 4)}-${d.slice(4)}`;
+    return valor.trim();
+};

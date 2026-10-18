@@ -10,6 +10,7 @@ const Dropdown = (props : any, forwardedRef: any) => {
 
     const { styles, attributes } = usePopper(referenceRef.current, popperRef.current, {
         placement: props.placement || 'bottom-end',
+        strategy: props.fijo ? 'fixed' : 'absolute',
         modifiers: [
             {
                 name: 'offset',
