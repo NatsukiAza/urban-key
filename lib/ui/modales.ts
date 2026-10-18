@@ -293,3 +293,14 @@ export async function modalNuevoContacto(datos: { titulo: string; ayuda: string;
     });
     return resultado.isConfirmed ? (resultado.value as DatosNuevoContacto) : null;
 }
+
+export async function modalGenerarContrasena(nombre: string): Promise<boolean> {
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">¿Generar una contraseña nueva para <strong>${escapar(nombre)}</strong>?</h2>
+            <p class="mt-2 text-sm text-uk-muted dark:text-uk-muted-dark">La contraseña actual deja de funcionar y tendrá que cambiar la nueva en su próximo ingreso.</p>`,
+        confirmButtonText: 'Generar contraseña',
+        focusCancel: false,
+    });
+    return resultado.isConfirmed;
+}

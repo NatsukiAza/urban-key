@@ -167,3 +167,26 @@ export async function cambiarContrasena(password: string): Promise<ActionResult>
 
     return { ok: true };
 }
+
+export async function regenerarContrasena(usuarioId: string, password: string): Promise<ActionResult<{ contrasenaTemporal: string }>> {
+    const actual = await getUsuarioActual();
+    if (!actual || actual.rol !== 'ADMINISTRADOR') return fallo('Solo un administrador puede generar contraseñas.');
+    if (usuarioId === actual.id) return fallo('Tu contraseña la cambiás desde tu cuenta.');
+    if (password.length < 6) return fallo('La contraseña temporal tiene que tener al menos 6 caracteres.');
+
+    let admin;
+    try {
+        admin = createServiceClient();
+    } catch {
+        return fallo('Esta acción no está configurada en el servidor.');
+    }
+
+    const { error: authError } = await admin.auth.admin.updateUserById(usuarioId, { password });
+    if (authError) return fallo('No se pudo generar la contraseña nueva.');
+
+    const { error: flagError } = await admin.from('usuarios').update({ debe_cambiar_contrasena: true }).eq('id', usuarioId);
+    if (flagError) return fallo('Se cambió la contraseña, pero no se pudo exigir el cambio en el próximo ingreso.');
+
+    revalidatePath('/usuarios');
+    return { ok: true, data: { contrasenaTemporal: password } };
+}

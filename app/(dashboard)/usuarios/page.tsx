@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
+import { getUsuarioActual } from '@/lib/auth/session';
 import UsuariosAdmin, { type UsuarioListado } from '@/views/Usuarios/UsuariosAdmin';
 
 export const metadata: Metadata = {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
     const supabase = await createClient();
+    const actual = await getUsuarioActual();
     const { data, error } = await supabase.from('usuarios').select('id, nombre, apellido, email, rol, activo').order('apellido');
 
     if (error) {
@@ -23,5 +25,5 @@ export default async function Page() {
         activo: row.activo,
     }));
 
-    return <UsuariosAdmin usuarios={usuarios} />;
+    return <UsuariosAdmin usuarios={usuarios} usuarioActualId={actual?.id} />;
 }
