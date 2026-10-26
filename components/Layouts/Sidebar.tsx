@@ -173,6 +173,12 @@ const Sidebar = () => {
                                             <li>
                                                 <Link {...props(enSeccion('/configuracion/motivos-perdida'))} href="/configuracion/motivos-perdida">{t('Motivos de pérdida')}</Link>
                                             </li>
+                                            <li>
+                                                <Link {...props(enSeccion('/configuracion/tipos-actividad'))} href="/configuracion/tipos-actividad">{t('Tipos de actividad')}</Link>
+                                            </li>
+                                            <li>
+                                                <Link {...props(enSeccion('/configuracion/origenes'))} href="/configuracion/origenes">{t('Orígenes')}</Link>
+                                            </li>
                                         </ul>
                                     </AnimateHeight>
                                 </li>

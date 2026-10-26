@@ -19,10 +19,10 @@ import { tipoInmuebleConfig } from '@/lib/enums/tipoInmueble';
 import { diasHasta, diasRelativos, formatearFecha, formatearFechaHora } from '@/lib/formato';
 import type { OportunidadDetalle as TDetalle } from '@/lib/oportunidad/types';
 import type { Etapa, MotivoPerdida, Usuario } from '@/lib/dominio';
-import Timeline from '@/components/ui/Timeline';
 import EstadoChip from '@/components/ui/EstadoChip';
 import { inicialesDe } from '@/components/ui/Iniciales';
 import BarraEtapas from '@/components/oportunidad/BarraEtapas';
+import HistorialComercial, { type MovimientoEtapa } from '@/components/actividad/HistorialComercial';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 import { pedirDatosCierre } from './pedirDatosCierre';
 
@@ -147,11 +147,19 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
         `Creada el ${formatearFecha(detalle.creadoEn)}${creador ? ` por ${creador}` : ''}`,
     ].filter(Boolean);
 
-    const itemsHistorial = detalle.historial.map((h) => {
+    const idCierreVigente = cerrada ? detalle.historial.find((h) => h.etapaNueva && h.etapaNueva.resultado !== 'ABIERTA')?.id : undefined;
+    const textoCierre = (resultado: 'GANADA' | 'PERDIDA', vigente: boolean) => {
+        if (resultado === 'GANADA') return `Ganada${vigente && detalle.valorFinal != null ? ` · ${formatearMonto(detalle.valorFinal, detalle.moneda)}` : ''}`;
+        return `Perdida${vigente && detalle.motivoPerdida ? ` · Motivo: ${detalle.motivoPerdida.nombre}` : ''}`;
+    };
+
+    const movimientos: MovimientoEtapa[] = detalle.historial.map((h) => {
         const creacion = h.etapaAnterior === null;
+        const resultado = h.etapaNueva?.resultado;
         return {
             id: h.id,
-            title: creacion ? (
+            fecha: h.creadoEn,
+            titulo: creacion ? (
                 <>
                     Creada en <strong>{h.etapaNueva?.nombre ?? '—'}</strong>
                 </>
@@ -165,7 +173,7 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
             meta: `${formatearFechaHora(h.creadoEn)} · ${h.usuario ? `${h.usuario.nombre} ${h.usuario.apellido}` : '—'}`,
             nota: h.observacion,
             sinNota: !creacion && !h.observacion,
-            ultimo: creacion,
+            cierre: resultado && resultado !== 'ABIERTA' ? { resultado, texto: textoCierre(resultado, h.id === idCierreVigente) } : undefined,
         };
     });
 
@@ -286,15 +294,9 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
             </section>
 
             <div className="flex flex-wrap items-start gap-5">
-                <section className="panel shadow-[0_2px_4px_rgba(30,15,40,.14)] min-w-0 flex-[2_1_480px] !p-6">
-                    <div className="mb-5 flex items-baseline justify-between gap-3">
-                        <h2 className="text-lg font-extrabold text-uk-ink dark:text-uk-ink-dark">Historial de etapas</h2>
-                        <span className="text-[13px] tabular-nums text-uk-muted dark:text-uk-muted-dark">
-                            {itemsHistorial.length} {itemsHistorial.length === 1 ? 'movimiento' : 'movimientos'}
-                        </span>
-                    </div>
-                    <Timeline variante="historial" vacio="Sin cambios de etapa registrados." items={itemsHistorial} />
-                </section>
+                <div className="flex min-w-0 flex-[2_1_480px] flex-col gap-5">
+                    <HistorialComercial oportunidadId={detalle.id} subtitulo={detalle.titulo} movimientos={movimientos} />
+                </div>
 
                 <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
                     <section className="panel shadow-[0_2px_4px_rgba(30,15,40,.14)] !p-6">

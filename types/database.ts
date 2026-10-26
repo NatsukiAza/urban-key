@@ -41,38 +41,47 @@ export type Database = {
     Tables: {
       actividades: {
         Row: {
+          activo: boolean
           contacto_id: string | null
           creado_en: string
+          dado_de_baja_en: string | null
+          dado_de_baja_por: string | null
           descripcion: string | null
           fecha: string
           id: string
           inmueble_id: string | null
           oportunidad_id: string | null
-          tipo: Database["public"]["Enums"]["tipo_actividad"]
+          tipo_id: string
           titulo: string
           usuario_id: string
         }
         Insert: {
+          activo?: boolean
           contacto_id?: string | null
           creado_en?: string
+          dado_de_baja_en?: string | null
+          dado_de_baja_por?: string | null
           descripcion?: string | null
           fecha?: string
           id?: string
           inmueble_id?: string | null
           oportunidad_id?: string | null
-          tipo: Database["public"]["Enums"]["tipo_actividad"]
+          tipo_id: string
           titulo: string
           usuario_id: string
         }
         Update: {
+          activo?: boolean
           contacto_id?: string | null
           creado_en?: string
+          dado_de_baja_en?: string | null
+          dado_de_baja_por?: string | null
           descripcion?: string | null
           fecha?: string
           id?: string
           inmueble_id?: string | null
           oportunidad_id?: string | null
-          tipo?: Database["public"]["Enums"]["tipo_actividad"]
+          tipo_id?: string
           titulo?: string
           usuario_id?: string
         }
@@ -82,6 +91,13 @@ export type Database = {
             columns: ["contacto_id"]
             isOneToOne: false
             referencedRelation: "contactos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "actividades_dado_de_baja_por_fkey"
+            columns: ["dado_de_baja_por"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
           {
@@ -96,6 +112,13 @@ export type Database = {
             columns: ["oportunidad_id"]
             isOneToOne: false
             referencedRelation: "oportunidades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "actividades_tipo_id_fkey"
+            columns: ["tipo_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_actividad"
             referencedColumns: ["id"]
           },
           {
@@ -613,18 +636,21 @@ export type Database = {
       origenes: {
         Row: {
           activo: boolean
+          actualizado_en: string
           creado_en: string
           id: string
           nombre: string
         }
         Insert: {
           activo?: boolean
+          actualizado_en?: string
           creado_en?: string
           id?: string
           nombre: string
         }
         Update: {
           activo?: boolean
+          actualizado_en?: string
           creado_en?: string
           id?: string
           nombre?: string
@@ -671,6 +697,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tipos_actividad: {
+        Row: {
+          activo: boolean
+          actualizado_en: string
+          clave: string | null
+          creado_en: string
+          id: string
+          nombre: string
+        }
+        Insert: {
+          activo?: boolean
+          actualizado_en?: string
+          clave?: string | null
+          creado_en?: string
+          id?: string
+          nombre: string
+        }
+        Update: {
+          activo?: boolean
+          actualizado_en?: string
+          clave?: string | null
+          creado_en?: string
+          id?: string
+          nombre?: string
+        }
+        Relationships: []
       }
       usuarios: {
         Row: {
@@ -751,13 +804,6 @@ export type Database = {
       estado_oportunidad: "ABIERTA" | "GANADA" | "PERDIDA"
       moneda: "ARS" | "USD"
       rol_usuario: "ADMINISTRADOR" | "VENDEDOR" | "RESPONSABLE_COMERCIAL"
-      tipo_actividad:
-        | "LLAMADA"
-        | "VISITA"
-        | "MENSAJE"
-        | "EMAIL"
-        | "REUNION"
-        | "TASACION"
       tipo_funnel:
         | "CAPTACION_VENTA"
         | "CAPTACION_ALQUILER"
@@ -900,14 +946,6 @@ export const Constants = {
       estado_oportunidad: ["ABIERTA", "GANADA", "PERDIDA"],
       moneda: ["ARS", "USD"],
       rol_usuario: ["ADMINISTRADOR", "VENDEDOR", "RESPONSABLE_COMERCIAL"],
-      tipo_actividad: [
-        "LLAMADA",
-        "VISITA",
-        "MENSAJE",
-        "EMAIL",
-        "REUNION",
-        "TASACION",
-      ],
       tipo_funnel: [
         "CAPTACION_VENTA",
         "CAPTACION_ALQUILER",

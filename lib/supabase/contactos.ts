@@ -53,7 +53,9 @@ export type ContactoInput = {
     observaciones: string;
 };
 
-const CONTACTO_COLUMNS = 'id, nombre, apellido, email, telefono, estado, es_propietario, es_interesado, observaciones, sucursal_id, activo, creado_por, creado_en';
+const TIPO_OBSERVACION = 'OBSERVACION';
+
+const CONTACTO_COLUMNS ='id, nombre, apellido, email, telefono, estado, es_propietario, es_interesado, observaciones, sucursal_id, activo, creado_por, creado_en';
 
 export function nombreContacto(contacto: Pick<Contacto, 'nombre' | 'apellido'>) {
     return `${contacto.nombre} ${contacto.apellido}`.trim();
@@ -194,9 +196,10 @@ export async function actualizarEstadoContacto(supabase: SupabaseClient, id: str
 export async function listarObservaciones(supabase: SupabaseClient, contactoId: string): Promise<{ observaciones: Observacion[] } | { error: string }> {
     const { data, error } = await supabase
         .from('actividades')
-        .select('id, descripcion, fecha, usuario_id')
+        .select('id, descripcion, fecha, usuario_id, tipos_actividad!inner(clave)')
         .eq('contacto_id', contactoId)
-        .eq('tipo', 'MENSAJE')
+        .eq('tipos_actividad.clave', TIPO_OBSERVACION)
+        .eq('activo', true)
         .order('fecha', { ascending: false });
 
     if (error) {
@@ -234,10 +237,16 @@ export async function agregarObservacion(supabase: SupabaseClient, contactoId: s
         return { error: 'No hay una sesión activa.' };
     }
 
+    const { data: tipo } = await supabase.from('tipos_actividad').select('id').eq('clave', TIPO_OBSERVACION).single();
+
+    if (!tipo) {
+        return { error: 'No se encontró el tipo de actividad para observaciones.' };
+    }
+
     const { error } = await supabase.from('actividades').insert({
         contacto_id: contactoId,
         usuario_id: user.id,
-        tipo: 'MENSAJE',
+        tipo_id: tipo.id,
         titulo: 'Observación',
         descripcion: texto.trim(),
         fecha: new Date().toISOString(),

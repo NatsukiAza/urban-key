@@ -24,6 +24,7 @@ import IconHome from '@/components/Icon/IconHome';
 import IconPhone from '@/components/Icon/IconPhone';
 import IconMail from '@/components/Icon/IconMail';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
+import PanelActividades from '@/components/actividad/PanelActividades';
 
 interface Props {
     detalle: TDetalle;
@@ -155,6 +156,8 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                             ))
                         )}
                     </Tarjeta>
+
+                    <PanelActividades vinculo={{ tipo: 'inmueble', id: detalle.id }} subtitulo={detalle.direccion} mostrarOportunidad />
                 </div>
 
                 <aside className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">

@@ -7,14 +7,14 @@ export interface ControlFecha {
     setInvalido?: (invalido: boolean) => void;
 }
 
-const Host = ({ control, max }: { control: ControlFecha; max: string }) => {
+const Host = ({ control, max, ariaLabel }: { control: ControlFecha; max: string; ariaLabel: string }) => {
     const [valor, setValor] = useState(control.valor);
     const [invalido, setInvalido] = useState(false);
     control.setInvalido = setInvalido;
     return (
         <DatePicker
             id="uk-fecha"
-            ariaLabel="Fecha de cierre"
+            ariaLabel={ariaLabel}
             max={max}
             invalido={invalido}
             value={valor}
@@ -28,8 +28,8 @@ const Host = ({ control, max }: { control: ControlFecha; max: string }) => {
 };
 
 // Monta el selector de fecha dentro del HTML de un modal de SweetAlert. Devuelve la función para desmontarlo.
-export function montarFechaCierre(contenedor: HTMLElement, control: ControlFecha, max: string): () => void {
+export function montarFechaCierre(contenedor: HTMLElement, control: ControlFecha, max: string, ariaLabel = 'Fecha de cierre'): () => void {
     const raiz = createRoot(contenedor);
-    raiz.render(<Host control={control} max={max} />);
+    raiz.render(<Host control={control} max={max} ariaLabel={ariaLabel} />);
     return () => raiz.unmount();
 }

@@ -1,7 +1,7 @@
 import 'server-only';
 import { createClient } from '../supabase/server';
 import { aFunnel } from '../mapeo';
-import type { EmbudosConfig, EtapaConfig, MotivoPerdidaConfig } from './types';
+import type { EmbudosConfig, EtapaConfig, ItemCatalogoConfig, MotivoPerdidaConfig } from './types';
 
 export async function getEmbudosConfig(): Promise<EmbudosConfig> {
     try {
@@ -48,5 +48,29 @@ export async function getMotivosPerdidaConfig(): Promise<{ motivos: MotivoPerdid
     } catch (err) {
         console.error('Error getMotivosPerdidaConfig', err);
         return { motivos: [], error: true };
+    }
+}
+
+export async function getOrigenesConfig(): Promise<{ items: ItemCatalogoConfig[]; error: boolean }> {
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('origenes').select('*').order('nombre');
+        if (error) throw error;
+        return { items: (data ?? []).map((o) => ({ id: o.id, nombre: o.nombre, activo: o.activo, esSistema: false })), error: false };
+    } catch (err) {
+        console.error('Error getOrigenesConfig', err);
+        return { items: [], error: true };
+    }
+}
+
+export async function getTiposActividadConfig(): Promise<{ items: ItemCatalogoConfig[]; error: boolean }> {
+    try {
+        const supabase = await createClient();
+        const { data, error } = await supabase.from('tipos_actividad').select('*').order('nombre');
+        if (error) throw error;
+        return { items: (data ?? []).map((t) => ({ id: t.id, nombre: t.nombre, activo: t.activo, esSistema: t.clave !== null })), error: false };
+    } catch (err) {
+        console.error('Error getTiposActividadConfig', err);
+        return { items: [], error: true };
     }
 }

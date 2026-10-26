@@ -208,3 +208,110 @@ export async function cambiarActivoMotivoPerdida(id: string, activo: boolean): P
     revalidarMotivos();
     return { ok: true, mensaje: activo ? 'Motivo activado' : 'Motivo desactivado' };
 }
+
+type TablaCatalogo = 'origenes' | 'tipos_actividad';
+
+const CATALOGOS: Record<TablaCatalogo, { singular: string; rutas: [string, 'layout' | 'page'][] }> = {
+    origenes: {
+        singular: 'Origen',
+        rutas: [
+            ['/configuracion/origenes', 'page'],
+            ['/oportunidades', 'layout'],
+        ],
+    },
+    tipos_actividad: {
+        singular: 'Tipo de actividad',
+        rutas: [
+            ['/configuracion/tipos-actividad', 'page'],
+            ['/', 'layout'],
+        ],
+    },
+};
+
+function revalidarCatalogo(tabla: TablaCatalogo) {
+    for (const [ruta, tipo] of CATALOGOS[tabla].rutas) revalidatePath(ruta, tipo);
+}
+
+async function crearEnCatalogo(tabla: TablaCatalogo, nombre: unknown): Promise<ActionResult> {
+    const denegado = await exigirAdmin();
+    if (denegado) return denegado;
+
+    const parsed = nombreConfigSchema.safeParse(nombre);
+    if (!parsed.success) return fallo(parsed.error.issues[0]?.message ?? 'Nombre inválido');
+
+    const supabase = await createClient();
+    const { error } = await supabase.from(tabla).insert({ nombre: parsed.data });
+    if (error) {
+        console.error(`Error creando en ${tabla}`, error);
+        return fallo(mensajeDeError(error));
+    }
+
+    revalidarCatalogo(tabla);
+    return { ok: true, mensaje: `${CATALOGOS[tabla].singular} creado correctamente` };
+}
+
+async function renombrarEnCatalogo(tabla: TablaCatalogo, id: string, nombre: unknown): Promise<ActionResult> {
+    const denegado = await exigirAdmin();
+    if (denegado) return denegado;
+    if (!uuid.safeParse(id).success) return fallo('Identificador inválido');
+
+    const parsed = nombreConfigSchema.safeParse(nombre);
+    if (!parsed.success) return fallo(parsed.error.issues[0]?.message ?? 'Nombre inválido');
+
+    const supabase = await createClient();
+    const { error, count } = await supabase.from(tabla).update({ nombre: parsed.data }, { count: 'exact' }).eq('id', id);
+    if (error) {
+        console.error(`Error renombrando en ${tabla}`, error);
+        return fallo(mensajeDeError(error));
+    }
+    if (count === 0) return fallo(`${CATALOGOS[tabla].singular} no encontrado`);
+
+    revalidarCatalogo(tabla);
+    return { ok: true, mensaje: `${CATALOGOS[tabla].singular} renombrado` };
+}
+
+async function cambiarActivoEnCatalogo(tabla: TablaCatalogo, id: string, activo: boolean): Promise<ActionResult> {
+    const denegado = await exigirAdmin();
+    if (denegado) return denegado;
+    if (!uuid.safeParse(id).success) return fallo('Identificador inválido');
+
+    const supabase = await createClient();
+    if (tabla === 'tipos_actividad' && !activo) {
+        const { data } = await supabase.from('tipos_actividad').select('clave').eq('id', id).maybeSingle();
+        if (data?.clave) return fallo('Este tipo lo usa el sistema y no se puede desactivar');
+    }
+
+    const { error, count } = await supabase.from(tabla).update({ activo }, { count: 'exact' }).eq('id', id);
+    if (error) {
+        console.error(`Error cambiando el estado en ${tabla}`, error);
+        return fallo(mensajeDeError(error));
+    }
+    if (count === 0) return fallo(`${CATALOGOS[tabla].singular} no encontrado`);
+
+    revalidarCatalogo(tabla);
+    return { ok: true, mensaje: `${CATALOGOS[tabla].singular} ${activo ? 'activado' : 'desactivado'}` };
+}
+
+export async function crearOrigen(nombre: unknown): Promise<ActionResult> {
+    return crearEnCatalogo('origenes', nombre);
+}
+
+export async function renombrarOrigen(id: string, nombre: unknown): Promise<ActionResult> {
+    return renombrarEnCatalogo('origenes', id, nombre);
+}
+
+export async function cambiarActivoOrigen(id: string, activo: boolean): Promise<ActionResult> {
+    return cambiarActivoEnCatalogo('origenes', id, activo);
+}
+
+export async function crearTipoActividad(nombre: unknown): Promise<ActionResult> {
+    return crearEnCatalogo('tipos_actividad', nombre);
+}
+
+export async function renombrarTipoActividad(id: string, nombre: unknown): Promise<ActionResult> {
+    return renombrarEnCatalogo('tipos_actividad', id, nombre);
+}
+
+export async function cambiarActivoTipoActividad(id: string, activo: boolean): Promise<ActionResult> {
+    return cambiarActivoEnCatalogo('tipos_actividad', id, activo);
+}

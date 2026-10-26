@@ -55,9 +55,9 @@ Los estados y categorías **siempre** se tipan con su enum, nunca con string sue
 - **`options`** — `{ label, value }[]` para selects;
 - **`config`** — `Record<valor, { label, color, clase }>` para chips/badges → render en [[ui-y-feedback]].
 
-Enums del dominio: `rolUsuario`, `estadoOportunidad` (`ABIERTA`/`GANADA`/`PERDIDA`), `estadoContacto` (`POTENCIAL`/`CLIENTE`/`INACTIVO`/`NO_CONTACTAR`), `tipoFunnel` (los 4), `estadoInmueble`, `tipoActividad`, `tipoOperacion` (`VENTA`/`ALQUILER`).
+Enums del dominio: `rolUsuario`, `estadoOportunidad` (`ABIERTA`/`GANADA`/`PERDIDA`), `estadoContacto` (`POTENCIAL`/`CLIENTE`/`INACTIVO`/`NO_CONTACTAR`), `tipoFunnel` (los 4), `estadoInmueble`, `tipoOperacion` (`VENTA`/`ALQUILER`).
 
-> Etapas, motivos de pérdida y orígenes son **configurables por el Administrador** → son **tablas**, no enums de código. Solo se hace enum lo que es fijo en el dominio.
+> Etapas, motivos de pérdida, orígenes y tipos de actividad son **configurables por el Administrador** → son **tablas**, no enums de código. Solo se hace enum lo que es fijo en el dominio.
 
 ### Modelado de referencia (dominio UrbanKey)
 
@@ -67,7 +67,7 @@ Relaciones clave (el detalle fino se fija en cada feature):
 - `inmuebles` — `contacto_id` (propietario), `tipo_operacion`, datos residenciales (ambientes, m², dirección, precio).
 - `oportunidades` — `contacto_id`, `inmueble_id?`, `responsable_id`, `funnel_id`, `etapa_id`, `estado`, fechas, `valor_estimado`, `motivo_perdida_id?`.
 - `historial_etapas` — `oportunidad_id`, `etapa_anterior_id`, `etapa_nueva_id`, `usuario_id`, `creado_en`, `observacion?`.
-- `actividades` — `tipo`, `fecha`, `usuario_id`, y al menos uno de `contacto_id`/`inmueble_id`/`oportunidad_id`.
+- `actividades` — `tipo_id` (FK a `tipos_actividad`), `fecha`, `usuario_id`, y al menos uno de `contacto_id`/`inmueble_id`/`oportunidad_id`.
 
 ## Reglas (hacer / no hacer)
 
@@ -83,7 +83,7 @@ Relaciones clave (el detalle fino se fija en cada feature):
 - **`id` es `uuid`** (`default gen_random_uuid()`) en todas las tablas. Lo fuerza `usuarios.id`, que referencia `auth.users (id)`; mezclar tipos entre tablas rompería la consistencia.
 - **Propietario/interesado son flags booleanos** en `contactos` (`es_propietario`, `es_interesado`), con un CHECK que exige al menos uno. Coincide con `lib/dominio.ts`; si el día de mañana un contacto necesita más roles, se pasa a tabla.
 - **Inmobiliaria y sucursal** entran al modelo (vienen del diagrama de clases). `usuarios`, `contactos` e `inmuebles` cuelgan de una sucursal opcional.
-- Enums nuevos definidos en la base que todavía **no tienen su archivo en `lib/enums/`**: `tipo_inmueble`, `estado_inmueble`, `tipo_actividad`, `moneda`. Los crea la feature dueña de cada módulo.
+- Enums nuevos definidos en la base que todavía **no tienen su archivo en `lib/enums/`**: `tipo_inmueble`, `estado_inmueble`, `moneda` (`tipo_actividad` pasó a tabla en `20261025120000_actividades_entrega2.sql`). Los crea la feature dueña de cada módulo.
 
 ## Ver también
 

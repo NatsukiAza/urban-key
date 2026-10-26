@@ -261,10 +261,11 @@ interface FilaAltaProps {
     mensajeDuplicado: string;
     onAgregar: (nombre: string) => Promise<string | null>;
     onCancelar: () => void;
+    etiqueta?: string;
 }
 
-export const FilaAlta = ({ placeholder, existentes, mensajeDuplicado, onAgregar, onCancelar }: FilaAltaProps) => (
-    <FilaEditable inicial="" existentes={existentes} mensajeDuplicado={mensajeDuplicado} etiqueta="Nombre del nuevo motivo" placeholder={placeholder} confirmar="Agregar" onConfirmar={onAgregar} onCancelar={onCancelar} />
+export const FilaAlta = ({ placeholder, existentes, mensajeDuplicado, onAgregar, onCancelar, etiqueta = 'Nombre del nuevo motivo' }: FilaAltaProps) => (
+    <FilaEditable inicial="" existentes={existentes} mensajeDuplicado={mensajeDuplicado} etiqueta={etiqueta} placeholder={placeholder} confirmar="Agregar" onConfirmar={onAgregar} onCancelar={onCancelar} />
 );
 
 export const FilaInactiva = ({ nombre, onActivar, ocupado = false }: { nombre: string; onActivar: () => void; ocupado?: boolean }) => (

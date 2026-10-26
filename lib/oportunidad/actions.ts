@@ -16,6 +16,8 @@ function revalidar(id?: string) {
 
 const fallo = (mensaje: string): ActionResult<never> => ({ ok: false, error: true, mensaje });
 
+const diaEnArgentina = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' }).format(new Date(iso));
+
 function mensajeDeError(error: { code?: string; message: string }): string {
     switch (error.code) {
         case '42501':
@@ -172,7 +174,7 @@ export async function cambiarEtapa(input: unknown): Promise<ActionResult> {
         // Mediodía local para que la fecha elegida no se corra de día por zona horaria.
         const fecha = fechaCierre ? new Date(`${fechaCierre}T12:00:00`) : new Date();
         if (fecha.getTime() > Date.now() + 12 * 60 * 60 * 1000) return fallo('La fecha de cierre no puede ser futura');
-        if (fechaCierre && fechaCierre < op.creado_en.slice(0, 10)) return fallo('La fecha de cierre no puede ser anterior al alta de la oportunidad');
+        if (fechaCierre && fechaCierre < diaEnArgentina(op.creado_en)) return fallo('La fecha de cierre no puede ser anterior al alta de la oportunidad');
         fechaCierreReal = fecha.toISOString();
     }
 

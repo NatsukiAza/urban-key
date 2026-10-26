@@ -31,7 +31,7 @@ const hoy = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-const encabezado = (tipo: 'ganada' | 'perdida' | 'mover', titulo: string, subtitulo: string) => `
+const encabezado = (tipo: 'ganada' | 'perdida' | 'mover' | 'actividad', titulo: string, subtitulo: string) => `
     <div class="mb-4 flex items-center gap-3">
         <span aria-hidden="true" class="grid h-10 w-10 shrink-0 place-content-center rounded-full text-lg font-extrabold ${
             tipo === 'ganada'
@@ -39,7 +39,7 @@ const encabezado = (tipo: 'ganada' | 'perdida' | 'mover', titulo: string, subtit
                 : tipo === 'perdida'
                   ? 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
                   : 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark'
-        }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : '→'}</span>
+        }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : tipo === 'actividad' ? '+' : '→'}</span>
         <div class="min-w-0">
             <h2 id="uk-modal-titulo" class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${titulo}</h2>
             <p class="truncate text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(subtitulo)}</p>
@@ -192,7 +192,80 @@ export async function modalMoverEtapa(datos: { titulo: string; etapaOrigen: stri
     return resultado.isConfirmed ? (resultado.value as { observacion: string | null }) : null;
 }
 
-export async function modalDarDeBaja(titulo: string, texto = 'Deja de aparecer en el tablero y la lista. El historial se conserva.'): Promise<boolean> {
+export interface NuevaActividad {
+    tipoId: string;
+    titulo: string | null;
+    descripcion: string | null;
+    fecha: string;
+}
+
+const horaActual = () => {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+};
+
+export async function modalRegistrarActividad(datos: { subtitulo: string; tipos: { id: string; nombre: string }[] }): Promise<NuevaActividad | null> {
+    const opciones = datos.tipos.map((t) => `<option value="${t.id}">${escapar(t.nombre)}</option>`).join('');
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            ${encabezado('actividad', 'Registrar actividad', datos.subtitulo)}
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label for="uk-tipo" class="${claseLabel}">Tipo</label>
+                    <select id="uk-tipo" class="form-select ${claseCampo.replace('form-input ', '')}">
+                        <option value="">Elegí un tipo</option>
+                        ${opciones}
+                    </select>
+                    <p id="uk-err-tipo" class="${claseError}">Elegí qué tipo de actividad fue.</p>
+                </div>
+                <div>
+                    <label for="uk-fecha" class="${claseLabel}">Fecha</label>
+                    <div id="uk-fecha-root"></div>
+                    <p id="uk-err-fecha" class="${claseError}">Elegí una fecha que no sea futura.</p>
+                </div>
+                <div>
+                    <label for="uk-hora" class="${claseLabel}">Hora</label>
+                    <input id="uk-hora" type="time" class="${claseCampo} tabular-nums" value="${horaActual()}" />
+                    <p id="uk-err-hora" class="${claseError}">La actividad ya tiene que haber ocurrido: elegí una hora pasada.</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="uk-titulo" class="${claseLabel}">Título <span class="${claseOpcional}">Opcional</span></label>
+                    <input id="uk-titulo" type="text" maxlength="120" autocomplete="off" placeholder="Ej.: Visita con la familia Pérez" class="${claseCampo}" />
+                    <p class="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">Si lo dejás vacío, se usa el nombre del tipo.</p>
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="uk-obs" class="${claseLabel}">Descripción <span class="${claseOpcional}">Opcional</span></label>
+                    <textarea id="uk-obs" maxlength="2000" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="Ej.: le gustó la luz del living, pide ver otra en la misma zona"></textarea>
+                </div>
+            </div>`,
+        confirmButtonText: 'Registrar actividad',
+        footer: 'Una actividad registrada no se edita: si te equivocás, dala de baja y cargala de nuevo.',
+        focusCancel: false,
+        didOpen: () => {
+            controlFecha = { valor: hoy() };
+            const contenedor = document.getElementById('uk-fecha-root');
+            desmontarFecha = contenedor ? montarFechaCierre(contenedor, controlFecha, hoy(), 'Fecha de la actividad') : () => undefined;
+            document.getElementById('uk-tipo')?.focus();
+        },
+        willClose: () => desmontarFecha(),
+        preConfirm: () => {
+            const tipoId = valor('uk-tipo');
+            const fecha = controlFecha.valor;
+            const hora = valor('uk-hora');
+            mostrarError('uk-err-tipo', !tipoId);
+            const fechaInvalida = !fecha || fecha > hoy();
+            mostrarError('uk-err-fecha', fechaInvalida);
+            const momento = fecha && hora ? new Date(`${fecha}T${hora}`) : null;
+            const horaInvalida = !fechaInvalida && (!momento || Number.isNaN(momento.getTime()) || momento.getTime() > Date.now());
+            mostrarError('uk-err-hora', horaInvalida);
+            if (!tipoId || fechaInvalida || horaInvalida || !momento) return false;
+            return { tipoId, titulo: valor('uk-titulo') || null, descripcion: valor('uk-obs') || null, fecha: momento.toISOString() };
+        },
+    });
+    return resultado.isConfirmed ? (resultado.value as NuevaActividad) : null;
+}
+
+export async function modalDarDeBaja(titulo: string, texto ='Deja de aparecer en el tablero y la lista. El historial se conserva.'): Promise<boolean> {
     const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
         html: `
             <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">¿Dar de baja <strong>${escapar(titulo)}</strong>?</h2>

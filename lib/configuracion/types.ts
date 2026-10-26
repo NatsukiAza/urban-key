@@ -22,3 +22,10 @@ export interface MotivoPerdidaConfig {
     nombre: string;
     activo: boolean;
 }
+
+export interface ItemCatalogoConfig {
+    id: string;
+    nombre: string;
+    activo: boolean;
+    esSistema: boolean;
+}

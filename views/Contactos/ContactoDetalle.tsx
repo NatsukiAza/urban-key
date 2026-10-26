@@ -35,6 +35,7 @@ import ChipCategoria from '@/components/ui/ChipCategoria';
 import { inicialesDe } from '@/components/ui/Iniciales';
 import { AccionSecundaria, Avatar, BotonEditar, BotonNuevaOportunidad, DatoLista, EnlaceTarjeta, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta } from '@/components/ui/FichaPartes';
 import ContactoDetalleSkeleton from '@/views/Contactos/ContactoDetalleSkeleton';
+import PanelActividades from '@/components/actividad/PanelActividades';
 import IconBuilding from '@/components/Icon/IconBuilding';
 import IconHome from '@/components/Icon/IconHome';
 import IconPhone from '@/components/Icon/IconPhone';
@@ -279,6 +280,8 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                             ))
                         )}
                     </Tarjeta>
+
+                    <PanelActividades vinculo={{ tipo: 'contacto', id: contacto.id }} subtitulo={nombreContacto(contacto)} mostrarOportunidad />
 
                     <Tarjeta titulo="Observaciones">
                         <form className="space-y-3" onSubmit={guardarObservacion}>
