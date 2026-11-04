@@ -6,12 +6,15 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
-import { ESTADOS_CONTACTO, actualizarContacto, buscarContactoPorEmail, crearContacto, estadoLabel, nombreContacto, type Contacto, type EstadoContacto } from '@/lib/supabase/contactos';
+import { ESTADOS_CONTACTO, buscarContactoPorEmail, estadoLabel, listarContextoContacto, nombreContacto, type Contacto, type ContextoContacto, type EstadoContacto } from '@/lib/supabase/contactos';
+import { actualizarContactoAction, crearContactoAction, reasignarContactoAction } from '@/lib/contacto/actions';
+import { puedeReasignar } from '@/lib/auth/permisos';
 import { showToast } from '@/lib/ui/toast';
+import Select from '@/components/ui/Select';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 import { Bloque, Campo, CampoConAdorno, CampoGrupo, FormularioTarjeta, PieFormulario, PildorasMultiples, Segmentado, claseInput, claseInvalido, claseTextarea } from '@/components/ui/FormPartes';
 
-type Errores = Partial<Record<'nombre' | 'apellido' | 'telefono' | 'email', string>>;
+type Errores = Partial<Record<'nombre' | 'apellido' | 'telefono' | 'email' | 'rol', string>>;
 
 interface Duplicado {
     id: string;
@@ -20,6 +23,7 @@ interface Duplicado {
 }
 
 const SIN_CONTACTO = 'Cargá al menos un teléfono o un email.';
+const SIN_ROL = 'Elegí al menos un rol (propietario o interesado).';
 
 const ROLES = [
     { value: 'propietario', label: 'Propietario' },
@@ -39,6 +43,9 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
     const [esPropietario, setEsPropietario] = useState(contacto?.es_propietario ?? false);
     const [esInteresado, setEsInteresado] = useState(contacto?.es_interesado ?? false);
     const [observaciones, setObservaciones] = useState(contacto?.observaciones ?? '');
+    const [origenId, setOrigenId] = useState(contacto?.origen_id ?? '');
+    const [responsableId, setResponsableId] = useState(contacto?.responsable_id ?? '');
+    const [ctx, setCtx] = useState<ContextoContacto | null>(null);
     const [duplicado, setDuplicado] = useState<Duplicado | null>(null);
     const [errores, setErrores] = useState<Errores>({});
     const [errorGeneral, setErrorGeneral] = useState('');
@@ -48,7 +55,23 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
         dispatch(setPageTitle(esEdicion ? 'Editar contacto' : 'Nuevo contacto'));
     }, [dispatch, esEdicion]);
 
-    const alternarRol = (rol: string) => (rol === 'propietario' ? setEsPropietario((v) => !v) : setEsInteresado((v) => !v));
+    useEffect(() => {
+        let vigente = true;
+        listarContextoContacto(createClient()).then((cargado) => {
+            if (!vigente) return;
+            setCtx(cargado);
+            if (!contacto && cargado.yo) setResponsableId((actual) => actual || cargado.yo!.id);
+        });
+        return () => {
+            vigente = false;
+        };
+    }, [contacto]);
+
+    const alternarRol = (rol: string) => {
+        setErrores((x) => ({ ...x, rol: undefined }));
+        if (rol === 'propietario') setEsPropietario((v) => !v);
+        else setEsInteresado((v) => !v);
+    };
 
     const revisarEmail = async () => {
         const valor = email.trim();
@@ -62,6 +85,9 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
     const guardar = async (crearOportunidad: boolean) => {
         setErrorGeneral('');
 
+        const marcarInteresado = crearOportunidad && !esInteresado;
+        const tieneRol = esPropietario || esInteresado || marcarInteresado;
+
         const e: Errores = {};
         if (!nombre.trim()) e.nombre = 'Cargá el nombre.';
         if (!apellido.trim()) e.apellido = 'Cargá el apellido.';
@@ -69,17 +95,16 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
             e.telefono = SIN_CONTACTO;
             e.email = SIN_CONTACTO;
         }
+        if (!tieneRol) e.rol = SIN_ROL;
         setErrores(e);
-        const primero = (['nombre', 'apellido', 'telefono', 'email'] as const).find((campo) => e[campo]);
+        const primero = (['nombre', 'apellido', 'telefono', 'email', 'rol'] as const).find((campo) => e[campo]);
         if (primero) {
-            const el = document.getElementById(primero);
+            const el = document.getElementById(primero === 'rol' ? 'rol-etiqueta' : primero);
             el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-            el?.focus({ preventScroll: true });
+            el?.focus?.({ preventScroll: true });
             return;
         }
 
-        // La oportunidad solo admite contactos interesados.
-        const marcarInteresado = crearOportunidad && !esInteresado;
         const datos = {
             nombre,
             apellido,
@@ -89,20 +114,31 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
             es_propietario: esPropietario,
             es_interesado: esInteresado || marcarInteresado,
             observaciones,
+            origen_id: origenId,
+            responsable_id: responsableId,
         };
 
         setGuardando(true);
-        const supabase = createClient();
-        const resultado = contacto ? await actualizarContacto(supabase, contacto.id, datos) : await crearContacto(supabase, datos);
-        setGuardando(false);
+        const resultado = contacto ? await actualizarContactoAction(contacto.id, datos) : await crearContactoAction(datos);
 
-        if ('error' in resultado) {
-            setErrorGeneral(resultado.error);
+        if (!resultado.ok || !resultado.data) {
+            setGuardando(false);
+            setErrorGeneral(!resultado.ok ? resultado.mensaje : 'No se pudo guardar el contacto.');
             return;
         }
 
+        if (contacto && ctx?.yo && puedeReasignar(ctx.yo.rol) && responsableId && responsableId !== contacto.responsable_id) {
+            const reasignado = await reasignarContactoAction(contacto.id, responsableId);
+            if (!reasignado.ok) {
+                setGuardando(false);
+                setErrorGeneral(reasignado.mensaje);
+                return;
+            }
+        }
+        setGuardando(false);
+
         if (marcarInteresado) showToast('Lo marcamos como interesado para poder crear la oportunidad.', 'success');
-        router.push(crearOportunidad ? `/oportunidades/nuevo?contactoId=${resultado.contacto.id}` : `/contactos/${resultado.contacto.id}`);
+        router.push(crearOportunidad ? `/oportunidades/nuevo?contactoId=${resultado.data.contacto.id}` : `/contactos/${resultado.data.contacto.id}`);
         router.refresh();
     };
 
@@ -205,12 +241,42 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
                 </Bloque>
 
                 <Bloque titulo="Clasificación" ayuda="Sirve para filtrar y para elegirlo como propietario o interesado.">
-                    <CampoGrupo id="rol-etiqueta" etiqueta="Rol" ayuda="Podés marcar los dos.">
+                    <CampoGrupo obligatorio id="rol-etiqueta" etiqueta="Rol" error={errores.rol} ayuda="Podés marcar los dos.">
                         <PildorasMultiples opciones={ROLES} activas={[esPropietario ? 'propietario' : '', esInteresado ? 'interesado' : '']} onToggle={alternarRol} />
                     </CampoGrupo>
                     <CampoGrupo id="estado-etiqueta" etiqueta="Estado">
                         <Segmentado etiqueta="Estado" value={estado} onChange={setEstado} opciones={ESTADOS_CONTACTO.map((item) => ({ value: item, label: estadoLabel[item] }))} />
                     </CampoGrupo>
+                    <Campo id="origen" etiqueta="Origen" ayuda="De dónde llegó. Podés dejarlo vacío y completarlo después.">
+                        <Select
+                            id="origen"
+                            alto="lg"
+                            ariaLabel="Origen"
+                            placeholder="Sin origen"
+                            value={origenId}
+                            onChange={setOrigenId}
+                            onClear={() => setOrigenId('')}
+                            opciones={(ctx?.origenes ?? []).map((o) => ({ value: o.id, label: o.nombre }))}
+                        />
+                    </Campo>
+                    {ctx?.yo && puedeReasignar(ctx.yo.rol) ? (
+                        <Campo id="responsable" etiqueta="Responsable" ayuda="El vendedor solo ve y edita los contactos que tiene asignados.">
+                            <Select
+                                id="responsable"
+                                alto="lg"
+                                ariaLabel="Responsable"
+                                value={responsableId}
+                                onChange={setResponsableId}
+                                opciones={ctx.usuarios.map((u) => ({ value: u.id, label: `${u.nombre} ${u.apellido}`.trim() }))}
+                            />
+                        </Campo>
+                    ) : (
+                        <Campo id="responsable" etiqueta="Responsable" ayuda={contacto ? 'Para cambiarlo, un administrador o el responsable comercial lo reasigna.' : 'Queda asignado a vos.'}>
+                            <p className="flex h-[42px] items-center text-sm font-bold text-uk-ink dark:text-uk-ink-dark">
+                                {contacto?.responsable_nombre || (ctx?.yo ? `${ctx.yo.nombre} ${ctx.yo.apellido}`.trim() : '…')}
+                            </p>
+                        </Campo>
+                    )}
                 </Bloque>
 
                 <Bloque titulo="Notas" ultimo columnas={1}>

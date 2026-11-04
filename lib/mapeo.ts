@@ -29,6 +29,7 @@ export const aContacto = (r: ContactoRow): Contacto => ({
     esPropietario: r.es_propietario,
     esInteresado: r.es_interesado,
     activo: r.activo,
+    responsableId: r.responsable_id,
 });
 
 export const aInmueble = (r: InmuebleRow): Inmueble => ({

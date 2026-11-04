@@ -53,7 +53,14 @@ export async function actualizarSesion(request: NextRequest) {
     }
 
     if (user) {
-        const { data: perfil } = await supabase.from('usuarios').select('debe_cambiar_contrasena').eq('id', user.id).maybeSingle();
+        const { data: perfil, error: perfilError } = await supabase.from('usuarios').select('activo, debe_cambiar_contrasena').eq('id', user.id).maybeSingle();
+        if (!perfilError && (!perfil || perfil.activo === false)) {
+            await supabase.auth.signOut();
+            if (!esLoginORegistro) {
+                return redirigirConSesion(request, response, '/auth/cover-login');
+            }
+            return response;
+        }
         const debeCambiar = perfil?.debe_cambiar_contrasena === true;
 
         if (debeCambiar && !esCambioContrasena) {

@@ -51,7 +51,7 @@ export async function cargarPanelActividades(vinculo: unknown): Promise<ActionRe
 export async function registrarActividad(input: unknown): Promise<ActionResult<{ id: string }>> {
     const parsed = actividadSchema.safeParse(input);
     if (!parsed.success) return fallo(parsed.error.issues[0]?.message ?? 'Datos inválidos');
-    const { vinculo, tipoId, titulo, descripcion, fecha } = parsed.data;
+    const { vinculo, tipoId, titulo, descripcion, resultado, fecha } = parsed.data;
 
     const usuario = await getUsuarioActual();
     if (!usuario) return fallo('No hay una sesión activa');
@@ -67,6 +67,7 @@ export async function registrarActividad(input: unknown): Promise<ActionResult<{
             tipo_id: tipoId,
             titulo: titulo ?? tipo.nombre,
             descripcion,
+            resultado,
             fecha,
             usuario_id: usuario.id,
             contacto_id: vinculo.tipo === 'contacto' ? vinculo.id : null,

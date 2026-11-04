@@ -14,7 +14,7 @@ export async function getActividades(
     let consulta = supabase
         .from('actividades')
         .select(
-            'id, titulo, descripcion, fecha, activo, usuario_id, dado_de_baja_en, tipo:tipos_actividad!inner(nombre, clave), autor:usuarios!actividades_usuario_id_fkey(nombre, apellido), baja:usuarios!actividades_dado_de_baja_por_fkey(nombre, apellido), oportunidad:oportunidades(id, titulo)',
+            'id, titulo, descripcion, resultado, fecha, activo, usuario_id, dado_de_baja_en, tipo:tipos_actividad!inner(nombre, clave), autor:usuarios!actividades_usuario_id_fkey(nombre, apellido), baja:usuarios!actividades_dado_de_baja_por_fkey(nombre, apellido), oportunidad:oportunidades(id, titulo)',
         )
         .eq(COLUMNA_VINCULO[vinculo.tipo], vinculo.id)
         .is('tipo.clave', null)
@@ -30,6 +30,7 @@ export async function getActividades(
         tipo: a.tipo.nombre,
         titulo: a.titulo,
         descripcion: a.descripcion,
+        resultado: a.resultado,
         fecha: a.fecha,
         autor: nombreDe(a.autor),
         activo: a.activo,

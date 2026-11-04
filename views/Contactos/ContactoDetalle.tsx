@@ -7,10 +7,9 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
 import {
-    actualizarContacto,
-    agregarObservacion,
     estadoContactoConfig,
     estadoLabel,
+    listarContextoContacto,
     listarInmueblesDeContacto,
     listarObservaciones,
     listarOportunidadesDeContacto,
@@ -18,10 +17,15 @@ import {
     nombreDeUsuario,
     obtenerContacto,
     type Contacto,
+    type ContextoContacto,
     type InmuebleDeContacto,
     type Observacion,
     type OportunidadDeContacto,
 } from '@/lib/supabase/contactos';
+import { actualizarContactoAction, agregarObservacionAction, darDeBajaContactoAction, reasignarContactoAction } from '@/lib/contacto/actions';
+import { puedeReasignar } from '@/lib/auth/permisos';
+import { modalDarDeBaja } from '@/lib/ui/modales';
+import { pedirReasignacion } from '@/views/Oportunidades/pedirReasignacion';
 import { estadoOportunidadConfig } from '@/lib/enums/estadoOportunidad';
 import { estadoInmuebleConfig } from '@/lib/enums/estadoInmueble';
 import { tipoOperacionConfig } from '@/lib/enums/tipoOperacion';
@@ -32,6 +36,7 @@ import { showToast } from '@/lib/ui/toast';
 import Timeline from '@/components/ui/Timeline';
 import EstadoChip from '@/components/ui/EstadoChip';
 import ChipCategoria from '@/components/ui/ChipCategoria';
+import MenuFilaTabla from '@/components/ui/MenuFilaTabla';
 import { inicialesDe } from '@/components/ui/Iniciales';
 import { AccionSecundaria, Avatar, BotonEditar, BotonNuevaOportunidad, DatoLista, EnlaceTarjeta, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta } from '@/components/ui/FichaPartes';
 import ContactoDetalleSkeleton from '@/views/Contactos/ContactoDetalleSkeleton';
@@ -54,6 +59,7 @@ const ContactoDetalle = ({ id }: { id: string }) => {
     const [oportunidades, setOportunidades] = useState<OportunidadDeContacto[]>([]);
     const [inmuebles, setInmuebles] = useState<InmuebleDeContacto[]>([]);
     const [creador, setCreador] = useState<string | null>(null);
+    const [ctx, setCtx] = useState<ContextoContacto | null>(null);
     const [texto, setTexto] = useState('');
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(true);
@@ -73,13 +79,15 @@ const ContactoDetalle = ({ id }: { id: string }) => {
             return;
         }
 
-        const [notasResultado, ops, inms, quien] = await Promise.all([
+        const [notasResultado, ops, inms, quien, contexto] = await Promise.all([
             listarObservaciones(supabase, id),
             listarOportunidadesDeContacto(supabase, id),
             listarInmueblesDeContacto(supabase, id),
             nombreDeUsuario(supabase, contactoResultado.contacto.creado_por),
+            listarContextoContacto(supabase),
         ]);
         setContacto(contactoResultado.contacto);
+        setCtx(contexto);
         dispatch(setPageTitle(nombreContacto(contactoResultado.contacto)));
         setOportunidades(ops);
         setInmuebles(inms);
@@ -110,10 +118,10 @@ const ContactoDetalle = ({ id }: { id: string }) => {
         }
         setError('');
         setGuardandoNota(true);
-        const resultado = await agregarObservacion(createClient(), contacto.id, limpio);
+        const resultado = await agregarObservacionAction(contacto.id, limpio);
         setGuardandoNota(false);
-        if ('error' in resultado) {
-            setError(resultado.error);
+        if (!resultado.ok) {
+            setError(resultado.mensaje);
             return;
         }
         setTexto('');
@@ -128,9 +136,14 @@ const ContactoDetalle = ({ id }: { id: string }) => {
     // La oportunidad solo admite contactos interesados: si no lo es, lo marcamos antes de seguir.
     const nuevaOportunidad = async () => {
         if (!contacto) return;
+        const editaAhora = !ctx?.yo || puedeReasignar(ctx.yo.rol) || contacto.responsable_id === ctx.yo.id;
+        if (!contacto.es_interesado && !editaAhora) {
+            showToast('No podés modificar este contacto. Pedile al responsable que lo marque como interesado.', 'error');
+            return;
+        }
         if (!contacto.es_interesado) {
             setCreandoOportunidad(true);
-            const resultado = await actualizarContacto(createClient(), contacto.id, {
+            const resultado = await actualizarContactoAction(contacto.id, {
                 nombre: contacto.nombre,
                 apellido: contacto.apellido,
                 email: contacto.email ?? '',
@@ -141,13 +154,68 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                 observaciones: contacto.observaciones ?? '',
             });
             setCreandoOportunidad(false);
-            if ('error' in resultado) {
-                showToast(resultado.error, 'error');
+            if (!resultado.ok) {
+                showToast(resultado.mensaje, 'error');
                 return;
             }
             showToast('Lo marcamos como interesado para poder crear la oportunidad.', 'success');
         }
         router.push(`/oportunidades/nuevo?contactoId=${contacto.id}`);
+    };
+
+    const nuevoInmueble = async () => {
+        if (!contacto) return;
+        const editaAhora = !ctx?.yo || puedeReasignar(ctx.yo.rol) || contacto.responsable_id === ctx.yo.id;
+        if (!contacto.es_propietario && !editaAhora) {
+            showToast('No podés modificar este contacto. Pedile al responsable que lo marque como propietario.', 'error');
+            return;
+        }
+        if (!contacto.es_propietario) {
+            setCreandoOportunidad(true);
+            const resultado = await actualizarContactoAction(contacto.id, {
+                nombre: contacto.nombre,
+                apellido: contacto.apellido,
+                email: contacto.email ?? '',
+                telefono: contacto.telefono ?? '',
+                estado: contacto.estado,
+                es_propietario: true,
+                es_interesado: contacto.es_interesado,
+                observaciones: contacto.observaciones ?? '',
+            });
+            setCreandoOportunidad(false);
+            if (!resultado.ok) {
+                showToast(resultado.mensaje, 'error');
+                return;
+            }
+            showToast('Lo marcamos como propietario para poder cargarle un inmueble.', 'success');
+        }
+        router.push(`/inmuebles/nuevo?contactoId=${contacto.id}`);
+    };
+
+    const reasignar = async () => {
+        if (!contacto || !ctx) return;
+        const nuevoId = await pedirReasignacion(ctx.usuarios, contacto.responsable_id);
+        if (!nuevoId) return;
+        const res = await reasignarContactoAction(contacto.id, nuevoId);
+        showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
+        if (res.ok) await cargar();
+    };
+
+    const darDeBaja = async () => {
+        if (!contacto) return;
+        const ab = oportunidades.filter((o) => o.estado === 'ABIERTA').length;
+        if (ab > 0) {
+            showToast('No se puede dar de baja: tiene oportunidades abiertas.', 'error');
+            return;
+        }
+        const confirmado = await modalDarDeBaja(nombreContacto(contacto), 'Se conserva el historial comercial. No se puede si tiene oportunidades abiertas.');
+        if (!confirmado) return;
+        const res = await darDeBajaContactoAction(contacto.id);
+        showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
+        if (res.ok) {
+            router.push('/contactos');
+            router.refresh();
+        }
     };
 
     if (cargando) {
@@ -168,6 +236,8 @@ const ContactoDetalle = ({ id }: { id: string }) => {
     const roles = [contacto.es_propietario ? 'Propietario' : null, contacto.es_interesado ? 'Interesado' : null].filter(Boolean) as string[];
     const abiertas = oportunidades.filter((o) => o.estado === 'ABIERTA').length;
     const cerradas = oportunidades.length - abiertas;
+    const edita = !ctx?.yo || puedeReasignar(ctx.yo.rol) || contacto.responsable_id === ctx.yo.id;
+    const reasigna = Boolean(ctx?.yo && puedeReasignar(ctx.yo.rol));
 
     return (
         <div className="mx-auto flex max-w-[1240px] flex-col gap-5">
@@ -186,7 +256,16 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                 }
                 acciones={
                     <>
-                        <BotonEditar href={`/contactos/${contacto.id}/editar`} etiqueta="Editar contacto" />
+                        {edita ? <BotonEditar href={`/contactos/${contacto.id}/editar`} etiqueta="Editar contacto" /> : null}
+                        {edita || reasigna ? (
+                            <MenuFilaTabla
+                                ariaLabel="Más acciones"
+                                items={[
+                                    ...(reasigna ? [{ etiqueta: 'Reasignar', onClick: reasignar }] : []),
+                                    ...(edita ? [{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }] : []),
+                                ]}
+                            />
+                        ) : null}
                         {contacto.telefono ? (
                             <AccionSecundaria href={telHref(contacto.telefono)}>
                                 <IconPhone className="h-4 w-4 text-primary dark:text-uk-link-dark" />
@@ -234,6 +313,8 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                             </>
                         ),
                     },
+                    { etiqueta: 'Responsable', valor: contacto.responsable_nombre || '—' },
+                    { etiqueta: 'Origen', valor: contacto.origen_nombre || '—' },
                     { etiqueta: 'Contacto desde', valor: fecha(contacto.creado_en) },
                 ]}
             />
@@ -257,7 +338,14 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                         )}
                     </Tarjeta>
 
-                    <Tarjeta titulo="Inmuebles a su nombre" derecha={<EnlaceTarjeta href="/inmuebles/nuevo">+ Cargar inmueble</EnlaceTarjeta>}>
+                    <Tarjeta
+                        titulo="Inmuebles a su nombre"
+                        derecha={
+                            <button type="button" onClick={creandoOportunidad ? undefined : nuevoInmueble} className="text-[13px] font-extrabold text-primary hover:underline dark:text-uk-link-dark">
+                                + Cargar inmueble
+                            </button>
+                        }
+                    >
                         {inmuebles.length === 0 ? (
                             <p className="text-sm text-uk-muted dark:text-uk-muted-dark">No tiene inmuebles cargados.</p>
                         ) : (

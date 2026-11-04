@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
@@ -10,12 +11,12 @@ import { tipoInmuebleOptions, type TipoInmueble } from '@/lib/enums/tipoInmueble
 import { estadoInmuebleOptions, type EstadoInmueble } from '@/lib/enums/estadoInmueble';
 import { monedaOptions, type Moneda } from '@/lib/enums/moneda';
 import type { Inmueble, InmuebleFormOptions } from '@/lib/inmueble/types';
-import { createClient } from '@/lib/supabase/client';
-import { crearContacto } from '@/lib/supabase/contactos';
+import { crearContactoAction } from '@/lib/contacto/actions';
 import { modalNuevoContacto } from '@/lib/ui/modales';
 import type { Contacto } from '@/lib/dominio';
 import Select from '@/components/ui/Select';
 import BuscadorContacto from '@/components/ui/BuscadorContacto';
+import { inicialesDe } from '@/components/ui/Iniciales';
 import IconHome from '@/components/Icon/IconHome';
 import IconBuilding from '@/components/Icon/IconBuilding';
 import { Bloque, Campo, CampoConAdorno, CampoGrupo, FormularioTarjeta, PieFormulario, PildorasMultiples, Segmentado, Stepper, TarjetasOpcion, claseInput, claseInputAdorno, claseInvalido, claseTextarea, formatearMiles } from '@/components/ui/FormPartes';
@@ -23,6 +24,8 @@ import { Bloque, Campo, CampoConAdorno, CampoGrupo, FormularioTarjeta, PieFormul
 interface Props {
     options: InmuebleFormOptions;
     inmueble?: Inmueble | null;
+    contactoIdInicial?: string;
+    volverA?: string;
 }
 
 type CampoError = 'direccion' | 'ambientes' | 'dormitorios' | 'banos' | 'antiguedad' | 'precio' | 'estado' | 'contactoId';
@@ -43,7 +46,7 @@ const iconoTipo: Record<TipoInmueble, React.ReactNode> = {
 // Si el usuario no tocó el importe se manda el valor original, para no perder decimales.
 const importeParaEnviar = (digitos: string, original: number | null | undefined) => (digitos !== '' && original != null && digitos === String(Math.trunc(original)) ? original : digitos);
 
-const InmuebleForm = ({ options, inmueble }: Props) => {
+const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const esEdicion = !!inmueble;
@@ -52,7 +55,7 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
     });
 
     const [params, setParams] = useState({
-        contactoId: inmueble?.contactoId ?? '',
+        contactoId: inmueble?.contactoId ?? contactoIdInicial ?? '',
         nombre: texto(inmueble?.nombre),
         direccion: texto(inmueble?.direccion),
         localidad: texto(inmueble?.localidad),
@@ -82,19 +85,18 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
     const crearPropietario = async (busqueda: string) => {
         const datos = await modalNuevoContacto({ titulo: 'Nuevo propietario', ayuda: 'Se guarda como contacto propietario.', confirmar: 'Crear contacto', busqueda });
         if (!datos) return;
-        const resultado = await crearContacto(createClient(), { ...datos, estado: 'POTENCIAL', es_propietario: true, es_interesado: false, observaciones: '' });
-        if ('error' in resultado) {
-            showToast(resultado.error, 'error');
+        const resultado = await crearContactoAction({ ...datos, estado: 'POTENCIAL', es_propietario: true, es_interesado: false, observaciones: '' });
+        if (!resultado.ok || !resultado.data) {
+            showToast(!resultado.ok ? resultado.mensaje : 'No se pudo crear el contacto.', 'error');
             return;
         }
-        const c = resultado.contacto;
+        const c = resultado.data.contacto;
         setPropietarios((lista) => [...lista, { id: c.id, nombre: c.nombre, apellido: c.apellido, email: c.email ?? '', telefono: c.telefono ?? '', estado: c.estado, esPropietario: true, esInteresado: c.es_interesado, activo: c.activo }]);
         set('contactoId', c.id);
         showToast('Contacto creado y elegido como propietario.', 'success');
     };
 
-    const submit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const guardar = async (crearOportunidad: boolean) => {
         const nuevos: Errores = {};
         if (!params.direccion.trim()) nuevos.direccion = 'Cargá la dirección: es el nombre del inmueble en toda la app.';
         if (!params.ambientes || Number(params.ambientes) < 1) nuevos.ambientes = 'Indicá cuántos ambientes tiene.';
@@ -125,15 +127,22 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
         setGuardando(false);
         if (res.ok) {
             showToast(res.mensaje ?? '');
-            router.push(esEdicion ? `/inmuebles/${inmueble!.id}` : '/inmuebles');
+            const id = esEdicion ? inmueble!.id : (res.data as { id: string } | undefined)?.id;
+            router.push(crearOportunidad && id ? `/oportunidades/nuevo?inmuebleId=${id}` : esEdicion ? `/inmuebles/${inmueble!.id}` : id ? `/inmuebles/${id}` : '/inmuebles');
             router.refresh();
         } else {
             showToast(res.mensaje ?? 'No se pudo guardar', 'error');
         }
     };
 
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        void guardar(false);
+    };
+
     const titulo = esEdicion ? 'Editar inmueble' : 'Nuevo inmueble';
     const esAlquiler = params.tipoOperacion === 'ALQUILER';
+    const propietarioPrecargado = !esEdicion && contactoIdInicial ? propietarios.find((p) => p.id === contactoIdInicial) : undefined;
 
     return (
         <div className="mx-auto flex max-w-[1080px] flex-col gap-5">
@@ -141,6 +150,18 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 <h1 className="text-[26px] font-extrabold tracking-tight text-uk-ink dark:text-uk-ink-dark">{titulo}</h1>
                 <p className="text-sm text-uk-muted dark:text-uk-muted-dark">{esEdicion ? 'Los cambios se ven en la lista, el tablero y el detalle.' : 'Cargalo para poder asociarlo a oportunidades.'}</p>
             </div>
+
+            {propietarioPrecargado ? (
+                <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#E3CFE7] bg-primary-light px-4 py-3 text-sm text-uk-ink dark:border-uk-link-dark/20 dark:bg-uk-link-dark/10 dark:text-uk-ink-dark">
+                    <span className="grid h-8 w-8 shrink-0 place-content-center rounded-full bg-white text-xs font-extrabold text-primary dark:bg-white/10 dark:text-uk-link-dark">{inicialesDe(propietarioPrecargado.nombre, propietarioPrecargado.apellido)}</span>
+                    <span className="min-w-[200px] flex-1">
+                        Creando desde el contacto <strong>{propietarioPrecargado.nombre} {propietarioPrecargado.apellido}</strong>. Ya lo completamos como propietario.
+                    </span>
+                    <Link href={`/contactos/${propietarioPrecargado.id}`} className="text-[13px] font-extrabold text-primary underline hover:no-underline dark:text-uk-link-dark">
+                        Volver al contacto
+                    </Link>
+                </div>
+            ) : null}
 
             <FormularioTarjeta onSubmit={submit}>
                 <Bloque titulo="Operación y tipo" ayuda="Define en qué listados y funnels aparece." columnas={1}>
@@ -233,9 +254,14 @@ const InmuebleForm = ({ options, inmueble }: Props) => {
                 </Bloque>
 
                 <PieFormulario>
-                    <button type="button" className="btn btn-cancel h-[42px] rounded-[10px] px-[18px]" onClick={() => router.push(esEdicion ? `/inmuebles/${inmueble!.id}` : '/inmuebles')}>
+                    <button type="button" className="btn btn-cancel h-[42px] rounded-[10px] px-[18px]" onClick={() => router.push(volverA ?? (esEdicion ? `/inmuebles/${inmueble!.id}` : '/inmuebles'))}>
                         Cancelar
                     </button>
+                    {!esEdicion ? (
+                        <button type="button" className="btn btn-outline-primary h-[42px] rounded-[10px] px-[18px] font-extrabold" disabled={guardando} onClick={() => void guardar(true)}>
+                            Guardar y crear oportunidad
+                        </button>
+                    ) : null}
                     <button type="submit" className="btn btn-primary h-[42px] rounded-[10px] px-5 font-extrabold" disabled={guardando}>
                         {guardando ? 'Guardando…' : esEdicion ? 'Guardar cambios' : 'Crear inmueble'}
                     </button>

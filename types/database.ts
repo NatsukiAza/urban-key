@@ -51,6 +51,7 @@ export type Database = {
           id: string
           inmueble_id: string | null
           oportunidad_id: string | null
+          resultado: string | null
           tipo_id: string
           titulo: string
           usuario_id: string
@@ -66,6 +67,7 @@ export type Database = {
           id?: string
           inmueble_id?: string | null
           oportunidad_id?: string | null
+          resultado: string
           tipo_id: string
           titulo: string
           usuario_id: string
@@ -81,6 +83,7 @@ export type Database = {
           id?: string
           inmueble_id?: string | null
           oportunidad_id?: string | null
+          resultado?: string | null
           tipo_id?: string
           titulo?: string
           usuario_id?: string
@@ -145,6 +148,8 @@ export type Database = {
           id: string
           nombre: string
           observaciones: string | null
+          origen_id: string | null
+          responsable_id: string
           sucursal_id: string | null
           telefono: string | null
         }
@@ -162,6 +167,8 @@ export type Database = {
           id?: string
           nombre: string
           observaciones?: string | null
+          origen_id?: string | null
+          responsable_id: string
           sucursal_id?: string | null
           telefono?: string | null
         }
@@ -179,6 +186,8 @@ export type Database = {
           id?: string
           nombre?: string
           observaciones?: string | null
+          origen_id?: string | null
+          responsable_id?: string
           sucursal_id?: string | null
           telefono?: string | null
         }
@@ -202,6 +211,20 @@ export type Database = {
             columns: ["sucursal_id"]
             isOneToOne: false
             referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contactos_origen_id_fkey"
+            columns: ["origen_id"]
+            isOneToOne: false
+            referencedRelation: "origenes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contactos_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
         ]

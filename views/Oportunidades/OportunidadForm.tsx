@@ -6,9 +6,12 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { showToast } from '@/lib/ui/toast';
 import { crearOportunidad, actualizarOportunidad } from '@/lib/oportunidad/actions';
+import { crearContactoAction } from '@/lib/contacto/actions';
+import { modalNuevoContacto } from '@/lib/ui/modales';
 import { tipoOperacionConfig } from '@/lib/enums/tipoOperacion';
 import { tipoInmuebleConfig } from '@/lib/enums/tipoInmueble';
 import type { FormOptions, Oportunidad } from '@/lib/oportunidad/types';
+import type { Contacto } from '@/lib/dominio';
 import type { Moneda } from '@/lib/enums/moneda';
 import Select from '@/components/ui/Select';
 import BuscadorContacto from '@/components/ui/BuscadorContacto';
@@ -78,6 +81,7 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
         observaciones: oportunidad?.observaciones ?? '',
         fechaCierreEstimada: oportunidad?.fechaCierreEstimada ?? '',
     });
+    const [interesados, setInteresados] = useState<Contacto[]>(options.interesados);
     const [errores, setErrores] = useState<Errores>({});
     const [guardando, setGuardando] = useState(false);
     const [contactoDesbloqueado, setContactoDesbloqueado] = useState(false);
@@ -87,15 +91,55 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
         if (campo in errores) setErrores((e) => ({ ...e, [campo]: undefined }));
     };
 
+    const crearInteresado = async (busqueda: string) => {
+        const datos = await modalNuevoContacto({ titulo: 'Nuevo contacto', ayuda: 'Se guarda como contacto interesado.', confirmar: 'Crear contacto', busqueda });
+        if (!datos) return;
+        const resultado = await crearContactoAction({ ...datos, estado: 'POTENCIAL', es_propietario: false, es_interesado: true, observaciones: '' });
+        if (!resultado.ok || !resultado.data) {
+            showToast(!resultado.ok ? resultado.mensaje : 'No se pudo crear el contacto.', 'error');
+            return;
+        }
+        const c = resultado.data.contacto;
+        setInteresados((lista) => [
+            ...lista,
+            {
+                id: c.id,
+                nombre: c.nombre,
+                apellido: c.apellido,
+                email: c.email ?? '',
+                telefono: c.telefono ?? '',
+                estado: c.estado,
+                esPropietario: c.es_propietario,
+                esInteresado: true,
+                activo: c.activo,
+            },
+        ]);
+        set('contactoId', c.id);
+        showToast('Contacto creado y elegido para la oportunidad.', 'success');
+    };
+
     const onFunnelChange = (value: string) => {
-        setParams((p) => ({ ...p, funnelId: value, etapaId: '' }));
+        const primeraAbierta = options.etapas
+            .filter((e) => e.funnelId === value && e.resultado === 'ABIERTA')
+            .sort((a, b) => a.orden - b.orden)[0];
+        setParams((p) => ({ ...p, funnelId: value, etapaId: primeraAbierta?.id ?? '' }));
         setErrores((e) => ({ ...e, funnelId: undefined, etapaId: undefined }));
+    };
+
+    const onInmuebleChange = (value: string) => {
+        const inmueble = options.inmuebles.find((i) => i.id === value);
+        setParams((p) => ({
+            ...p,
+            inmuebleId: value,
+            valorEstimado: !esEdicion && p.valorEstimado === '' && inmueble?.precio != null ? String(Math.trunc(inmueble.precio)) : p.valorEstimado,
+            moneda: !esEdicion && p.valorEstimado === '' && inmueble ? inmueble.moneda : p.moneda,
+        }));
     };
 
     // En el form solo se ofrecen etapas ABIERTAS del funnel elegido (ganar/perder va por el tablero o el detalle).
     const etapasDisponibles = useMemo(() => options.etapas.filter((e) => e.funnelId === params.funnelId && e.resultado === 'ABIERTA').sort((a, b) => a.orden - b.orden), [options.etapas, params.funnelId]);
 
-    const contacto = options.interesados.find((c) => c.id === params.contactoId);
+    const contacto = interesados.find((c) => c.id === params.contactoId);
     const contactoFijo = Boolean(precarga?.contactoFijo && contacto && !contactoDesbloqueado);
 
     const validar = (): Errores => {
@@ -244,7 +288,8 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                         ) : (
                             <BuscadorContacto
                                 id="contactoId"
-                                contactos={options.interesados}
+                                contactos={interesados}
+                                onCrear={crearInteresado}
                                 value={params.contactoId}
                                 onChange={(v) => set('contactoId', v)}
                                 invalido={Boolean(errores.contactoId)}
@@ -277,7 +322,7 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                             ariaLabel="Inmueble"
                             placeholder="Sin inmueble"
                             value={params.inmuebleId}
-                            onChange={(v) => set('inmuebleId', v)}
+                            onChange={onInmuebleChange}
                             onClear={() => set('inmuebleId', '')}
                             opciones={options.inmuebles.map(etiquetaInmueble)}
                         />

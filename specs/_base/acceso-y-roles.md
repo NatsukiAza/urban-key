@@ -76,7 +76,7 @@ Cada feature declara sus rutas y roles; el estado consolidado se mantiene acá.
 
 ## Preguntas abiertas
 
-- ¿El vendedor ve contactos/inmuebles **solo asignados a él** o toda la cartera? **Resuelto provisoriamente en la migración de RLS: la cartera es compartida** — todo usuario activo lee y edita contactos e inmuebles, y la restricción por pertenencia se aplica solo a `oportunidades` (que sí tienen responsable). Si el equipo decide restringirla, se cambian las políticas `contactos_*` e `inmuebles_*` y nada más.
+- ¿El vendedor ve contactos/inmuebles **solo asignados a él** o toda la cartera? **Resuelto: la cartera está asignada.** Cada contacto tiene `responsable_id`. El vendedor ve y edita los contactos de los que es responsable, y los inmuebles de esos contactos. También puede leer un contacto o inmueble ajeno cuando tiene una oportunidad activa vinculada, para poder trabajar esa negociación. Reasignar contactos queda para administrador y responsable comercial. Las políticas están en `20261103223000_contacto_cartera_y_resultado.sql`.
 
 ## Ver también
 

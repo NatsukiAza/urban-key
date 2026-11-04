@@ -20,6 +20,7 @@ export const actividadSchema = z.object({
     tipoId: z.uuid('Elegí un tipo de actividad'),
     titulo: textoOpcional(120, 'El título no puede superar los 120 caracteres'),
     descripcion: textoOpcional(2000, 'La descripción no puede superar los 2000 caracteres'),
+    resultado: z.string().trim().min(1, 'Contá el resultado de la actividad.').max(2000, 'El resultado no puede superar los 2000 caracteres'),
     fecha: z
         .string()
         .refine((v) => !Number.isNaN(Date.parse(v)), 'Elegí la fecha y la hora en que ocurrió')

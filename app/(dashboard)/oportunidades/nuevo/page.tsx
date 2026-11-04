@@ -9,15 +9,22 @@ import type { TipoFunnel } from '@/lib/enums/tipoFunnel';
 // El propietario del inmueble entra por Captación; cualquier otro contacto, por Interesados.
 function deducirTipoFunnel(options: FormOptions, contactoId?: string, inmuebleId?: string): TipoFunnel | null {
     const inmueble = options.inmuebles.find((i) => i.id === inmuebleId);
-    if (!inmueble) return null;
-    const esPropietario = !contactoId || inmueble.contactoId === contactoId;
-    if (inmueble.tipoOperacion === 'VENTA') return esPropietario ? 'CAPTACION_VENTA' : 'INTERESADOS_COMPRA';
-    return esPropietario ? 'CAPTACION_ALQUILER' : 'INTERESADOS_ALQUILER';
+    if (inmueble) {
+        const esPropietario = !contactoId || inmueble.contactoId === contactoId;
+        if (inmueble.tipoOperacion === 'VENTA') return esPropietario ? 'CAPTACION_VENTA' : 'INTERESADOS_COMPRA';
+        return esPropietario ? 'CAPTACION_ALQUILER' : 'INTERESADOS_ALQUILER';
+    }
+    const contacto = options.interesados.find((c) => c.id === contactoId);
+    if (!contacto) return null;
+    if (contacto.esPropietario && !contacto.esInteresado) return 'CAPTACION_VENTA';
+    return 'INTERESADOS_COMPRA';
 }
 
 function armarValoresIniciales(options: FormOptions, sp: Record<string, string | undefined>, responsableId?: string): ValoresIniciales {
-    const inmueble = options.inmuebles.find((i) => i.id === sp.inmuebleId);
-    const contactoId = options.interesados.find((c) => c.id === (sp.contactoId ?? inmueble?.contactoId))?.id;
+    const inmuebleDirecto = options.inmuebles.find((i) => i.id === sp.inmuebleId);
+    const contactoId = options.interesados.find((c) => c.id === (sp.contactoId ?? inmuebleDirecto?.contactoId))?.id;
+    const inmueblesDelContacto = !inmuebleDirecto && contactoId ? options.inmuebles.filter((i) => i.contactoId === contactoId) : [];
+    const inmueble = inmuebleDirecto ?? (inmueblesDelContacto.length === 1 ? inmueblesDelContacto[0] : undefined);
 
     const tipo = deducirTipoFunnel(options, contactoId, inmueble?.id);
     const funnelId = options.funnels.find((f) => f.id === sp.funnelId)?.id ?? options.funnels.find((f) => f.tipo === tipo)?.id;

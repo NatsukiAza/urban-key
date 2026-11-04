@@ -196,6 +196,7 @@ export interface NuevaActividad {
     tipoId: string;
     titulo: string | null;
     descripcion: string | null;
+    resultado: string;
     fecha: string;
 }
 
@@ -237,6 +238,11 @@ export async function modalRegistrarActividad(datos: { subtitulo: string; tipos:
                     <label for="uk-obs" class="${claseLabel}">Descripción <span class="${claseOpcional}">Opcional</span></label>
                     <textarea id="uk-obs" maxlength="2000" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="Ej.: le gustó la luz del living, pide ver otra en la misma zona"></textarea>
                 </div>
+                <div class="sm:col-span-2">
+                    <label for="uk-resultado" class="${claseLabel}">Resultado</label>
+                    <textarea id="uk-resultado" maxlength="2000" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="2" placeholder="Ej.: pidió otra visita el jueves y va a consultar con la pareja"></textarea>
+                    <p id="uk-err-resultado" class="${claseError}">Contá cómo terminó: qué se acordó, qué dijo o qué quedó pendiente.</p>
+                </div>
             </div>`,
         confirmButtonText: 'Registrar actividad',
         footer: 'Una actividad registrada no se edita: si te equivocás, dala de baja y cargala de nuevo.',
@@ -258,8 +264,10 @@ export async function modalRegistrarActividad(datos: { subtitulo: string; tipos:
             const momento = fecha && hora ? new Date(`${fecha}T${hora}`) : null;
             const horaInvalida = !fechaInvalida && (!momento || Number.isNaN(momento.getTime()) || momento.getTime() > Date.now());
             mostrarError('uk-err-hora', horaInvalida);
-            if (!tipoId || fechaInvalida || horaInvalida || !momento) return false;
-            return { tipoId, titulo: valor('uk-titulo') || null, descripcion: valor('uk-obs') || null, fecha: momento.toISOString() };
+            const resultado = valor('uk-resultado');
+            mostrarError('uk-err-resultado', !resultado);
+            if (!tipoId || fechaInvalida || horaInvalida || !momento || !resultado) return false;
+            return { tipoId, titulo: valor('uk-titulo') || null, descripcion: valor('uk-obs') || null, resultado, fecha: momento.toISOString() };
         },
     });
     return resultado.isConfirmed ? (resultado.value as NuevaActividad) : null;

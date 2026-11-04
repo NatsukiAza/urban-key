@@ -40,6 +40,7 @@ export interface InmuebleRow {
     m2: number | null;
     precio: number | null;
     moneda: Moneda;
+    puedeEditar: boolean;
 }
 
 export interface OportunidadDeInmueble {

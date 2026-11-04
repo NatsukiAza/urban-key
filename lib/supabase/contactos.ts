@@ -1,4 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { RolUsuario } from '../enums/rolUsuario';
+import { CONTACTO_COLUMNS, CONTACTO_COLUMNS_BASE, faltaColumnaNueva, mapContacto } from '../contacto/fila';
+
+export { CONTACTO_COLUMNS, mapContacto };
 
 export type EstadoContacto = 'POTENCIAL' | 'CLIENTE' | 'INACTIVO' | 'NO_CONTACTAR';
 
@@ -32,6 +36,10 @@ export type Contacto = {
     activo: boolean;
     creado_por: string | null;
     creado_en: string;
+    origen_id: string | null;
+    origen_nombre: string | null;
+    responsable_id: string;
+    responsable_nombre: string;
 };
 
 export type Observacion = {
@@ -51,11 +59,19 @@ export type ContactoInput = {
     es_propietario: boolean;
     es_interesado: boolean;
     observaciones: string;
+    origen_id?: string;
+    responsable_id?: string;
+};
+
+export type ContextoContacto = {
+    yo: { id: string; nombre: string; apellido: string; rol: RolUsuario } | null;
+    origenes: { id: string; nombre: string }[];
+    usuarios: { id: string; nombre: string; apellido: string }[];
 };
 
 const TIPO_OBSERVACION = 'OBSERVACION';
 
-const CONTACTO_COLUMNS ='id, nombre, apellido, email, telefono, estado, es_propietario, es_interesado, observaciones, sucursal_id, activo, creado_por, creado_en';
+const CONTACTO_CON_NOMBRES = `${CONTACTO_COLUMNS}, origen:origenes(nombre), responsable:usuarios!contactos_responsable_id_fkey(nombre, apellido)`;
 
 export function nombreContacto(contacto: Pick<Contacto, 'nombre' | 'apellido'>) {
     return `${contacto.nombre} ${contacto.apellido}`.trim();
@@ -68,27 +84,70 @@ function mensajeGuardado(error: { code?: string; message?: string }, accion: str
     return `No se pudo ${accion}.`;
 }
 
+function filaContacto(fila: Record<string, unknown>) {
+    return mapContacto({
+        ...(fila as Parameters<typeof mapContacto>[0]),
+        origen_id: (fila.origen_id as string | null | undefined) ?? null,
+        responsable_id: (fila.responsable_id as string | undefined) || (fila.creado_por as string | undefined) || '',
+    });
+}
+
 export async function listarContactos(supabase: SupabaseClient): Promise<{ contactos: Contacto[] } | { error: string }> {
-    const { data, error } = await supabase.from('contactos').select(CONTACTO_COLUMNS).order('apellido', { ascending: true }).order('nombre', { ascending: true });
+    const ordenado = () => supabase.from('contactos').select(CONTACTO_CON_NOMBRES).eq('activo', true).order('apellido', { ascending: true }).order('nombre', { ascending: true });
+    let { data, error } = await ordenado();
+
+    if (faltaColumnaNueva(error)) {
+        const retry = await supabase.from('contactos').select(CONTACTO_COLUMNS_BASE).eq('activo', true).order('apellido', { ascending: true }).order('nombre', { ascending: true });
+        data = retry.data as typeof data;
+        error = retry.error;
+    }
 
     if (error) {
+        console.error('Error listando contactos', error);
         return { error: 'No se pudieron leer los contactos.' };
     }
 
-    return { contactos: data ?? [] };
+    return { contactos: (data ?? []).map((fila) => filaContacto(fila as Record<string, unknown>)) };
 }
 
 export async function obtenerContacto(supabase: SupabaseClient, id: string): Promise<{ contacto: Contacto } | { error: string }> {
-    const { data, error } = await supabase.from('contactos').select(CONTACTO_COLUMNS).eq('id', id).maybeSingle();
+    let { data, error } = await supabase.from('contactos').select(CONTACTO_CON_NOMBRES).eq('id', id).eq('activo', true).maybeSingle();
+
+    if (faltaColumnaNueva(error)) {
+        const retry = await supabase.from('contactos').select(CONTACTO_COLUMNS_BASE).eq('id', id).eq('activo', true).maybeSingle();
+        data = retry.data as typeof data;
+        error = retry.error;
+    }
 
     if (error) {
+        console.error('Error leyendo el contacto', error);
         return { error: 'No se pudo leer el contacto.' };
     }
     if (!data) {
         return { error: 'No encontramos ese contacto.' };
     }
 
-    return { contacto: data };
+    return { contacto: filaContacto(data as Record<string, unknown>) };
+}
+
+export async function listarContextoContacto(supabase: SupabaseClient): Promise<ContextoContacto> {
+    const vacio: ContextoContacto = { yo: null, origenes: [], usuarios: [] };
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return vacio;
+
+    const [perfil, origenes, usuarios] = await Promise.all([
+        supabase.from('usuarios').select('id, nombre, apellido, rol').eq('id', user.id).maybeSingle(),
+        supabase.from('origenes').select('id, nombre').eq('activo', true).order('nombre'),
+        supabase.from('usuarios').select('id, nombre, apellido').eq('activo', true).order('apellido').order('nombre'),
+    ]);
+
+    return {
+        yo: perfil.data ? { id: perfil.data.id, nombre: perfil.data.nombre, apellido: perfil.data.apellido, rol: perfil.data.rol } : null,
+        origenes: origenes.data ?? [],
+        usuarios: usuarios.data ?? [],
+    };
 }
 
 export async function crearContacto(supabase: SupabaseClient, input: ContactoInput): Promise<{ contacto: Contacto } | { error: string }> {
@@ -114,6 +173,8 @@ export async function crearContacto(supabase: SupabaseClient, input: ContactoInp
             es_propietario: input.es_propietario,
             es_interesado: input.es_interesado,
             observaciones: input.observaciones.trim() || null,
+            origen_id: input.origen_id || null,
+            responsable_id: input.responsable_id || user.id,
             creado_por: user.id,
             activo: true,
         })
@@ -124,7 +185,7 @@ export async function crearContacto(supabase: SupabaseClient, input: ContactoInp
         return { error: mensajeGuardado(error ?? {}, 'guardar el contacto') };
     }
 
-    return { contacto: data };
+    return { contacto: mapContacto(data) };
 }
 
 export async function actualizarContacto(supabase: SupabaseClient, id: string, input: ContactoInput): Promise<{ contacto: Contacto } | { error: string }> {
@@ -147,6 +208,7 @@ export async function actualizarContacto(supabase: SupabaseClient, id: string, i
             es_propietario: input.es_propietario,
             es_interesado: input.es_interesado,
             observaciones: input.observaciones.trim() || null,
+            origen_id: input.origen_id || null,
             actualizado_por: user?.id ?? null,
         })
         .eq('id', id)
@@ -157,7 +219,7 @@ export async function actualizarContacto(supabase: SupabaseClient, id: string, i
         return { error: mensajeGuardado(error ?? {}, 'guardar los cambios') };
     }
 
-    return { contacto: data };
+    return { contacto: mapContacto(data) };
 }
 
 // Devuelve el contacto activo que ya usa ese email (sin distinguir mayúsculas), ignorando `excluirId`.
@@ -190,7 +252,7 @@ export async function actualizarEstadoContacto(supabase: SupabaseClient, id: str
         return { error: mensajeGuardado(error ?? {}, 'actualizar el estado') };
     }
 
-    return { contacto: data };
+    return { contacto: mapContacto(data) };
 }
 
 export async function listarObservaciones(supabase: SupabaseClient, contactoId: string): Promise<{ observaciones: Observacion[] } | { error: string }> {
@@ -249,6 +311,7 @@ export async function agregarObservacion(supabase: SupabaseClient, contactoId: s
         tipo_id: tipo.id,
         titulo: 'Observación',
         descripcion: texto.trim(),
+        resultado: texto.trim(),
         fecha: new Date().toISOString(),
     });
 

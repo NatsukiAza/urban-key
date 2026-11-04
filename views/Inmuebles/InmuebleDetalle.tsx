@@ -28,12 +28,13 @@ import PanelActividades from '@/components/actividad/PanelActividades';
 
 interface Props {
     detalle: TDetalle;
+    puedeEditar: boolean;
 }
 
 const fmtNumero = (v: number | null, sufijo = '') => (v != null ? `${v.toLocaleString('es-AR')}${sufijo}` : '—');
 const telHref = (t: string) => `tel:${t.replace(/[^\d+]/g, '')}`;
 
-const InmuebleDetalle = ({ detalle }: Props) => {
+const InmuebleDetalle = ({ detalle, puedeEditar }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     useBreadcrumbDetalle(detalle.direccion);
@@ -101,8 +102,8 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                 }
                 acciones={
                     <>
-                        <BotonEditar href={editarHref} etiqueta="Editar inmueble" />
-                        <MenuFilaTabla ariaLabel="Más acciones" items={[{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }]} />
+                        {puedeEditar ? <BotonEditar href={editarHref} etiqueta="Editar inmueble" /> : null}
+                        {puedeEditar ? <MenuFilaTabla ariaLabel="Más acciones" items={[{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }]} /> : null}
                         <BotonNuevaOportunidad href={`/oportunidades/nuevo?inmuebleId=${detalle.id}`} />
                     </>
                 }
@@ -189,7 +190,7 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                         </Tarjeta>
                     ) : null}
 
-                    <Tarjeta compacta titulo="Datos" derecha={<EnlaceTarjeta href={editarHref}>Editar</EnlaceTarjeta>}>
+                    <Tarjeta compacta titulo="Datos" derecha={puedeEditar ? <EnlaceTarjeta href={editarHref}>Editar</EnlaceTarjeta> : undefined}>
                         <ListaDatos>
                             <DatoLista etiqueta="Dirección" ancho>
                                 {[detalle.direccion, detalle.localidad].filter(Boolean).join(', ')}
@@ -202,10 +203,15 @@ const InmuebleDetalle = ({ detalle }: Props) => {
                                     detalle.dormitorios
                                 ) : (
                                     <SinDato>
-                                        Sin cargar ·{' '}
-                                        <Link href={editarHref} className="font-extrabold not-italic text-primary hover:underline dark:text-uk-link-dark">
-                                            Completar
-                                        </Link>
+                                        Sin cargar
+                                        {puedeEditar ? (
+                                            <>
+                                                {' · '}
+                                                <Link href={editarHref} className="font-extrabold not-italic text-primary hover:underline dark:text-uk-link-dark">
+                                                    Completar
+                                                </Link>
+                                            </>
+                                        ) : null}
                                     </SinDato>
                                 )}
                             </DatoLista>

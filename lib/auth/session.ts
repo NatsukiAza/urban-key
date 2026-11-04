@@ -21,6 +21,9 @@ export async function getUsuarioActual(): Promise<Usuario | null> {
         console.error(`El usuario ${user.id} no tiene fila en public.usuarios`);
         return null;
     }
+    if (!data.activo) {
+        return null;
+    }
 
     return aUsuario(data);
 }

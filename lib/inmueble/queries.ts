@@ -1,11 +1,18 @@
 import 'server-only';
 import { createClient } from '../supabase/server';
+import { getUsuarioActual } from '../auth/session';
+import { puedeReasignar } from '../auth/permisos';
 import { aContacto, aInmueble } from '../mapeo';
 import type { Inmueble, InmuebleDetalle, InmuebleRow, FiltroInmuebles, InmuebleFormOptions, OportunidadDeInmueble } from './types';
 
 const RESPONSABLE = 'usuarios!oportunidades_responsable_id_fkey';
 
 const SELECT_LISTA = `
+    id, direccion, localidad, tipo_operacion, tipo_inmueble, estado, ambientes, dormitorios, m2, precio, moneda,
+    propietario:contactos(nombre, apellido, responsable_id)
+`;
+
+const SELECT_LISTA_BASE = `
     id, direccion, localidad, tipo_operacion, tipo_inmueble, estado, ambientes, dormitorios, m2, precio, moneda,
     propietario:contactos(nombre, apellido)
 `;
@@ -30,6 +37,8 @@ const esUuid = (v: string | undefined | null): v is string => typeof v === 'stri
 export async function getInmueblesList(filtro: FiltroInmuebles = {}): Promise<InmuebleRow[]> {
     try {
         const supabase = await createClient();
+        const usuario = await getUsuarioActual();
+        const veTodo = puedeReasignar(usuario?.rol);
         let q = supabase.from('inmuebles').select(SELECT_LISTA).eq('activo', true);
 
         if (filtro.tipoOperacion) q = q.eq('tipo_operacion', filtro.tipoOperacion);
@@ -37,7 +46,19 @@ export async function getInmueblesList(filtro: FiltroInmuebles = {}): Promise<In
         if (filtro.estado) q = q.eq('estado', filtro.estado);
         if (filtro.localidad) q = q.eq('localidad', filtro.localidad);
 
-        const { data, error } = await q.order('creado_en', { ascending: false });
+        let { data, error } = await q.order('creado_en', { ascending: false });
+        let sinResponsable = false;
+        if (error && (error as { code?: string }).code === '42703') {
+            sinResponsable = true;
+            let base = supabase.from('inmuebles').select(SELECT_LISTA_BASE).eq('activo', true);
+            if (filtro.tipoOperacion) base = base.eq('tipo_operacion', filtro.tipoOperacion);
+            if (filtro.tipoInmueble) base = base.eq('tipo_inmueble', filtro.tipoInmueble);
+            if (filtro.estado) base = base.eq('estado', filtro.estado);
+            if (filtro.localidad) base = base.eq('localidad', filtro.localidad);
+            const retry = await base.order('creado_en', { ascending: false });
+            data = retry.data as typeof data;
+            error = retry.error;
+        }
         if (error) throw error;
 
         return (data ?? []).map((i) => ({
@@ -53,6 +74,7 @@ export async function getInmueblesList(filtro: FiltroInmuebles = {}): Promise<In
             m2: i.m2,
             precio: i.precio,
             moneda: i.moneda,
+            puedeEditar: Boolean(usuario && (sinResponsable || veTodo || i.propietario?.responsable_id === usuario.id)),
         }));
     } catch (err) {
         console.error('Error getInmueblesList', err);
@@ -110,7 +132,15 @@ export async function getInmuebleDetalle(id: string): Promise<InmuebleDetalle | 
 export async function getInmuebleFormOptions(): Promise<InmuebleFormOptions> {
     try {
         const supabase = await createClient();
-        const { data, error } = await supabase.from('contactos').select('*').eq('activo', true).eq('es_propietario', true).order('apellido');
+        const usuario = await getUsuarioActual();
+        let consulta = supabase.from('contactos').select('*').eq('activo', true).eq('es_propietario', true).order('apellido');
+        if (usuario?.rol === 'VENDEDOR') consulta = consulta.eq('responsable_id', usuario.id);
+        let { data, error } = await consulta;
+        if (error && (error as { code?: string }).code === '42703' && usuario?.rol === 'VENDEDOR') {
+            const retry = await supabase.from('contactos').select('*').eq('activo', true).eq('es_propietario', true).order('apellido');
+            data = retry.data;
+            error = retry.error;
+        }
         if (error) throw error;
         return { propietarios: (data ?? []).map(aContacto) };
     } catch (err) {

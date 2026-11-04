@@ -307,14 +307,18 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                     title: <span className="sr-only">Acciones</span>,
                                     sortable: false,
                                     textAlignment: 'right',
-                                    render: ({ id, direccion }: InmuebleRow) => (
+                                    render: ({ id, direccion, puedeEditar }: InmuebleRow) => (
                                         <div className="flex justify-end">
                                             <MenuFilaTabla
                                                 ariaLabel={`Más acciones para ${direccion}`}
                                                 items={[
                                                     { etiqueta: 'Ver', href: `/inmuebles/${id}` },
-                                                    { etiqueta: 'Editar', href: `/inmuebles/${id}/editar` },
-                                                    { etiqueta: 'Dar de baja', destructivo: true, onClick: () => dejarDeBaja(id, direccion) },
+                                                    ...(puedeEditar
+                                                        ? [
+                                                              { etiqueta: 'Editar', href: `/inmuebles/${id}/editar` },
+                                                              { etiqueta: 'Dar de baja', destructivo: true, onClick: () => dejarDeBaja(id, direccion) },
+                                                          ]
+                                                        : []),
                                                 ]}
                                             />
                                         </div>

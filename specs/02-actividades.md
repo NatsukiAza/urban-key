@@ -151,5 +151,5 @@ No hay mockup de actividades: se diseña siguiendo `docs/diseno.md`, a partir de
 
 - ¿"Tipos" del roadmap se refiere a **tipos de actividad**? Esta spec asume que sí, porque [[00-general]] lista "tipos de actividad, orígenes" entre lo que configura el Administrador. Los tipos de inmueble quedan como enum fijo (casa, departamento, PH).
 - ¿Se pueden registrar actividades sobre una **oportunidad cerrada** (postventa, firma de contrato)? Esta spec lo permite: la regla 10 protege los datos de la oportunidad, no impide sumarle actividades.
-- ¿El **contacto** también debería tener origen (`contactos.origen_id`)? [[00-general]] dice que el origen es "por el que llegó un contacto/oportunidad", pero hoy solo lo tiene la oportunidad. Tocaría el formulario de contacto (P3).
+- El contacto tiene origen (`contactos.origen_id`, opcional) y la actividad registra `resultado` (obligatorio en el alta). Ver migración `20261103223000_contacto_cartera_y_resultado.sql`.
 - ¿Hace falta historial de cambios de **estado del inmueble** (disponible → reservado → operado)? Queda para el paso de historial comercial, si alcanza el tiempo.

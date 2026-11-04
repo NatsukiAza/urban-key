@@ -9,11 +9,19 @@ import sortBy from 'lodash/sortBy';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
-import { listarContactos, type Contacto } from '@/lib/supabase/contactos';
+import { ESTADOS_CONTACTO, estadoLabel, listarContactos, listarContextoContacto, nombreContacto, type Contacto, type ContextoContacto, type EstadoContacto } from '@/lib/supabase/contactos';
+import { actualizarContactoAction, darDeBajaContactoAction, reasignarContactoAction } from '@/lib/contacto/actions';
+import { puedeReasignar } from '@/lib/auth/permisos';
+import { modalDarDeBaja } from '@/lib/ui/modales';
+import { pedirReasignacion } from '@/views/Oportunidades/pedirReasignacion';
+import { showToast } from '@/lib/ui/toast';
 import { formatearTelefono } from '@/lib/formato';
 import PageHeader, { contar } from '@/components/ui/PageHeader';
 import Iniciales from '@/components/ui/Iniciales';
+import ChipCategoria from '@/components/ui/ChipCategoria';
 import EstadoPantalla from '@/components/ui/EstadoPantalla';
+import Select from '@/components/ui/Select';
+import MenuFilaTabla from '@/components/ui/MenuFilaTabla';
 import IconPlus from '@/components/Icon/IconPlus';
 import IconSearch from '@/components/Icon/IconSearch';
 import IconUsers from '@/components/Icon/IconUsers';
@@ -35,6 +43,11 @@ const ContactosList = () => {
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(true);
     const [busqueda, setBusqueda] = useState('');
+    const [filtroEstado, setFiltroEstado] = useState<EstadoContacto | ''>('');
+    const [filtroRol, setFiltroRol] = useState<'propietario' | 'interesado' | ''>('');
+    const [filtroResponsable, setFiltroResponsable] = useState('');
+    const [filtroOrigen, setFiltroOrigen] = useState('');
+    const [ctx, setCtx] = useState<ContextoContacto | null>(null);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'nombre', direction: 'asc' });
@@ -46,9 +59,11 @@ const ContactosList = () => {
     const cargar = useCallback(() => {
         setCargando(true);
         setError('');
-        listarContactos(createClient()).then((resultado) => {
+        const supabase = createClient();
+        Promise.all([listarContactos(supabase), listarContextoContacto(supabase)]).then(([resultado, contexto]) => {
             if ('error' in resultado) setError(resultado.error);
             else setContactos(resultado.contactos);
+            setCtx(contexto);
             setCargando(false);
         });
     }, []);
@@ -59,16 +74,76 @@ const ContactosList = () => {
 
     useEffect(() => {
         setPage(1);
-    }, [busqueda, pageSize, sortStatus]);
+    }, [busqueda, filtroEstado, filtroRol, filtroResponsable, filtroOrigen, pageSize, sortStatus]);
 
     const visibles = useMemo(() => {
         const q = busqueda.trim().toLowerCase();
-        const base = q ? contactos.filter((c) => `${c.nombre} ${c.apellido} ${c.email ?? ''} ${c.telefono ?? ''}`.toLowerCase().includes(q)) : contactos;
+        const base = contactos.filter((c) => {
+            if (filtroEstado && c.estado !== filtroEstado) return false;
+            if (filtroRol === 'propietario' && !c.es_propietario) return false;
+            if (filtroRol === 'interesado' && !c.es_interesado) return false;
+            if (filtroResponsable && c.responsable_id !== filtroResponsable) return false;
+            if (filtroOrigen && c.origen_id !== filtroOrigen) return false;
+            return !q || `${c.nombre} ${c.apellido} ${c.email ?? ''} ${c.telefono ?? ''} ${c.responsable_nombre} ${c.origen_nombre ?? ''}`.toLowerCase().includes(q);
+        });
         const ordenados = sortBy(base, (c) => String(c[sortStatus.columnAccessor as keyof Contacto] ?? '').toLowerCase());
         return sortStatus.direction === 'desc' ? ordenados.reverse() : ordenados;
-    }, [busqueda, contactos, sortStatus]);
+    }, [busqueda, filtroEstado, filtroRol, filtroResponsable, filtroOrigen, contactos, sortStatus]);
 
     const records = useMemo(() => visibles.slice((page - 1) * pageSize, page * pageSize), [visibles, page, pageSize]);
+
+    const limpiarFiltros = () => {
+        setBusqueda('');
+        setFiltroEstado('');
+        setFiltroRol('');
+        setFiltroResponsable('');
+        setFiltroOrigen('');
+    };
+
+    const reasigna = Boolean(ctx?.yo && puedeReasignar(ctx.yo.rol));
+
+    const reasignar = async (c: Contacto) => {
+        if (!ctx) return;
+        const nuevoId = await pedirReasignacion(ctx.usuarios, c.responsable_id);
+        if (!nuevoId) return;
+        const res = await reasignarContactoAction(c.id, nuevoId);
+        showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
+        if (res.ok) cargar();
+    };
+
+    const nuevaOportunidad = async (c: Contacto) => {
+        const edita = !ctx?.yo || puedeReasignar(ctx.yo.rol) || c.responsable_id === ctx.yo.id;
+        if (!c.es_interesado && !edita) {
+            showToast('No podés modificar este contacto. Pedile al responsable que lo marque como interesado.', 'error');
+            return;
+        }
+        if (!c.es_interesado) {
+            const resultado = await actualizarContactoAction(c.id, {
+                nombre: c.nombre,
+                apellido: c.apellido,
+                email: c.email ?? '',
+                telefono: c.telefono ?? '',
+                estado: c.estado,
+                es_propietario: c.es_propietario,
+                es_interesado: true,
+                observaciones: c.observaciones ?? '',
+            });
+            if (!resultado.ok) {
+                showToast(resultado.mensaje, 'error');
+                return;
+            }
+            showToast('Lo marcamos como interesado para poder crear la oportunidad.', 'success');
+        }
+        router.push(`/oportunidades/nuevo?contactoId=${c.id}`);
+    };
+
+    const darDeBaja = async (c: Contacto) => {
+        const confirmado = await modalDarDeBaja(nombreContacto(c), 'Se conserva el historial comercial. No se puede si tiene oportunidades abiertas.');
+        if (!confirmado) return;
+        const res = await darDeBajaContactoAction(c.id);
+        showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
+        if (res.ok) cargar();
+    };
 
     const nuevo = (
         <Link href="/contactos/nuevo" className="btn btn-primary h-[42px] gap-2 rounded-[10px]">
@@ -82,8 +157,8 @@ const ContactosList = () => {
             <PageHeader title="Contactos" description={cargando ? 'Cargando…' : contar(contactos.length, 'contacto', 'contactos')} actions={nuevo} />
 
             <div className="panel !rounded-[14px] !p-0 shadow-[0_2px_4px_rgba(30,15,40,.14)] dark:!border dark:!border-[#232C45] dark:!bg-uk-card-dark dark:shadow-none">
-                <div className="border-b border-uk-line px-5 py-4 dark:border-[#232C45]">
-                    <label className="relative !mb-0 flex h-[38px] w-full items-center sm:max-w-[360px]">
+                <div className="flex flex-wrap items-center gap-2 border-b border-uk-line px-5 py-4 dark:border-[#232C45]">
+                    <label className="relative !mb-0 flex h-[38px] w-full items-center sm:w-auto sm:min-w-[240px] sm:max-w-[360px] sm:flex-1">
                         <span className="sr-only">Buscar contactos</span>
                         <IconSearch className="pointer-events-none absolute left-3 h-4 w-4 text-uk-muted dark:text-uk-muted-dark" />
                         <input
@@ -94,6 +169,38 @@ const ContactosList = () => {
                             onChange={(e) => setBusqueda(e.target.value)}
                         />
                     </label>
+                    <Select
+                        ariaLabel="Rol"
+                        className="w-full sm:w-[170px]"
+                        value={filtroRol}
+                        onChange={(v) => setFiltroRol(v as 'propietario' | 'interesado' | '')}
+                        opciones={[
+                            { value: '', label: 'Todos los roles' },
+                            { value: 'propietario', label: 'Propietario' },
+                            { value: 'interesado', label: 'Interesado' },
+                        ]}
+                    />
+                    <Select
+                        ariaLabel="Estado"
+                        className="w-full sm:w-[170px]"
+                        value={filtroEstado}
+                        onChange={(v) => setFiltroEstado(v as EstadoContacto | '')}
+                        opciones={[{ value: '', label: 'Todos los estados' }, ...ESTADOS_CONTACTO.map((e) => ({ value: e, label: estadoLabel[e] }))]}
+                    />
+                    <Select
+                        ariaLabel="Responsable"
+                        className="w-full sm:w-[200px]"
+                        value={filtroResponsable}
+                        onChange={setFiltroResponsable}
+                        opciones={[{ value: '', label: 'Todos los responsables' }, ...(ctx?.usuarios ?? []).map((u) => ({ value: u.id, label: `${u.nombre} ${u.apellido}`.trim() }))]}
+                    />
+                    <Select
+                        ariaLabel="Origen"
+                        className="w-full sm:w-[180px]"
+                        value={filtroOrigen}
+                        onChange={setFiltroOrigen}
+                        opciones={[{ value: '', label: 'Todos los orígenes' }, ...(ctx?.origenes ?? []).map((o) => ({ value: o.id, label: o.nombre }))]}
+                    />
                 </div>
 
                 {error ? (
@@ -128,9 +235,9 @@ const ContactosList = () => {
                             variante="vacio"
                             icono={<IconSearch className="h-7 w-7" />}
                             titulo="Ningún contacto coincide"
-                            descripcion={`No hay resultados para “${busqueda.trim()}”.`}
+                            descripcion={busqueda.trim() ? `No hay resultados para “${busqueda.trim()}”.` : 'Probá quitando alguno de los filtros activos.'}
                             acciones={
-                                <button type="button" className="btn btn-cancel h-10 rounded-[10px]" onClick={() => setBusqueda('')}>
+                                <button type="button" className="btn btn-cancel h-10 rounded-[10px]" onClick={limpiarFiltros}>
                                     Limpiar filtros
                                 </button>
                             }
@@ -160,6 +267,46 @@ const ContactosList = () => {
                                     ),
                                 },
                                 {
+                                    accessor: 'rol',
+                                    title: 'Rol',
+                                    render: (c: Contacto) => {
+                                        const roles = [c.es_propietario ? 'Propietario' : null, c.es_interesado ? 'Interesado' : null].filter(Boolean) as string[];
+                                        return roles.length > 0 ? (
+                                            <span className="inline-flex items-center gap-1.5">
+                                                {roles.map((r) => (
+                                                    <ChipCategoria key={r} destacado>
+                                                        {r}
+                                                    </ChipCategoria>
+                                                ))}
+                                            </span>
+                                        ) : (
+                                            <span className="text-uk-muted dark:text-uk-muted-dark">—</span>
+                                        );
+                                    },
+                                },
+                                {
+                                    accessor: 'estado',
+                                    title: 'Estado',
+                                    sortable: true,
+                                    render: (c: Contacto) => <ChipCategoria>{estadoLabel[c.estado]}</ChipCategoria>,
+                                },
+                                {
+                                    accessor: 'responsable_nombre',
+                                    title: 'Responsable',
+                                    sortable: true,
+                                    render: (c: Contacto) => {
+                                        const usuario = ctx?.usuarios.find((u) => u.id === c.responsable_id);
+                                        const nombre = c.responsable_nombre || (usuario ? `${usuario.nombre} ${usuario.apellido}`.trim() : '');
+                                        return nombre || <span className="text-uk-muted dark:text-uk-muted-dark">—</span>;
+                                    },
+                                },
+                                {
+                                    accessor: 'origen_nombre',
+                                    title: 'Origen',
+                                    sortable: true,
+                                    render: (c: Contacto) => c.origen_nombre || <span className="text-uk-muted dark:text-uk-muted-dark">—</span>,
+                                },
+                                {
                                     accessor: 'email',
                                     title: 'Email',
                                     sortable: true,
@@ -184,6 +331,29 @@ const ContactosList = () => {
                                         ) : (
                                             <span className="text-uk-muted dark:text-uk-muted-dark">—</span>
                                         ),
+                                },
+                                {
+                                    accessor: 'acciones',
+                                    title: <span className="sr-only">Acciones</span>,
+                                    textAlignment: 'right',
+                                    width: 70,
+                                    render: (c: Contacto) => (
+                                        <div className="flex justify-end">
+                                            <MenuFilaTabla
+                                                ariaLabel={`Más acciones para ${nombreContacto(c)}`}
+                                                items={(() => {
+                                                    const edita = !ctx?.yo || puedeReasignar(ctx.yo.rol) || c.responsable_id === ctx.yo.id;
+                                                    return [
+                                                        { etiqueta: 'Ver detalle', href: `/contactos/${c.id}` },
+                                                        ...(edita ? [{ etiqueta: 'Editar', href: `/contactos/${c.id}/editar` }] : []),
+                                                        { etiqueta: 'Nueva oportunidad', onClick: () => void nuevaOportunidad(c) },
+                                                        ...(reasigna ? [{ etiqueta: 'Reasignar', onClick: () => void reasignar(c) }] : []),
+                                                        ...(edita ? [{ etiqueta: 'Dar de baja', destructivo: true, onClick: () => void darDeBaja(c) }] : []),
+                                                    ];
+                                                })()}
+                                            />
+                                        </div>
+                                    ),
                                 },
                             ]}
                             highlightOnHover

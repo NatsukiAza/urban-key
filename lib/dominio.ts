@@ -29,6 +29,7 @@ export interface Contacto {
     esPropietario: boolean;
     esInteresado: boolean;
     activo: boolean;
+    responsableId?: string;
 }
 
 export interface Inmueble {

@@ -58,6 +58,12 @@ export const ItemActividad = ({ actividad, mostrarOportunidad, ultimo, ocupado, 
             ) : null}
         </p>
         {actividad.descripcion ? <p className="mt-2 whitespace-pre-line rounded-lg bg-uk-page px-3 py-2.5 text-sm leading-[1.5] text-uk-ink dark:bg-uk-page-dark dark:text-uk-ink-dark">{actividad.descripcion}</p> : null}
+        {actividad.resultado ? (
+            <p className="mt-2 text-sm leading-[1.5] text-uk-ink dark:text-uk-ink-dark">
+                <span className="font-extrabold">Resultado. </span>
+                <span className="whitespace-pre-line">{actividad.resultado}</span>
+            </p>
+        ) : null}
         {!actividad.activo ? (
             <p className="mt-2 inline-flex h-6 items-center rounded-md bg-uk-col px-2 text-xs font-bold text-uk-muted dark:bg-white/5 dark:text-uk-muted-dark">
                 Dada de baja{actividad.dadaDeBajaEn ? ` el ${formatearFechaHora(actividad.dadaDeBajaEn)}` : ''}

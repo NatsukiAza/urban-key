@@ -15,6 +15,7 @@ export interface ActividadDetalle {
     tipo: string;
     titulo: string;
     descripcion: string | null;
+    resultado: string | null;
     fecha: string;
     autor: string;
     activo: boolean;
@@ -35,5 +36,6 @@ export interface ActividadInput {
     tipoId: string;
     titulo?: string | null;
     descripcion?: string | null;
+    resultado: string;
     fecha: string;
 }

@@ -44,14 +44,20 @@ export const Campo = ({ id, etiqueta, obligatorio, error, ayuda, className = '',
 );
 
 // Igual que Campo pero para grupos de botones: la etiqueta no apunta a un input.
-export const CampoGrupo = ({ id, etiqueta, obligatorio, ayuda, className = '', children }: { id: string; etiqueta: string; obligatorio?: boolean; ayuda?: string; className?: string; children: ReactNode }) => (
+export const CampoGrupo = ({ id, etiqueta, obligatorio, error, ayuda, className = '', children }: { id: string; etiqueta: string; obligatorio?: boolean; error?: string; ayuda?: string; className?: string; children: ReactNode }) => (
     <div role="group" aria-labelledby={id} className={`flex flex-col gap-1.5 ${className}`}>
         <span id={id} className="text-[13px] font-bold text-uk-ink dark:text-uk-ink-dark">
             {etiqueta}
             {obligatorio ? <Obligatorio /> : null}
         </span>
         {children}
-        {ayuda ? <p className="text-xs font-semibold text-uk-muted dark:text-uk-muted-dark">{ayuda}</p> : null}
+        {error ? (
+            <p id={`${id}-error`} className="text-xs font-bold text-uk-lost dark:text-uk-lost-dark">
+                {error}
+            </p>
+        ) : ayuda ? (
+            <p className="text-xs font-semibold text-uk-muted dark:text-uk-muted-dark">{ayuda}</p>
+        ) : null}
     </div>
 );
 

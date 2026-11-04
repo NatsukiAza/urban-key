@@ -190,3 +190,57 @@ export async function regenerarContrasena(usuarioId: string, password: string): 
     revalidatePath('/usuarios');
     return { ok: true, data: { contrasenaTemporal: password } };
 }
+
+export async function actualizarUsuario(
+    usuarioId: string,
+    input: {
+        nombre: string;
+        apellido: string;
+        rol: string;
+    },
+): Promise<ActionResult> {
+    const actual = await getUsuarioActual();
+    if (!actual || actual.rol !== 'ADMINISTRADOR') return fallo('Solo un administrador puede modificar usuarios.');
+
+    const nombre = input.nombre.trim();
+    const apellido = input.apellido.trim();
+    const rol = input.rol as RolUsuario;
+
+    if (!nombre || !apellido) return fallo('Nombre y apellido son obligatorios.');
+    if (!ROLES.includes(rol)) return fallo('El rol no es válido.');
+    if (usuarioId === actual.id && rol !== 'ADMINISTRADOR') {
+        return fallo('No podés quitarte el rol de administrador a vos mismo.');
+    }
+
+    const supabase = await createClient();
+    const { error, count } = await supabase
+        .from('usuarios')
+        .update({ nombre, apellido, rol }, { count: 'exact' })
+        .eq('id', usuarioId);
+
+    if (error) return fallo('No se pudieron guardar los cambios del usuario.');
+    if (count === 0) return fallo('Usuario no encontrado.');
+
+    revalidatePath('/usuarios');
+    revalidatePath('/oportunidades', 'layout');
+    return { ok: true, mensaje: 'Usuario actualizado' };
+}
+
+export async function cambiarActivoUsuario(usuarioId: string, activo: boolean): Promise<ActionResult> {
+    const actual = await getUsuarioActual();
+    if (!actual || actual.rol !== 'ADMINISTRADOR') return fallo('Solo un administrador puede cambiar el estado de un usuario.');
+    if (usuarioId === actual.id && !activo) return fallo('No podés desactivar tu propio usuario.');
+
+    const supabase = await createClient();
+    const { error, count } = await supabase
+        .from('usuarios')
+        .update({ activo }, { count: 'exact' })
+        .eq('id', usuarioId);
+
+    if (error) return fallo('No se pudo cambiar el estado del usuario.');
+    if (count === 0) return fallo('Usuario no encontrado.');
+
+    revalidatePath('/usuarios');
+    revalidatePath('/oportunidades', 'layout');
+    return { ok: true, mensaje: activo ? 'Usuario activado' : 'Usuario desactivado' };
+}

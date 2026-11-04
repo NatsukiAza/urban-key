@@ -8,9 +8,9 @@ import type { DataTableSortStatus } from 'mantine-datatable';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { rolUsuarioConfig, rolUsuarioOptions, type RolUsuario } from '@/lib/enums/rolUsuario';
-import { crearEmpleado, regenerarContrasena } from '@/lib/usuarios/actions';
+import { actualizarUsuario, cambiarActivoUsuario, crearEmpleado, regenerarContrasena } from '@/lib/usuarios/actions';
 import { generarContrasenaTemporal } from '@/lib/usuarios/contrasena';
-import { modalGenerarContrasena } from '@/lib/ui/modales';
+import { modalDesactivar, modalGenerarContrasena } from '@/lib/ui/modales';
 import { showToast } from '@/lib/ui/toast';
 import PageHeader from '@/components/ui/PageHeader';
 import EstadoPantalla from '@/components/ui/EstadoPantalla';
@@ -85,6 +85,7 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'apellido', direction: 'asc' });
 
     const [formAbierto, setFormAbierto] = useState(false);
+    const [usuarioEditando, setUsuarioEditando] = useState<UsuarioListado | null>(null);
     const [credenciales, setCredenciales] = useState<Credenciales | null>(null);
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
@@ -116,6 +117,7 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
     const subtitulo = `${usuarios.length} ${usuarios.length === 1 ? 'usuario' : 'usuarios'} · ${activos} ${activos === 1 ? 'activo' : 'activos'}. Quiénes pueden entrar a UrbanKey y con qué permisos.`;
 
     const abrirForm = () => {
+        setUsuarioEditando(null);
         setNombre('');
         setApellido('');
         setCorreo('');
@@ -128,22 +130,38 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
         setFormAbierto(true);
     };
 
+    const abrirEditar = (u: UsuarioListado) => {
+        setUsuarioEditando(u);
+        setNombre(u.nombre);
+        setApellido(u.apellido);
+        setCorreo(u.email);
+        setRol(u.rol);
+        setPassword('');
+        setErrores({});
+        setErrorGeneral('');
+        setCredenciales(null);
+        setFormAbierto(true);
+    };
+
     const cerrar = () => {
         setFormAbierto(false);
+        setUsuarioEditando(null);
         setCredenciales(null);
     };
 
     const limpiar = (campo: keyof Errores) => setErrores((e) => ({ ...e, [campo]: undefined }));
 
-    const crear = async (e: React.FormEvent) => {
+    const guardar = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorGeneral('');
         const nuevos: Errores = {};
         if (!nombre.trim()) nuevos.nombre = 'Cargá el nombre.';
         if (!apellido.trim()) nuevos.apellido = 'Cargá el apellido.';
-        const errCorreo = errorDeCorreo(correo);
-        if (errCorreo) nuevos.correo = errCorreo;
-        if (password.length < 6) nuevos.password = 'Mínimo 6 caracteres.';
+        if (!usuarioEditando) {
+            const errCorreo = errorDeCorreo(correo);
+            if (errCorreo) nuevos.correo = errCorreo;
+            if (password.length < 6) nuevos.password = 'Mínimo 6 caracteres.';
+        }
         setErrores(nuevos);
         const primero = (['nombre', 'apellido', 'correo', 'password'] as const).find((c) => nuevos[c]);
         if (primero) {
@@ -152,6 +170,19 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
         }
 
         setGuardando(true);
+        if (usuarioEditando) {
+            const resultado = await actualizarUsuario(usuarioEditando.id, { nombre, apellido, rol });
+            setGuardando(false);
+            if (!resultado.ok) {
+                setErrorGeneral(resultado.mensaje);
+                return;
+            }
+            showToast(resultado.mensaje ?? 'Usuario actualizado', 'success');
+            cerrar();
+            router.refresh();
+            return;
+        }
+
         const resultado = await crearEmpleado({ nombre, apellido, correo, rol, password });
         setGuardando(false);
         if (!resultado.ok) {
@@ -159,6 +190,24 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
             return;
         }
         setCredenciales({ nombre: `${nombre.trim()} ${apellido.trim()}`, correo: correo.trim().toLowerCase(), password: resultado.data?.contrasenaTemporal ?? password, modo: 'creado' });
+        router.refresh();
+    };
+
+    const cambiarActivo = async (u: UsuarioListado) => {
+        const nombreCompleto = `${u.nombre} ${u.apellido}`.trim();
+        if (u.activo) {
+            const confirmado = await modalDesactivar({
+                titulo: `¿Desactivar a ${nombreCompleto}?`,
+                texto: 'Ya no va a poder entrar a UrbanKey. Sus oportunidades y actividades registradas se conservan en el historial.',
+            });
+            if (!confirmado) return;
+        }
+        const resultado = await cambiarActivoUsuario(u.id, !u.activo);
+        if (!resultado.ok) {
+            showToast(resultado.mensaje, 'error');
+            return;
+        }
+        showToast(resultado.mensaje ?? (u.activo ? 'Usuario desactivado' : 'Usuario activado'), 'success');
         router.refresh();
     };
 
@@ -171,6 +220,7 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
             showToast(resultado.mensaje, 'error');
             return;
         }
+        setUsuarioEditando(null);
         setCredenciales({ nombre: nombreCompleto, correo: u.email, password: resultado.data?.contrasenaTemporal ?? nueva, modo: 'regenerada' });
         setFormAbierto(true);
     };
@@ -268,12 +318,27 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
                                     title: <span className="sr-only">Acciones</span>,
                                     textAlignment: 'right',
                                     width: 70,
-                                    render: (u: UsuarioListado) =>
-                                        u.id === usuarioActualId ? null : (
+                                    render: (u: UsuarioListado) => {
+                                        const yo = u.id === usuarioActualId;
+                                        return (
                                             <div className="flex justify-end">
-                                                <MenuFilaTabla ariaLabel={`Acciones de ${u.nombre} ${u.apellido}`} items={[{ etiqueta: 'Generar contraseña nueva', onClick: () => regenerar(u) }]} />
+                                                <MenuFilaTabla
+                                                    ariaLabel={`Acciones de ${u.nombre} ${u.apellido}`}
+                                                    items={
+                                                        yo
+                                                            ? [{ etiqueta: 'Editar usuario', onClick: () => abrirEditar(u) }]
+                                                            : [
+                                                                  { etiqueta: 'Editar usuario', onClick: () => abrirEditar(u) },
+                                                                  { etiqueta: 'Generar contraseña nueva', onClick: () => regenerar(u) },
+                                                                  u.activo
+                                                                      ? { etiqueta: 'Desactivar', destructivo: true, onClick: () => void cambiarActivo(u) }
+                                                                      : { etiqueta: 'Activar', onClick: () => void cambiarActivo(u) },
+                                                              ]
+                                                    }
+                                                />
                                             </div>
-                                        ),
+                                        );
+                                    },
                                 },
                             ]}
                             totalRecords={visibles.length}
@@ -295,8 +360,8 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
                 abierto={formAbierto}
                 onCerrar={cerrar}
                 sinEncabezado={!!credenciales}
-                titulo={credenciales ? credenciales.nombre : 'Nuevo usuario'}
-                descripcion="Va a poder entrar con su correo y una contraseña temporal."
+                titulo={credenciales ? credenciales.nombre : usuarioEditando ? 'Editar usuario' : 'Nuevo usuario'}
+                descripcion={usuarioEditando ? usuarioEditando.email : 'Va a poder entrar con su correo y una contraseña temporal.'}
                 pie={
                     credenciales ? (
                         <>
@@ -315,7 +380,7 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
                                 Cancelar
                             </button>
                             <button type="submit" form="form-nuevo-usuario" className="btn btn-primary h-[42px] rounded-[10px] px-5 font-extrabold" disabled={guardando}>
-                                {guardando ? 'Creando…' : 'Crear usuario'}
+                                {guardando ? (usuarioEditando ? 'Guardando…' : 'Creando…') : usuarioEditando ? 'Guardar cambios' : 'Crear usuario'}
                             </button>
                         </>
                     )
@@ -361,7 +426,7 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
                         <p className="text-xs leading-normal text-uk-muted dark:text-uk-muted-dark">En el primer ingreso le vamos a pedir que la cambie. Si la pierde, podés generar una nueva desde el menú ⋯ del usuario.</p>
                     </div>
                 ) : (
-                    <form id="form-nuevo-usuario" noValidate onSubmit={crear} className="flex flex-1 flex-col gap-[18px] overflow-y-auto px-6 py-5">
+                    <form id="form-nuevo-usuario" noValidate onSubmit={guardar} className="flex flex-1 flex-col gap-[18px] overflow-y-auto px-6 py-5">
                         <div className="grid grid-cols-2 gap-3">
                             <Campo id="usuario-nombre" etiqueta="Nombre" error={errores.nombre}>
                                 <input
@@ -388,72 +453,86 @@ const UsuariosAdmin = ({ usuarios, usuarioActualId }: { usuarios: UsuarioListado
                                 />
                             </Campo>
                         </div>
-                        <Campo id="usuario-correo" etiqueta="Correo" error={errores.correo}>
-                            <input
-                                id="usuario-correo"
-                                type="email"
-                                autoComplete="off"
-                                value={correo}
-                                onChange={(e) => {
-                                    setCorreo(e.target.value);
-                                    limpiar('correo');
-                                }}
-                                aria-invalid={Boolean(errores.correo) || undefined}
-                                aria-describedby={errores.correo ? 'usuario-correo-error' : undefined}
-                                className={`${claseInput} ${errores.correo ? claseInvalido : ''}`}
-                            />
-                        </Campo>
+                        {!usuarioEditando ? (
+                            <Campo id="usuario-correo" etiqueta="Correo" error={errores.correo}>
+                                <input
+                                    id="usuario-correo"
+                                    type="email"
+                                    autoComplete="off"
+                                    value={correo}
+                                    onChange={(e) => {
+                                        setCorreo(e.target.value);
+                                        limpiar('correo');
+                                    }}
+                                    aria-invalid={Boolean(errores.correo) || undefined}
+                                    aria-describedby={errores.correo ? 'usuario-correo-error' : undefined}
+                                    className={`${claseInput} ${errores.correo ? claseInvalido : ''}`}
+                                />
+                            </Campo>
+                        ) : null}
                         <fieldset className="m-0 flex min-w-0 flex-col gap-2 border-0 p-0">
                             <legend className="mb-2 p-0 text-[13px] font-bold text-uk-ink dark:text-uk-ink-dark">Rol</legend>
                             {rolUsuarioOptions
                                 .slice()
                                 .sort((a, b) => ['VENDEDOR', 'RESPONSABLE_COMERCIAL', 'ADMINISTRADOR'].indexOf(a.value) - ['VENDEDOR', 'RESPONSABLE_COMERCIAL', 'ADMINISTRADOR'].indexOf(b.value))
-                                .map((o) => (
-                                    <label
-                                        key={o.value}
-                                        className={`!mb-0 flex cursor-pointer items-start gap-3 rounded-[10px] px-3.5 py-3 ${
-                                            rol === o.value ? 'border-[1.5px] border-primary bg-[#FBF8FC] dark:border-uk-link-dark dark:bg-uk-link-dark/10' : 'border border-uk-field hover:bg-uk-page dark:border-uk-field-dark dark:hover:bg-white/5'
-                                        }`}
-                                    >
-                                        <input type="radio" name="rol" checked={rol === o.value} onChange={() => setRol(o.value)} className="form-radio mt-[3px] shrink-0" />
-                                        <span className="flex flex-col gap-0.5">
-                                            <span className="text-sm font-extrabold text-uk-ink dark:text-uk-ink-dark">{o.label}</span>
-                                            <span className="text-xs text-uk-muted dark:text-uk-muted-dark">{DESCRIPCION_ROL[o.value]}</span>
-                                        </span>
-                                    </label>
-                                ))}
+                                .map((o) => {
+                                    const bloqueado = usuarioEditando?.id === usuarioActualId && o.value !== 'ADMINISTRADOR';
+                                    return (
+                                        <label
+                                            key={o.value}
+                                            className={`!mb-0 flex items-start gap-3 rounded-[10px] px-3.5 py-3 ${
+                                                bloqueado ? 'cursor-not-allowed opacity-55' : 'cursor-pointer'
+                                            } ${
+                                                rol === o.value ? 'border-[1.5px] border-primary bg-[#FBF8FC] dark:border-uk-link-dark dark:bg-uk-link-dark/10' : 'border border-uk-field hover:bg-uk-page dark:border-uk-field-dark dark:hover:bg-white/5'
+                                            }`}
+                                        >
+                                            <input type="radio" name="rol" disabled={bloqueado} checked={rol === o.value} onChange={() => setRol(o.value)} className="form-radio mt-[3px] shrink-0" />
+                                            <span className="flex flex-col gap-0.5">
+                                                <span className="text-sm font-extrabold text-uk-ink dark:text-uk-ink-dark">{o.label}</span>
+                                                <span className="text-xs text-uk-muted dark:text-uk-muted-dark">{DESCRIPCION_ROL[o.value]}</span>
+                                            </span>
+                                        </label>
+                                    );
+                                })}
+                            {usuarioEditando?.id === usuarioActualId ? (
+                                <p className="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">No podés quitarte el rol de administrador a vos mismo.</p>
+                            ) : null}
                         </fieldset>
-                        <Campo id="usuario-password" etiqueta="Contraseña temporal" error={errores.password} ayuda="Mínimo 6 caracteres. En el primer ingreso la tiene que cambiar.">
-                            <div className="flex gap-2">
-                                <div className={`flex h-[42px] flex-1 overflow-hidden rounded-[9px] border focus-within:border-primary focus-within:ring-[3px] focus-within:ring-primary/15 dark:focus-within:border-uk-link-dark dark:focus-within:ring-uk-link-dark/20 ${errores.password ? 'border-[1.5px] border-uk-lost dark:border-uk-lost-dark' : 'border-uk-field dark:border-uk-field-dark'}`}>
-                                    <input
-                                        id="usuario-password"
-                                        type={verPassword ? 'text' : 'password'}
-                                        autoComplete="new-password"
-                                        value={password}
-                                        onChange={(e) => {
-                                            setPassword(e.target.value);
-                                            limpiar('password');
-                                        }}
-                                        aria-invalid={Boolean(errores.password) || undefined}
-                                        className="min-w-0 flex-1 border-0 bg-transparent px-3 font-mono text-sm font-extrabold tracking-wide text-uk-ink outline-none dark:bg-uk-page-dark dark:text-uk-ink-dark"
-                                    />
-                                    <button type="button" aria-label={verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVerPassword((v) => !v)} className="grid w-10 place-content-center border-l border-uk-field bg-uk-page text-uk-muted dark:border-uk-field-dark dark:bg-white/5 dark:text-uk-muted-dark">
-                                        <IconEye className="h-4 w-4" />
-                                    </button>
+                        {!usuarioEditando ? (
+                            <>
+                                <Campo id="usuario-password" etiqueta="Contraseña temporal" error={errores.password} ayuda="Mínimo 6 caracteres. En el primer ingreso la tiene que cambiar.">
+                                    <div className="flex gap-2">
+                                        <div className={`flex h-[42px] flex-1 overflow-hidden rounded-[9px] border focus-within:border-primary focus-within:ring-[3px] focus-within:ring-primary/15 dark:focus-within:border-uk-link-dark dark:focus-within:ring-uk-link-dark/20 ${errores.password ? 'border-[1.5px] border-uk-lost dark:border-uk-lost-dark' : 'border-uk-field dark:border-uk-field-dark'}`}>
+                                            <input
+                                                id="usuario-password"
+                                                type={verPassword ? 'text' : 'password'}
+                                                autoComplete="new-password"
+                                                value={password}
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value);
+                                                    limpiar('password');
+                                                }}
+                                                aria-invalid={Boolean(errores.password) || undefined}
+                                                className="min-w-0 flex-1 border-0 bg-transparent px-3 font-mono text-sm font-extrabold tracking-wide text-uk-ink outline-none dark:bg-uk-page-dark dark:text-uk-ink-dark"
+                                            />
+                                            <button type="button" aria-label={verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setVerPassword((v) => !v)} className="grid w-10 place-content-center border-l border-uk-field bg-uk-page text-uk-muted dark:border-uk-field-dark dark:bg-white/5 dark:text-uk-muted-dark">
+                                                <IconEye className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                        <button type="button" onClick={() => setPassword(generarContrasenaTemporal())} className="h-[42px] rounded-[9px] border border-primary bg-white px-3 text-[13px] font-extrabold text-primary hover:bg-primary-light dark:border-uk-link-dark dark:bg-transparent dark:text-uk-link-dark dark:hover:bg-white/5">
+                                            Generar
+                                        </button>
+                                    </div>
+                                </Campo>
+                                <div className="flex gap-2.5 rounded-[10px] bg-primary-light px-3.5 py-3 text-[13px] leading-normal text-[#3A1A40] dark:bg-uk-link-dark/10 dark:text-uk-ink-dark">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true" className="mt-0.5 shrink-0 text-primary dark:text-uk-link-dark">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M12 11v5M12 8h.01" />
+                                    </svg>
+                                    <span>No se envía por correo. Cuando lo crees vas a poder copiarla para pasársela.</span>
                                 </div>
-                                <button type="button" onClick={() => setPassword(generarContrasenaTemporal())} className="h-[42px] rounded-[9px] border border-primary bg-white px-3 text-[13px] font-extrabold text-primary hover:bg-primary-light dark:border-uk-link-dark dark:bg-transparent dark:text-uk-link-dark dark:hover:bg-white/5">
-                                    Generar
-                                </button>
-                            </div>
-                        </Campo>
-                        <div className="flex gap-2.5 rounded-[10px] bg-primary-light px-3.5 py-3 text-[13px] leading-normal text-[#3A1A40] dark:bg-uk-link-dark/10 dark:text-uk-ink-dark">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true" className="mt-0.5 shrink-0 text-primary dark:text-uk-link-dark">
-                                <circle cx="12" cy="12" r="9" />
-                                <path d="M12 11v5M12 8h.01" />
-                            </svg>
-                            <span>No se envía por correo. Cuando lo crees vas a poder copiarla para pasársela.</span>
-                        </div>
+                            </>
+                        ) : null}
                         {errorGeneral ? (
                             <p role="alert" className="text-sm font-bold text-uk-lost dark:text-uk-lost-dark">
                                 {errorGeneral}
