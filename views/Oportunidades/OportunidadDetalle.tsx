@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import Swal from 'sweetalert2';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import IconEdit from '@/components/Icon/IconEdit';
 import IconPhone from '@/components/Icon/IconPhone';
@@ -25,6 +24,7 @@ import BarraEtapas from '@/components/oportunidad/BarraEtapas';
 import HistorialComercial, { type MovimientoEtapa } from '@/components/actividad/HistorialComercial';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
 import { pedirDatosCierre } from './pedirDatosCierre';
+import { pedirReasignacion } from './pedirReasignacion';
 
 interface Props {
     detalle: TDetalle;
@@ -117,22 +117,9 @@ const OportunidadDetalle = ({ detalle, etapasFunnel, motivosPerdida, usuarios, p
     const onSeleccionarEtapa = (etapaId: string) => moverAEtapaAbierta(etapasAbiertas.find((e) => e.id === etapaId));
 
     const onReasignar = async () => {
-        const opciones = usuarios
-            .filter((u) => u.id !== detalle.responsableId)
-            .reduce((acc: Record<string, string>, u) => ({ ...acc, [u.id]: `${u.nombre} ${u.apellido}` }), {});
-        const { value, isConfirmed } = await Swal.fire({
-            title: 'Reasignar responsable',
-            input: 'select',
-            inputOptions: opciones,
-            inputPlaceholder: 'Seleccionar responsable',
-            showCancelButton: true,
-            confirmButtonText: 'Reasignar',
-            cancelButtonText: 'Cancelar',
-            padding: '2em',
-            inputValidator: (v) => (!v ? 'Tenés que elegir un responsable' : undefined),
-        });
-        if (!isConfirmed) return;
-        const res = await reasignarResponsable({ oportunidadId: detalle.id, responsableId: value });
+        const nuevoId = await pedirReasignacion(usuarios, detalle.responsableId);
+        if (!nuevoId) return;
+        const res = await reasignarResponsable({ oportunidadId: detalle.id, responsableId: nuevoId });
         showToast(res.mensaje ?? '', res.ok ? 'success' : 'error');
         if (res.ok) router.refresh();
     };

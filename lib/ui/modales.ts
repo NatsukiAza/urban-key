@@ -35,14 +35,16 @@ const hoy = () => {
 
 const iconoPapelera = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
 
-const encabezado = (tipo: 'ganada' | 'perdida' | 'mover' | 'actividad' | 'eliminar', titulo: string, subtitulo: string) => `
+const iconoReasignar = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 7h6M19 4l3 3-3 3"/></svg>';
+
+const encabezado = (tipo: 'ganada' | 'perdida' | 'mover' | 'actividad' | 'eliminar' | 'reasignar', titulo: string, subtitulo: string) => `
     <div class="mb-4 flex items-center gap-3">
         <span aria-hidden="true" class="grid h-10 w-10 shrink-0 place-content-center rounded-full text-lg font-extrabold ${tipo === 'ganada'
         ? 'bg-[#E6F6EE] text-uk-won dark:bg-success/15 dark:text-uk-won-dark'
         : tipo === 'perdida' || tipo === 'eliminar'
             ? 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
             : 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark'
-    }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : tipo === 'actividad' ? '+' : tipo === 'eliminar' ? iconoPapelera : '→'}</span>
+    }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : tipo === 'actividad' ? '+' : tipo === 'eliminar' ? iconoPapelera : tipo === 'reasignar' ? iconoReasignar : '→'}</span>
         <div class="min-w-0">
             <h2 id="uk-modal-titulo" class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${titulo}</h2>
             <p class="truncate text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(subtitulo)}</p>
@@ -278,6 +280,34 @@ export async function modalRegistrarActividad(datos: { subtitulo: string; tipos:
         },
     });
     return resultado.isConfirmed ? (resultado.value as NuevaActividad) : null;
+}
+
+export async function modalReasignar(datos: { usuarios: { id: string; nombre: string; apellido: string }[]; responsableActualId: string }): Promise<string | null> {
+    const actual = datos.usuarios.find((u) => u.id === datos.responsableActualId);
+    const candidatos = datos.usuarios.filter((u) => u.id !== datos.responsableActualId).map((u) => ({ id: u.id, nombre: `${u.nombre} ${u.apellido}` }));
+    const resultado = await crearModal('btn-primary shadow-none').fire({
+        html: `
+            ${encabezado('reasignar', 'Reasignar responsable', actual ? `Hoy está a cargo de ${actual.nombre} ${actual.apellido}` : 'Hoy no tiene responsable')}
+            <div>
+                <label for="uk-responsable" class="${claseLabel}">Nuevo responsable${obligatorio}</label>
+                <div id="uk-responsable-root"></div>
+                <p id="uk-err-responsable" class="${claseError}">Elegí a quién se lo pasás.</p>
+                ${candidatos.length === 0 ? `<p class="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">No hay otros usuarios activos para elegir.</p>` : ''}
+            </div>`,
+        confirmButtonText: 'Reasignar',
+        focusCancel: false,
+        didOpen: () => {
+            prepararSelect('responsable', 'Nuevo responsable', 'Elegí un usuario', candidatos);
+            document.getElementById('uk-responsable')?.focus();
+        },
+        willClose: desmontarCampos,
+        preConfirm: () => {
+            const id = controles.responsable.valor;
+            mostrarError('uk-err-responsable', !id);
+            return id || false;
+        },
+    });
+    return resultado.isConfirmed ? (resultado.value as string) : null;
 }
 
 export async function modalEliminarActividad(titulo: string): Promise<boolean> {
