@@ -236,6 +236,11 @@ export async function darDeBajaOportunidad(id: string): Promise<ActionResult> {
 
     const supabase = await createClient();
 
+    const { data: actual } = await supabase.from('oportunidades').select('estado').eq('id', id).eq('activo', true).maybeSingle();
+    if (!actual) return fallo('Oportunidad no encontrada');
+    // Las cerradas son historial comercial y alimentan las métricas: solo un admin las da de baja, para corregir errores de carga.
+    if (actual.estado !== 'ABIERTA' && usuario.rol !== 'ADMINISTRADOR') return fallo('Una oportunidad ganada o perdida no se puede dar de baja. Si es un error de carga, pedíselo a un administrador.');
+
     const { error, count } = await supabase
         .from('oportunidades')
         .update({ activo: false, actualizado_por: usuario.id }, { count: 'exact' })

@@ -25,6 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Rec
             etapas={options.etapas}
             motivosPerdida={options.motivosPerdida}
             puedeReasignar={puedeReasignar(usuario?.rol)}
+            esAdmin={usuario?.rol === 'ADMINISTRADOR'}
         />
     );
 }

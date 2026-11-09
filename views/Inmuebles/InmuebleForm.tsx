@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { showToast } from '@/lib/ui/toast';
 import { crearInmueble, actualizarInmueble } from '@/lib/inmueble/actions';
+import { MAX_DIRECCION_INMUEBLE } from '@/lib/inmueble/schema';
 import { tipoOperacionOptions, type TipoOperacion } from '@/lib/enums/tipoOperacion';
 import { tipoInmuebleOptions, type TipoInmueble } from '@/lib/enums/tipoInmueble';
 import { estadoInmuebleOptions, type EstadoInmueble } from '@/lib/enums/estadoInmueble';
@@ -177,6 +178,7 @@ const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) 
                         <input
                             id="direccion"
                             type="text"
+                            maxLength={MAX_DIRECCION_INMUEBLE}
                             value={params.direccion}
                             onChange={(e) => set('direccion', e.target.value)}
                             placeholder="Calle y número"

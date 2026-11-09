@@ -45,6 +45,7 @@ interface Props {
     etapas: Etapa[];
     motivosPerdida: MotivoPerdida[];
     puedeReasignar: boolean;
+    esAdmin: boolean;
 }
 
 const claseItemMenu = 'flex h-9 w-full items-center rounded-lg px-2.5 text-left text-[13px] font-bold text-uk-ink hover:bg-primary-light dark:text-uk-ink-dark dark:hover:bg-uk-line-dark';
@@ -58,7 +59,7 @@ const etapaSiguiente = (row: OportunidadRow, etapas: Etapa[]) => {
 
 const plural = (n: number, singular: string, pluralTexto: string) => `${n} ${n === 1 ? singular : pluralTexto}`;
 
-const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, motivosPerdida, puedeReasignar }: Props) => {
+const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, motivosPerdida, puedeReasignar, esAdmin }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     useEffect(() => {
@@ -528,15 +529,19 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                                                                 Reasignar
                                                             </button>
                                                         ) : null}
-                                                        <span role="separator" className="my-1 block h-px bg-uk-line dark:bg-uk-line-dark" />
-                                                        <button
-                                                            type="button"
-                                                            role="menuitem"
-                                                            className="flex h-9 w-full items-center rounded-lg px-2.5 text-left text-[13px] font-extrabold text-uk-lost hover:bg-[#FDECEE] dark:text-uk-lost-dark dark:hover:bg-danger/10"
-                                                            onClick={() => darDeBaja(row)}
-                                                        >
-                                                            Dar de baja
-                                                        </button>
+                                                        {row.estado === 'ABIERTA' || esAdmin ? (
+                                                            <>
+                                                                <span role="separator" className="my-1 block h-px bg-uk-line dark:bg-uk-line-dark" />
+                                                                <button
+                                                                    type="button"
+                                                                    role="menuitem"
+                                                                    className="flex h-9 w-full items-center rounded-lg px-2.5 text-left text-[13px] font-extrabold text-uk-lost hover:bg-[#FDECEE] dark:text-uk-lost-dark dark:hover:bg-danger/10"
+                                                                    onClick={() => darDeBaja(row)}
+                                                                >
+                                                                    Dar de baja
+                                                                </button>
+                                                            </>
+                                                        ) : null}
                                                     </div>
                                                 </Dropdown>
                                             </div>

@@ -162,7 +162,7 @@ const BuscadorContacto = ({ id, value, onChange, contactos, placeholder = 'Busca
                 <ul
                     id={listaId}
                     role="listbox"
-                    className="absolute left-0 right-0 top-full z-30 mt-1.5 max-h-72 overflow-auto rounded-xl border border-uk-line bg-white p-1.5 shadow-[0_16px_32px_rgba(30,15,40,.14)] dark:border-uk-line-dark dark:bg-uk-card-raised-dark dark:shadow-[0_16px_32px_rgba(0,0,0,.5)]"
+                    className="absolute left-0 right-0 top-full z-30 mt-1.5 max-h-72 overflow-auto rounded-xl border border-uk-line bg-white p-1.5 shadow-[0_16px_32px_rgba(30,15,40,.14)] [scrollbar-color:#CFC4D6_transparent] [scrollbar-width:thin] dark:[scrollbar-color:#2A3350_transparent] dark:border-uk-line-dark dark:bg-uk-card-raised-dark dark:shadow-[0_16px_32px_rgba(0,0,0,.5)]"
                 >
                     {resultados.length === 0 ? (
                         <li className="px-2.5 py-3 text-sm text-uk-muted dark:text-uk-muted-dark">{q ? `Ningún contacto coincide con “${consulta.trim()}”.` : 'No hay contactos para elegir.'}</li>

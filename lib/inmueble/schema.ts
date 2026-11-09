@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const MAX_DIRECCION_INMUEBLE = 100;
+
 const numeroOpcional = (mensaje: string, { min = 0, entero = false }: { min?: number; entero?: boolean } = {}) =>
     z
         .union([z.literal(''), z.coerce.number()])
@@ -19,7 +21,7 @@ export const inmuebleSchema = z
     .object({
         contactoId: z.string().min(1, 'El propietario es obligatorio'),
         nombre: textoOpcional(),
-        direccion: z.string().trim().min(1, 'La dirección es obligatoria'),
+        direccion: z.string().trim().min(1, 'La dirección es obligatoria').max(MAX_DIRECCION_INMUEBLE, `La dirección puede tener hasta ${MAX_DIRECCION_INMUEBLE} caracteres`),
         localidad: textoOpcional(),
         tipoOperacion: z.enum(['VENTA', 'ALQUILER']),
         tipoInmueble: z.enum(['CASA', 'DEPARTAMENTO', 'PH']),

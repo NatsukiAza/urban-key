@@ -89,7 +89,7 @@ Toda feature las cumple; no se re-justifican en cada spec.
 7. Cada **cambio de etapa** se conserva como **registro independiente** en el historial (no se pisa la etapa anterior).
 8. Cada **actividad** registra **usuario** y **fecha/hora**, y se relaciona con contacto, inmueble u oportunidad.
 9. **Baja lógica**: los registros con historial comercial **no se eliminan físicamente**; se cambia su **estado**.
-10. Una oportunidad **cerrada** (ganada/perdida) **no se modifica sin autorización**; si se modifica, queda registrado quién y cuándo.
+10. Una oportunidad **cerrada** (ganada/perdida) **no se modifica sin autorización**; si se modifica, queda registrado quién y cuándo. Tampoco se **da de baja**: solo un administrador puede hacerlo, para corregir errores de carga (`darDeBajaOportunidad` lo valida en el servidor).
 11. Los **permisos se validan en el servidor** (RLS + Server Actions), no solo en el front → [[_base/acceso-y-roles]].
 12. Las **contraseñas** se manejan con mecanismo seguro (Supabase Auth); la app nunca las almacena en claro.
 13. Los **cambios importantes** permiten identificar al usuario que los realizó (auditoría).
