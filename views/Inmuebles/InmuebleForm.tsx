@@ -99,11 +99,10 @@ const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) 
     const guardar = async (crearOportunidad: boolean) => {
         const nuevos: Errores = {};
         if (!params.direccion.trim()) nuevos.direccion = 'Cargá la dirección: es el nombre del inmueble en toda la app.';
-        if (!params.ambientes || Number(params.ambientes) < 1) nuevos.ambientes = 'Indicá cuántos ambientes tiene.';
-        if (!params.dormitorios || Number(params.dormitorios) < 1) nuevos.dormitorios = 'Indicá cuántos dormitorios tiene.';
-        if (params.banos === '') nuevos.banos = 'Indicá cuántos baños tiene.';
-        if (params.antiguedad === '') nuevos.antiguedad = 'Indicá la antigüedad (0 si es a estrenar).';
-        if (!params.precio || Number(params.precio) <= 0) nuevos.precio = esAlquiler ? 'Cargá el alquiler mensual.' : 'Cargá el precio de venta.';
+        if (params.ambientes !== '' && Number(params.ambientes) < 1) nuevos.ambientes = 'Tiene que tener al menos 1 ambiente, o dejalo vacío.';
+        if (params.dormitorios !== '' && Number(params.dormitorios) < 1) nuevos.dormitorios = 'Tiene que tener al menos 1 dormitorio, o dejalo vacío.';
+        else if (params.dormitorios !== '' && params.ambientes !== '' && Number(params.dormitorios) > Number(params.ambientes)) nuevos.dormitorios = 'No puede tener más dormitorios que ambientes.';
+        if (params.precio !== '' && Number(params.precio) <= 0) nuevos.precio = esAlquiler ? 'El alquiler tiene que ser mayor a 0, o dejalo vacío.' : 'El precio tiene que ser mayor a 0, o dejalo vacío.';
         if (!params.estado) nuevos.estado = 'Elegí el estado comercial.';
         if (!params.contactoId || !propietarios.some((c) => c.id === params.contactoId)) nuevos.contactoId = 'Elegí un contacto de la lista o creá uno nuevo.';
         setErrores(nuevos);
@@ -195,13 +194,13 @@ const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) 
                 </Bloque>
 
                 <Bloque titulo="Características" ayuda="Se muestran como “3 amb. · 2 dorm. · 78 m²”." columnas={3}>
-                    <Campo obligatorio id="ambientes" etiqueta="Ambientes" error={errores.ambientes}>
+                    <Campo id="ambientes" etiqueta="Ambientes" error={errores.ambientes}>
                         <Stepper id="ambientes" etiqueta="ambiente" min={1} value={params.ambientes} onChange={(v) => set('ambientes', v)} invalido={Boolean(errores.ambientes)} describedBy={errores.ambientes ? 'ambientes-error' : undefined} />
                     </Campo>
-                    <Campo obligatorio id="dormitorios" etiqueta="Dormitorios" error={errores.dormitorios}>
+                    <Campo id="dormitorios" etiqueta="Dormitorios" error={errores.dormitorios}>
                         <Stepper id="dormitorios" etiqueta="dormitorio" min={1} value={params.dormitorios} onChange={(v) => set('dormitorios', v)} invalido={Boolean(errores.dormitorios)} describedBy={errores.dormitorios ? 'dormitorios-error' : undefined} />
                     </Campo>
-                    <Campo obligatorio id="banos" etiqueta="Baños" error={errores.banos}>
+                    <Campo id="banos" etiqueta="Baños" error={errores.banos}>
                         <Stepper id="banos" etiqueta="baño" min={0} value={params.banos} onChange={(v) => set('banos', v)} invalido={Boolean(errores.banos)} describedBy={errores.banos ? 'banos-error' : undefined} />
                     </Campo>
                     <Campo id="m2" etiqueta="Superficie total">
@@ -209,7 +208,7 @@ const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) 
                             <input id="m2" type="text" inputMode="decimal" value={params.m2} onChange={(e) => set('m2', e.target.value.replace(/[^\d.,]/g, ''))} placeholder="78" className={claseInputAdorno} />
                         </CampoConAdorno>
                     </Campo>
-                    <Campo obligatorio id="antiguedad" etiqueta="Antigüedad" error={errores.antiguedad} ayuda="0 = a estrenar.">
+                    <Campo id="antiguedad" etiqueta="Antigüedad" error={errores.antiguedad} ayuda="0 = a estrenar.">
                         <CampoConAdorno sufijo="años" invalido={Boolean(errores.antiguedad)}>
                             <input id="antiguedad" type="text" inputMode="numeric" value={params.antiguedad} onChange={(e) => set('antiguedad', e.target.value.replace(/\D/g, '').slice(0, 3))} placeholder="0" className={claseInputAdorno} />
                         </CampoConAdorno>
@@ -222,7 +221,7 @@ const InmuebleForm = ({ options, inmueble, contactoIdInicial, volverA }: Props) 
                 </Bloque>
 
                 <Bloque titulo="Precio y estado" ayuda={esAlquiler ? 'En alquiler, cargá el valor mensual.' : 'Precio publicado y estado comercial.'}>
-                    <Campo obligatorio id="precio" etiqueta={esAlquiler ? 'Alquiler mensual' : 'Precio de venta'} error={errores.precio}>
+                    <Campo id="precio" etiqueta={esAlquiler ? 'Alquiler mensual' : 'Precio de venta'} error={errores.precio}>
                         <MonedaYMonto invalido={Boolean(errores.precio)} id="precio" moneda={params.moneda} onMoneda={(m) => set('moneda', m)} valor={params.precio} onValor={(v) => set('precio', v)} />
                     </Campo>
                     <Campo id="expensas" etiqueta="Expensas">

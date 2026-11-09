@@ -18,7 +18,7 @@ import EstadoChip from '@/components/ui/EstadoChip';
 import ChipCategoria from '@/components/ui/ChipCategoria';
 import MenuFilaTabla from '@/components/ui/MenuFilaTabla';
 import { inicialesDe } from '@/components/ui/Iniciales';
-import { Avatar, BotonEditar, BotonNuevaOportunidad, DatoLista, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta, EnlaceTarjeta } from '@/components/ui/FichaPartes';
+import { Avatar, BotonNuevaOportunidad, DatoLista, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta, EnlaceTarjeta } from '@/components/ui/FichaPartes';
 import IconBuilding from '@/components/Icon/IconBuilding';
 import IconHome from '@/components/Icon/IconHome';
 import IconPhone from '@/components/Icon/IconPhone';
@@ -102,8 +102,15 @@ const InmuebleDetalle = ({ detalle, puedeEditar }: Props) => {
                 }
                 acciones={
                     <>
-                        {puedeEditar ? <BotonEditar href={editarHref} etiqueta="Editar inmueble" /> : null}
-                        {puedeEditar ? <MenuFilaTabla ariaLabel="Más acciones" items={[{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }]} /> : null}
+                        {puedeEditar ? (
+                            <MenuFilaTabla
+                                ariaLabel="Más acciones"
+                                items={[
+                                    { etiqueta: 'Editar', href: editarHref },
+                                    { etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja },
+                                ]}
+                            />
+                        ) : null}
                         <BotonNuevaOportunidad href={`/oportunidades/nuevo?inmuebleId=${detalle.id}`} />
                     </>
                 }

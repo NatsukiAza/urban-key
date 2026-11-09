@@ -191,21 +191,33 @@ const InmueblesList = ({ rows, filtro, localidades }: Props) => {
                                 </>
                             }
                         >
-                            <Select
-                                ariaLabel="Estado"
-                                className="w-full"
-                                value={filtro.estado ?? ''}
-                                onChange={(v) => aplicarFiltro('estado', v)}
-                                opciones={[{ value: '', label: 'Todos los estados' }, ...estadoInmuebleOptions.map((o) => ({ value: o.value, label: o.label }))]}
-                            />
-                            <Select
-                                ariaLabel="Localidad"
-                                className="w-full"
-                                disabled={localidades.length === 0}
-                                value={filtro.localidad ?? ''}
-                                onChange={(v) => aplicarFiltro('localidad', v)}
-                                opciones={[{ value: '', label: 'Todas las localidades' }, ...localidades.map((l) => ({ value: l, label: l }))]}
-                            />
+                            <div className="flex flex-col gap-1.5">
+                                <label htmlFor="filtro-estado" className="text-xs font-bold text-uk-ink dark:text-uk-ink-dark">
+                                    Estado comercial
+                                </label>
+                                <Select
+                                    id="filtro-estado"
+                                    ariaLabel="Estado comercial"
+                                    className="w-full"
+                                    value={filtro.estado ?? ''}
+                                    onChange={(v) => aplicarFiltro('estado', v)}
+                                    opciones={[{ value: '', label: 'Todos los estados' }, ...estadoInmuebleOptions.map((o) => ({ value: o.value, label: o.label }))]}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label htmlFor="filtro-localidad" className="text-xs font-bold text-uk-ink dark:text-uk-ink-dark">
+                                    Localidad
+                                </label>
+                                <Select
+                                    id="filtro-localidad"
+                                    ariaLabel="Localidad"
+                                    className="w-full"
+                                    disabled={localidades.length === 0}
+                                    value={filtro.localidad ?? ''}
+                                    onChange={(v) => aplicarFiltro('localidad', v)}
+                                    opciones={[{ value: '', label: 'Todas las localidades' }, ...localidades.map((l) => ({ value: l, label: l }))]}
+                                />
+                            </div>
                         </MasFiltros>
                     </div>
                     <ChipsFiltros chips={chips} onQuitar={(clave) => aplicarFiltro(clave as keyof FiltroInmuebles, '')} onLimpiar={() => aplicarFiltros({ estado: '', localidad: '', tipoOperacion: '', tipoInmueble: '' })} />

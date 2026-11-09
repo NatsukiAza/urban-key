@@ -106,8 +106,8 @@ Cargar pesos 400, 600, 700, 800. Números siempre con `tabular-nums` en montos, 
 ### 4.1 Sidebar
 - Fondo `bg-uk-sidebar dark:bg-uk-sidebar-dark` en **ambos** modos. La ilustración del skyline va al pie, `opacity-15`, `pointer-events-none`, nunca detrás de los ítems.
 - Ítem: `h-11 px-3 rounded-[10px] text-sm font-semibold text-uk-sidebar-text flex items-center gap-3`.
-- Ítem activo: `bg-white/10 text-white font-bold` + ícono en `text-gold`. Agregar `aria-current="page"`.
-- Subítem: `h-9 pl-[42px] text-[13px] text-uk-sidebar-sub`; activo con punto dorado de 6 px a la izquierda y `text-white font-bold`.
+- Ítem activo: `bg-white/10 text-white font-bold` + ícono en `text-primary` en claro y `text-gold` en oscuro. Agregar `aria-current="page"`.
+- Subítem: `h-9 pl-[42px] text-[13px] font-semibold text-white` (`uk-sidebar-sub` no contrasta sobre el fondo claro de la sidebar); activo con punto dorado de 6 px a la izquierda y `text-white font-bold`.
 - **Bug a corregir:** el activo se calcula con el pathname actual (`usePathname()`), por prefijo de ruta. Hoy Contactos marca Inmuebles y Motivos de pérdida marca Sucursales.
 - "Sucursales" → "Sucursal" para vendedor/responsable (ven solo la suya).
 
@@ -173,7 +173,7 @@ Mismo componente en Kanban y en Configuración de embudos. Los 4 funnels son fij
 
 ### 5.4 Campos
 - `form-input` / `form-select` + `h-[38px]` o `h-[42px]`, `rounded-[9px]`, `border-uk-field dark:border-uk-field-dark dark:bg-uk-card-dark dark:text-uk-ink-dark`.
-- Label arriba, siempre visible (no usar placeholder como label). "Opcional" en `text-xs text-uk-muted` al lado del label; no poner asteriscos.
+- Label arriba, siempre visible (no usar placeholder como label). "Opcional" en `text-xs text-uk-muted` al lado del label. Obligatorios: asterisco rojo pegado al label (`<span aria-hidden="true" class="ml-0.5 text-uk-lost dark:text-uk-lost-dark">*</span>`), en todos los campos obligatorios del formulario, no solo en algunos. Si la regla es "al menos uno de varios" (teléfono o email), el asterisco va en el título del bloque (`<Bloque obligatorio>`) y la ayuda dice la regla en `font-bold text-uk-ink`.
 - Error: borde `border-uk-lost` + mensaje debajo `text-xs font-bold text-uk-lost` que diga qué hacer ("Elegí un motivo para poder cerrarla.").
 - Montos: input con prefijo de moneda (`USD`/`ARS` en `bg-gold-light text-uk-money font-extrabold`).
 
@@ -183,7 +183,16 @@ Referencia: `docs/mockups/12-selector-fecha.html`. Componente compartido: `compo
 - Foco: borde violeta de 1,5 px con halo (`rgba(80,37,88,.12)`; en oscuro lila `#D7B8DE` con halo al 16 %). Ayuda debajo: "Sin fecha elegida", "Hoy", "Mañana", "Ayer", "En N días", "Hace N días".
 - Calendario de 260 px, `rounded-[14px]`, semana desde el lunes, celdas de 30 px. Día elegido lleno (violeta; dorado en oscuro), hoy con borde, días del mes vecino atenuados, días fuera de `min`/`max` deshabilitados. Pie: "O escribí dd/mm/aaaa" y "Borrar". Cierra con Escape o clic afuera.
 - Valor: `yyyy-mm-dd`. Fecha estimada de cierre: `min = hoy`. Fecha de cierre real (modales 6.5): `max = hoy`.
-- En modales de SweetAlert se monta con `lib/ui/FechaCierreHost.tsx`.
+- En modales de SweetAlert se monta con `lib/ui/CamposModalHost.tsx`.
+
+### 5.4c Selector de hora
+Componente compartido: `components/ui/TimePicker.tsx`. No usar `<input type="time">` nativo.
+- Mismo campo que la fecha (`h-[42px]`, foco y error iguales): ícono de reloj, `hh:mm` en 24 h (`tabular-nums`) y ✕ para borrar. Se puede escribir o abrir el panel.
+- Panel de 184 px, `rounded-[14px]`, dos columnas con scroll: horas 00–23 y minutos de 5 en 5 (escribiendo se acepta cualquier minuto). Elegir hora no cierra; elegir minuto sí. Pie: "Ahora" y "Borrar". Cierra con Escape o clic afuera.
+- Valor: `HH:mm`.
+
+### 5.4d Selects en modales
+En modales de SweetAlert no usar `<select>` nativo: montar `components/ui/Select.tsx` (alto `lg`) con `montarSelect` de `lib/ui/CamposModalHost.tsx`. Lo mismo para fecha (`montarFecha`) y hora (`montarHora`).
 
 ### 5.5 Formato de datos (helpers compartidos)
 - Moneda: `USD 210.000` / `ARS 420.000` (código + espacio + miles con punto, sin decimales). Nunca `$` solo: es ambiguo entre ARS y USD.
@@ -202,7 +211,7 @@ Referencia: `docs/mockups/12-selector-fecha.html`. Componente compartido: `compo
 - Pestañas de funnel (5.3) + a la derecha: búsqueda ("Buscar título o contacto") y select "Responsable: Todos / Solo mías" (solo admin y responsable comercial).
 - Área de columnas: `overflow-x-auto`, `role="region" aria-label="Etapas del funnel X" tabindex="0"`.
 - **Columna** (`w-[248px] shrink-0 rounded-xl bg-uk-col dark:bg-uk-col-dark dark:border dark:border-[#1E2740]`):
-  - Header: nombre `text-sm font-extrabold` + contador en píldora blanca; debajo, suma de valores de la columna (`text-xs text-uk-muted`), o "Sin valor estimado".
+  - Header: nombre `text-sm font-extrabold` + contador en píldora blanca; debajo, "Estimado: USD 210.000 · ARS 420.000" (`text-xs text-uk-muted`), o "Sin valores estimados" si ninguna tarjeta tiene valor. Columna vacía: sin esa línea.
   - Vacía: caja `h-[120px] border-[1.5px] border-dashed border-[#CFC4D6] rounded-[10px]` con "Soltá una tarjeta acá".
   - Etapa desactivada con oportunidades: `opacity-60` + etiqueta "Desactivada" en el header; no acepta drops.
 - **Tarjeta** (`bg-white dark:bg-uk-card-raised-dark border border-uk-line dark:border-uk-line-dark rounded-[10px] p-3 flex flex-col gap-2`):

@@ -8,6 +8,7 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { createClient } from '@/lib/supabase/client';
 import { ESTADOS_CONTACTO, buscarContactoPorEmail, estadoLabel, listarContextoContacto, nombreContacto, type Contacto, type ContextoContacto, type EstadoContacto } from '@/lib/supabase/contactos';
 import { actualizarContactoAction, crearContactoAction, reasignarContactoAction } from '@/lib/contacto/actions';
+import { LIMITES_CONTACTO, limpiarTelefono } from '@/lib/contacto/fila';
 import { puedeReasignar } from '@/lib/auth/permisos';
 import { showToast } from '@/lib/ui/toast';
 import Select from '@/components/ui/Select';
@@ -163,6 +164,7 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
                         <input
                             id="nombre"
                             type="text"
+                            maxLength={LIMITES_CONTACTO.nombre}
                             value={nombre}
                             onChange={(e) => {
                                 setNombre(e.target.value);
@@ -177,6 +179,7 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
                         <input
                             id="apellido"
                             type="text"
+                            maxLength={LIMITES_CONTACTO.apellido}
                             value={apellido}
                             onChange={(e) => {
                                 setApellido(e.target.value);
@@ -189,15 +192,16 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
                     </Campo>
                 </Bloque>
 
-                <Bloque titulo="Cómo contactarlo" ayuda="Cargá al menos uno de los dos.">
+                <Bloque obligatorio titulo="Cómo contactarlo" ayuda="Cargá al menos uno: teléfono o email.">
                     <Campo id="telefono" etiqueta="Teléfono" error={errores.telefono} ayuda="Con código de área, sin 0 ni 15.">
                         <CampoConAdorno prefijo="+54" invalido={Boolean(errores.telefono)}>
                             <input
                                 id="telefono"
                                 type="tel"
+                                maxLength={LIMITES_CONTACTO.telefono}
                                 value={telefono}
                                 onChange={(e) => {
-                                    setTelefono(e.target.value);
+                                    setTelefono(limpiarTelefono(e.target.value));
                                     limpiarContacto();
                                 }}
                                 placeholder="11 5555-1234"
@@ -211,6 +215,7 @@ const ContactoForm = ({ contacto }: { contacto?: Contacto }) => {
                         <input
                             id="email"
                             type="email"
+                            maxLength={LIMITES_CONTACTO.email}
                             value={email}
                             onChange={(e) => {
                                 setEmail(e.target.value);

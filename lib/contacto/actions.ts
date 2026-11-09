@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createClient } from '../supabase/server';
+import { LIMITES_CONTACTO } from './fila';
 import { getUsuarioActual } from '../auth/session';
 import { puedeReasignar } from '../auth/permisos';
 import { CONTACTO_COLUMNS, CONTACTO_COLUMNS_BASE, faltaColumnaNueva, mapContacto } from './fila';
@@ -15,10 +16,15 @@ const uuid = z.uuid('Identificador inválido');
 
 const contactoSchema = z
     .object({
-        nombre: z.string().trim().min(1, 'Cargá el nombre.'),
-        apellido: z.string().trim().min(1, 'Cargá el apellido.'),
-        email: z.string().trim().default(''),
-        telefono: z.string().trim().default(''),
+        nombre: z.string().trim().min(1, 'Cargá el nombre.').max(LIMITES_CONTACTO.nombre, `El nombre puede tener hasta ${LIMITES_CONTACTO.nombre} caracteres.`),
+        apellido: z.string().trim().min(1, 'Cargá el apellido.').max(LIMITES_CONTACTO.apellido, `El apellido puede tener hasta ${LIMITES_CONTACTO.apellido} caracteres.`),
+        email: z.string().trim().max(LIMITES_CONTACTO.email, `El email puede tener hasta ${LIMITES_CONTACTO.email} caracteres.`).default(''),
+        telefono: z
+            .string()
+            .trim()
+            .max(LIMITES_CONTACTO.telefono, `El teléfono puede tener hasta ${LIMITES_CONTACTO.telefono} caracteres.`)
+            .regex(/^[\d\s-]*$/, 'El teléfono solo puede tener números, espacios y guiones.')
+            .default(''),
         estado: z.enum(ESTADOS_CONTACTO),
         es_propietario: z.boolean(),
         es_interesado: z.boolean(),

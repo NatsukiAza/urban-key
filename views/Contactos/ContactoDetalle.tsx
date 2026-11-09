@@ -38,7 +38,7 @@ import EstadoChip from '@/components/ui/EstadoChip';
 import ChipCategoria from '@/components/ui/ChipCategoria';
 import MenuFilaTabla from '@/components/ui/MenuFilaTabla';
 import { inicialesDe } from '@/components/ui/Iniciales';
-import { AccionSecundaria, Avatar, BotonEditar, BotonNuevaOportunidad, DatoLista, EnlaceTarjeta, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta } from '@/components/ui/FichaPartes';
+import { AccionSecundaria, Avatar, BotonNuevaOportunidad, DatoLista, EnlaceTarjeta, FichaHero, FilaRelacionada, ListaDatos, SinDato, Tarjeta } from '@/components/ui/FichaPartes';
 import ContactoDetalleSkeleton from '@/views/Contactos/ContactoDetalleSkeleton';
 import PanelActividades from '@/components/actividad/PanelActividades';
 import IconBuilding from '@/components/Icon/IconBuilding';
@@ -256,11 +256,11 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                 }
                 acciones={
                     <>
-                        {edita ? <BotonEditar href={`/contactos/${contacto.id}/editar`} etiqueta="Editar contacto" /> : null}
                         {edita || reasigna ? (
                             <MenuFilaTabla
                                 ariaLabel="Más acciones"
                                 items={[
+                                    ...(edita ? [{ etiqueta: 'Editar', href: `/contactos/${contacto.id}/editar` }] : []),
                                     ...(reasigna ? [{ etiqueta: 'Reasignar', onClick: reasignar }] : []),
                                     ...(edita ? [{ etiqueta: 'Dar de baja', destructivo: true, onClick: darDeBaja }] : []),
                                 ]}
@@ -394,7 +394,19 @@ const ContactoDetalle = ({ id }: { id: string }) => {
                 </div>
 
                 <aside className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
-                    <Tarjeta compacta titulo="Datos" derecha={<EnlaceTarjeta href={`/contactos/${contacto.id}/editar`}>Editar</EnlaceTarjeta>}>
+                    <Tarjeta
+                        compacta
+                        titulo="Datos"
+                        derecha={
+                            edita ? (
+                                <EnlaceTarjeta href={`/contactos/${contacto.id}/editar`}>Editar</EnlaceTarjeta>
+                            ) : (
+                                <button type="button" onClick={() => showToast('No podés editar este contacto. Solo su responsable o un administrador pueden hacerlo.', 'error')} className="text-[13px] font-extrabold text-primary hover:underline dark:text-uk-link-dark">
+                                    Editar
+                                </button>
+                            )
+                        }
+                    >
                         <ListaDatos>
                             <DatoLista etiqueta="Nombre">{contacto.nombre}</DatoLista>
                             <DatoLista etiqueta="Apellido">{contacto.apellido}</DatoLista>

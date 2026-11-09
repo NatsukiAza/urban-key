@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { cargarPanelActividades, darDeBajaActividad, registrarActividad } from '@/lib/actividad/actions';
 import type { ActividadDetalle, PanelActividadesData, VinculoActividad } from '@/lib/actividad/types';
-import { modalDarDeBaja, modalRegistrarActividad } from '@/lib/ui/modales';
+import { modalEliminarActividad, modalRegistrarActividad } from '@/lib/ui/modales';
 import { showToast, toastExito } from '@/lib/ui/toast';
 
 export function useActividades(vinculo: VinculoActividad, subtitulo: string) {
@@ -49,7 +49,7 @@ export function useActividades(vinculo: VinculoActividad, subtitulo: string) {
     };
 
     const darDeBaja = async (actividad: ActividadDetalle) => {
-        const ok = await modalDarDeBaja(actividad.titulo, 'Deja de aparecer en el historial. Queda registrado quién la dio de baja y cuándo, y no se puede deshacer.');
+        const ok = await modalEliminarActividad(actividad.titulo);
         if (!ok) return;
         setOcupado(true);
         const res = await darDeBajaActividad(actividad.id);
@@ -58,7 +58,7 @@ export function useActividades(vinculo: VinculoActividad, subtitulo: string) {
             showToast(res.mensaje, 'error');
             return;
         }
-        toastExito(res.mensaje ?? 'Actividad dada de baja');
+        toastExito(res.mensaje ?? 'Actividad eliminada');
         await cargar();
     };
 

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { showToast } from '@/lib/ui/toast';
 import { crearOportunidad, actualizarOportunidad } from '@/lib/oportunidad/actions';
+import { MAX_TITULO_OPORTUNIDAD } from '@/lib/oportunidad/schema';
 import { crearContactoAction } from '@/lib/contacto/actions';
 import { modalNuevoContacto } from '@/lib/ui/modales';
 import { tipoOperacionConfig } from '@/lib/enums/tipoOperacion';
@@ -222,6 +223,7 @@ const OportunidadForm = ({ options, oportunidad, iniciales, volverA, precarga, u
                         <input
                             id="titulo"
                             type="text"
+                            maxLength={MAX_TITULO_OPORTUNIDAD}
                             value={params.titulo}
                             onChange={(e) => set('titulo', e.target.value)}
                             placeholder="Ej.: Venta casa Castelar"

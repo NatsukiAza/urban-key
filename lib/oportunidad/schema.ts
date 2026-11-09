@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const MAX_TITULO_OPORTUNIDAD = 60;
+
 // Validación de forma/requeridos. Las reglas de dominio que dependen del estado o
 // de relaciones (etapa↔funnel↔estado, cerrada no editable, etc.) se validan en actions.ts.
 
@@ -11,7 +13,7 @@ const fechaOpcional = (mensaje: string) =>
         .transform((v) => v || null);
 
 export const oportunidadSchema = z.object({
-    titulo: z.string().trim().min(1, 'El título es obligatorio'),
+    titulo: z.string().trim().min(1, 'El título es obligatorio').max(MAX_TITULO_OPORTUNIDAD, `El título puede tener hasta ${MAX_TITULO_OPORTUNIDAD} caracteres`),
     contactoId: z.string().min(1, 'El interesado es obligatorio'),
     inmuebleId: z.string().nullish().transform((v) => v || null),
     responsableId: z.string().min(1, 'El responsable es obligatorio'),

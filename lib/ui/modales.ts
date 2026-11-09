@@ -1,11 +1,13 @@
 import Swal from 'sweetalert2';
+import { LIMITES_CONTACTO, limpiarTelefono } from '@/lib/contacto/fila';
 import { monedaConfig, type Moneda } from '@/lib/enums/moneda';
-import { montarFechaCierre, type ControlFecha } from '@/lib/ui/FechaCierreHost';
+import { montarFecha, montarHora, montarSelect, type ControlCampo } from '@/lib/ui/CamposModalHost';
 
 const claseCampo = 'form-input h-[42px] w-full rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark';
 const claseError = 'mt-1 hidden text-xs font-bold text-uk-lost dark:text-uk-lost-dark';
 const claseLabel = 'mb-1.5 block text-left text-sm font-bold text-uk-ink dark:text-uk-ink-dark';
 const claseOpcional = 'ml-1 text-xs font-semibold text-uk-muted dark:text-uk-muted-dark';
+const obligatorio = '<span aria-hidden="true" class="ml-0.5 text-uk-lost dark:text-uk-lost-dark">*</span>';
 
 const crearModal = (claseConfirmar: string) =>
     Swal.mixin({
@@ -31,15 +33,16 @@ const hoy = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-const encabezado = (tipo: 'ganada' | 'perdida' | 'mover' | 'actividad', titulo: string, subtitulo: string) => `
+const iconoPapelera = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
+
+const encabezado = (tipo: 'ganada' | 'perdida' | 'mover' | 'actividad' | 'eliminar', titulo: string, subtitulo: string) => `
     <div class="mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="grid h-10 w-10 shrink-0 place-content-center rounded-full text-lg font-extrabold ${
-            tipo === 'ganada'
-                ? 'bg-[#E6F6EE] text-uk-won dark:bg-success/15 dark:text-uk-won-dark'
-                : tipo === 'perdida'
-                  ? 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
-                  : 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark'
-        }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : tipo === 'actividad' ? '+' : '→'}</span>
+        <span aria-hidden="true" class="grid h-10 w-10 shrink-0 place-content-center rounded-full text-lg font-extrabold ${tipo === 'ganada'
+        ? 'bg-[#E6F6EE] text-uk-won dark:bg-success/15 dark:text-uk-won-dark'
+        : tipo === 'perdida' || tipo === 'eliminar'
+            ? 'bg-[#FDECEE] text-uk-lost dark:bg-danger/15 dark:text-uk-lost-dark'
+            : 'bg-primary-light text-primary dark:bg-white/10 dark:text-uk-link-dark'
+    }">${tipo === 'ganada' ? '✓' : tipo === 'perdida' ? '✕' : tipo === 'actividad' ? '+' : tipo === 'eliminar' ? iconoPapelera : '→'}</span>
         <div class="min-w-0">
             <h2 id="uk-modal-titulo" class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">${titulo}</h2>
             <p class="truncate text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(subtitulo)}</p>
@@ -57,21 +60,33 @@ const campoFechaYObservacion = (placeholder: string) => `
         <textarea id="uk-obs" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="${placeholder}"></textarea>
     </div>`;
 
-let controlFecha: ControlFecha = { valor: '' };
-let desmontarFecha: () => void = () => undefined;
+let controles: Record<string, ControlCampo> = {};
+let desmontables: (() => void)[] = [];
 
-const prepararFecha = (): (() => void) => {
-    controlFecha = { valor: hoy() };
-    const contenedor = document.getElementById('uk-fecha-root');
-    return contenedor ? montarFechaCierre(contenedor, controlFecha, hoy()) : () => undefined;
+const control = (clave: string, valor = '') => (controles[clave] = { valor });
+
+const desmontarCampos = () => {
+    desmontables.forEach((desmontar) => desmontar());
+    desmontables = [];
+    controles = {};
+};
+
+const prepararFecha = (ariaLabel = 'Fecha de cierre') => {
+    desmontables.push(montarFecha('uk-fecha-root', control('fecha', hoy()), { id: 'uk-fecha', ariaLabel, max: hoy() }));
+};
+
+const prepararSelect = (clave: string, ariaLabel: string, placeholder: string, items: { id: string; nombre: string }[]) => {
+    const opciones = items.map((i) => ({ value: i.id, label: i.nombre }));
+    desmontables.push(montarSelect(`uk-${clave}-root`, control(clave), { id: `uk-${clave}`, ariaLabel, placeholder, opciones }));
 };
 
 const mostrarError = (id: string, visible: boolean) => {
     const el = document.getElementById(id);
     if (!el) return;
     el.classList.toggle('hidden', !visible);
-    if (id === 'uk-err-fecha') {
-        controlFecha.setInvalido?.(visible);
+    const montado = controles[id.replace('uk-err-', '')];
+    if (montado) {
+        montado.setInvalido?.(visible);
         return;
     }
     const campo = document.getElementById(id.replace('uk-err-', 'uk-'));
@@ -123,13 +138,13 @@ export async function modalCerrarGanada(datos: DatosModal & { valorEstimado: num
         confirmButtonText: 'Confirmar cierre',
         footer: pieDe(datos),
         didOpen: () => {
-            desmontarFecha = prepararFecha();
+            prepararFecha();
             document.getElementById('uk-valor')?.focus();
         },
-        willClose: () => desmontarFecha(),
+        willClose: desmontarCampos,
         preConfirm: () => {
             const valorFinal = valor('uk-valor');
-            const fechaCierre = controlFecha.valor;
+            const fechaCierre = controles.fecha.valor;
             const sinValor = valorEstimado != null && (valorFinal === '' || Number(valorFinal) < 0);
             mostrarError('uk-err-valor', sinValor);
             const fechaInvalida = !fechaCierre || fechaCierre > hoy();
@@ -142,29 +157,26 @@ export async function modalCerrarGanada(datos: DatosModal & { valorEstimado: num
 }
 
 export async function modalCerrarPerdida(datos: DatosModal & { motivos: { id: string; nombre: string }[] }): Promise<CierrePerdida | null> {
-    const opciones = datos.motivos.map((m) => `<option value="${m.id}">${escapar(m.nombre)}</option>`).join('');
     const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
         html: `
             ${encabezado('perdida', 'Cerrar como perdida', subtituloDe(datos))}
             <div>
                 <label for="uk-motivo" class="${claseLabel}">Motivo</label>
-                <select id="uk-motivo" class="form-select ${claseCampo.replace('form-input ', '')}">
-                    <option value="">Elegí un motivo</option>
-                    ${opciones}
-                </select>
+                <div id="uk-motivo-root"></div>
                 <p id="uk-err-motivo" class="${claseError}">Elegí un motivo para poder cerrarla.</p>
             </div>
             ${campoFechaYObservacion('Ej.: compró con otra inmobiliaria')}`,
         confirmButtonText: 'Cerrar como perdida',
         footer: pieDe(datos),
         didOpen: () => {
-            desmontarFecha = prepararFecha();
+            prepararSelect('motivo', 'Motivo', 'Elegí un motivo', datos.motivos);
+            prepararFecha();
             document.getElementById('uk-motivo')?.focus();
         },
-        willClose: () => desmontarFecha(),
+        willClose: desmontarCampos,
         preConfirm: () => {
-            const motivoPerdidaId = valor('uk-motivo');
-            const fechaCierre = controlFecha.valor;
+            const motivoPerdidaId = controles.motivo.valor;
+            const fechaCierre = controles.fecha.valor;
             mostrarError('uk-err-motivo', !motivoPerdidaId);
             const fechaInvalida = !fechaCierre || fechaCierre > hoy();
             mostrarError('uk-err-fecha', fechaInvalida);
@@ -206,58 +218,53 @@ const horaActual = () => {
 };
 
 export async function modalRegistrarActividad(datos: { subtitulo: string; tipos: { id: string; nombre: string }[] }): Promise<NuevaActividad | null> {
-    const opciones = datos.tipos.map((t) => `<option value="${t.id}">${escapar(t.nombre)}</option>`).join('');
     const resultado = await crearModal('btn-primary shadow-none').fire({
         html: `
             ${encabezado('actividad', 'Registrar actividad', datos.subtitulo)}
             <div class="grid gap-4 sm:grid-cols-2">
                 <div class="sm:col-span-2">
-                    <label for="uk-tipo" class="${claseLabel}">Tipo</label>
-                    <select id="uk-tipo" class="form-select ${claseCampo.replace('form-input ', '')}">
-                        <option value="">Elegí un tipo</option>
-                        ${opciones}
-                    </select>
+                    <label for="uk-tipo" class="${claseLabel}">Tipo${obligatorio}</label>
+                    <div id="uk-tipo-root"></div>
                     <p id="uk-err-tipo" class="${claseError}">Elegí qué tipo de actividad fue.</p>
                 </div>
                 <div>
-                    <label for="uk-fecha" class="${claseLabel}">Fecha</label>
+                    <label for="uk-fecha" class="${claseLabel}">Fecha${obligatorio}</label>
                     <div id="uk-fecha-root"></div>
                     <p id="uk-err-fecha" class="${claseError}">Elegí una fecha que no sea futura.</p>
                 </div>
                 <div>
-                    <label for="uk-hora" class="${claseLabel}">Hora</label>
-                    <input id="uk-hora" type="time" class="${claseCampo} tabular-nums" value="${horaActual()}" />
+                    <label for="uk-hora" class="${claseLabel}">Hora${obligatorio}</label>
+                    <div id="uk-hora-root"></div>
                     <p id="uk-err-hora" class="${claseError}">La actividad ya tiene que haber ocurrido: elegí una hora pasada.</p>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="uk-titulo" class="${claseLabel}">Título <span class="${claseOpcional}">Opcional</span></label>
+                    <label for="uk-titulo" class="${claseLabel}">Título</label>
                     <input id="uk-titulo" type="text" maxlength="120" autocomplete="off" placeholder="Ej.: Visita con la familia Pérez" class="${claseCampo}" />
                     <p class="mt-1 text-xs text-uk-muted dark:text-uk-muted-dark">Si lo dejás vacío, se usa el nombre del tipo.</p>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="uk-obs" class="${claseLabel}">Descripción <span class="${claseOpcional}">Opcional</span></label>
+                    <label for="uk-obs" class="${claseLabel}">Descripción</label>
                     <textarea id="uk-obs" maxlength="2000" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="3" placeholder="Ej.: le gustó la luz del living, pide ver otra en la misma zona"></textarea>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="uk-resultado" class="${claseLabel}">Resultado</label>
+                    <label for="uk-resultado" class="${claseLabel}">Resultado${obligatorio}</label>
                     <textarea id="uk-resultado" maxlength="2000" class="form-textarea w-full resize-none rounded-[9px] border-uk-field dark:border-uk-field-dark dark:bg-uk-page-dark dark:text-uk-ink-dark" rows="2" placeholder="Ej.: pidió otra visita el jueves y va a consultar con la pareja"></textarea>
                     <p id="uk-err-resultado" class="${claseError}">Contá cómo terminó: qué se acordó, qué dijo o qué quedó pendiente.</p>
                 </div>
             </div>`,
         confirmButtonText: 'Registrar actividad',
-        footer: 'Una actividad registrada no se edita: si te equivocás, dala de baja y cargala de nuevo.',
         focusCancel: false,
         didOpen: () => {
-            controlFecha = { valor: hoy() };
-            const contenedor = document.getElementById('uk-fecha-root');
-            desmontarFecha = contenedor ? montarFechaCierre(contenedor, controlFecha, hoy(), 'Fecha de la actividad') : () => undefined;
+            prepararSelect('tipo', 'Tipo', 'Elegí un tipo', datos.tipos);
+            prepararFecha('Fecha de la actividad');
+            desmontables.push(montarHora('uk-hora-root', control('hora', horaActual()), { id: 'uk-hora', ariaLabel: 'Hora de la actividad' }));
             document.getElementById('uk-tipo')?.focus();
         },
-        willClose: () => desmontarFecha(),
+        willClose: desmontarCampos,
         preConfirm: () => {
-            const tipoId = valor('uk-tipo');
-            const fecha = controlFecha.valor;
-            const hora = valor('uk-hora');
+            const tipoId = controles.tipo.valor;
+            const fecha = controles.fecha.valor;
+            const hora = controles.hora.valor;
             mostrarError('uk-err-tipo', !tipoId);
             const fechaInvalida = !fecha || fecha > hoy();
             mostrarError('uk-err-fecha', fechaInvalida);
@@ -273,7 +280,17 @@ export async function modalRegistrarActividad(datos: { subtitulo: string; tipos:
     return resultado.isConfirmed ? (resultado.value as NuevaActividad) : null;
 }
 
-export async function modalDarDeBaja(titulo: string, texto ='Deja de aparecer en el tablero y la lista. El historial se conserva.'): Promise<boolean> {
+export async function modalEliminarActividad(titulo: string): Promise<boolean> {
+    const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
+        html: `
+            ${encabezado('eliminar', 'Eliminar actividad', titulo)}
+            <p class="text-sm text-uk-muted dark:text-uk-muted-dark">Deja de aparecer en el historial. Queda registrado quién la eliminó y cuándo, y no se puede deshacer.</p>`,
+        confirmButtonText: 'Eliminar actividad',
+    });
+    return resultado.isConfirmed;
+}
+
+export async function modalDarDeBaja(titulo: string, texto = 'Deja de aparecer en el tablero y la lista. El historial se conserva.'): Promise<boolean> {
     const resultado = await crearModal('border-uk-lost bg-uk-lost text-white shadow-none hover:brightness-110').fire({
         html: `
             <h2 class="text-xl font-extrabold leading-tight text-uk-ink dark:text-uk-ink-dark">¿Dar de baja <strong>${escapar(titulo)}</strong>?</h2>
@@ -328,7 +345,7 @@ export interface DatosNuevoContacto {
     email: string;
 }
 
-const camposContacto = [
+const camposContacto: { id: keyof typeof LIMITES_CONTACTO; etiqueta: string; obligatorio: boolean }[] = [
     { id: 'nombre', etiqueta: 'Nombre', obligatorio: true },
     { id: 'apellido', etiqueta: 'Apellido', obligatorio: true },
     { id: 'telefono', etiqueta: 'Teléfono', obligatorio: false },
@@ -344,20 +361,26 @@ export async function modalNuevoContacto(datos: { titulo: string; ayuda: string;
             <p class="mb-4 mt-1 text-sm text-uk-muted dark:text-uk-muted-dark">${escapar(datos.ayuda)}</p>
             <div class="grid gap-4 sm:grid-cols-2">
                 ${camposContacto
-                    .map(
-                        (c) => `
+                .map(
+                    (c) => `
                 <div>
                     <label for="uk-${c.id}" class="${claseLabel}">${c.etiqueta}</label>
-                    <input id="uk-${c.id}" type="${c.id === 'email' ? 'email' : c.id === 'telefono' ? 'tel' : 'text'}" autocomplete="off" value="${escapar(inicial[c.id] ?? '')}" class="${claseCampo}" />
+                    <input id="uk-${c.id}" type="${c.id === 'email' ? 'email' : c.id === 'telefono' ? 'tel' : 'text'}" autocomplete="off" maxlength="${LIMITES_CONTACTO[c.id]}" value="${escapar((inicial[c.id] ?? '').slice(0, LIMITES_CONTACTO[c.id]))}" class="${claseCampo}" />
                     <p id="uk-err-${c.id}" class="${claseError}"></p>
                 </div>`
-                    )
-                    .join('')}
+                )
+                .join('')}
             </div>
             <p id="uk-err-contacto" class="${claseError}">Cargá al menos un teléfono o un email.</p>`,
         confirmButtonText: datos.confirmar,
         focusCancel: false,
-        didOpen: () => document.getElementById(inicial.nombre ? 'uk-apellido' : 'uk-nombre')?.focus(),
+        didOpen: () => {
+            const telefono = document.getElementById('uk-telefono') as HTMLInputElement | null;
+            telefono?.addEventListener('input', () => {
+                telefono.value = limpiarTelefono(telefono.value);
+            });
+            document.getElementById(inicial.nombre ? 'uk-apellido' : 'uk-nombre')?.focus();
+        },
         preConfirm: () => {
             const v = { nombre: valor('uk-nombre'), apellido: valor('uk-apellido'), telefono: valor('uk-telefono'), email: valor('uk-email') };
             const errNombre = document.getElementById('uk-err-nombre');

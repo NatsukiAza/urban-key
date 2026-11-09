@@ -61,12 +61,15 @@ export const CampoGrupo = ({ id, etiqueta, obligatorio, error, ayuda, className 
     </div>
 );
 
-export const Bloque = ({ titulo, ayuda, ultimo = false, columnas = 2, children }: { titulo: string; ayuda?: string; ultimo?: boolean; columnas?: 1 | 2 | 3; children: ReactNode }) => (
+export const Bloque = ({ titulo, ayuda, obligatorio = false, ultimo = false, columnas = 2, children }: { titulo: string; ayuda?: string; obligatorio?: boolean; ultimo?: boolean; columnas?: 1 | 2 | 3; children: ReactNode }) => (
     <fieldset className={`m-0 flex min-w-0 flex-wrap gap-6 border-0 p-6 ${ultimo ? '' : 'border-b border-b-uk-col dark:border-b-[#232C45]'}`}>
         <legend className="sr-only">{titulo}</legend>
         <div className="flex max-w-[240px] flex-[1_1_200px] flex-col gap-1">
-            <h2 className="text-base font-extrabold text-uk-ink dark:text-uk-ink-dark">{titulo}</h2>
-            {ayuda ? <p className="text-[13px] leading-normal text-uk-muted dark:text-uk-muted-dark">{ayuda}</p> : null}
+            <h2 className="text-base font-extrabold text-uk-ink dark:text-uk-ink-dark">
+                {titulo}
+                {obligatorio ? <Obligatorio /> : null}
+            </h2>
+            {ayuda ? <p className={`text-[13px] leading-normal ${obligatorio ? 'font-bold text-uk-ink dark:text-uk-ink-dark' : 'text-uk-muted dark:text-uk-muted-dark'}`}>{ayuda}</p> : null}
         </div>
         <div className={`grid min-w-0 flex-[999_1_420px] grid-cols-1 gap-5 ${columnas === 3 ? 'sm:grid-cols-2 md:grid-cols-3' : columnas === 2 ? 'md:grid-cols-2' : ''}`}>{children}</div>
     </fieldset>

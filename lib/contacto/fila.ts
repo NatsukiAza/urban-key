@@ -9,6 +9,10 @@ export const CONTACTO_COLUMNS_BASE =
 
 export const CONTACTO_COLUMNS = `${CONTACTO_COLUMNS_BASE}, origen_id, responsable_id`;
 
+export const LIMITES_CONTACTO = { nombre: 40, apellido: 40, email: 60, telefono: 20 } as const;
+
+export const limpiarTelefono = (valor: string) => valor.replace(/[^\d\s-]/g, '').slice(0, LIMITES_CONTACTO.telefono);
+
 export const faltaColumnaNueva = (error: { code?: string; message?: string } | null | undefined) => {
     const mensaje = error?.message ?? '';
     return error?.code === '42703' || error?.code === 'PGRST200' || /origen_id|responsable_id|relationship|schema cache/i.test(mensaje);

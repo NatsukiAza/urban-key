@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import IconEdit from '@/components/Icon/IconEdit';
 import IconPlus from '@/components/Icon/IconPlus';
 
 const claseTarjeta = 'rounded-[14px] border border-uk-line bg-white shadow-[0_2px_4px_rgba(30,15,40,.14)] dark:border-[#232C45] dark:bg-uk-card-dark dark:shadow-none';
@@ -55,12 +54,6 @@ export const Avatar = ({ iniciales, cuadrado = false, children }: { iniciales?: 
 );
 
 const claseBotonSecundario = 'inline-flex h-10 items-center gap-2 rounded-[10px] border border-uk-field bg-white px-3.5 text-[13px] font-extrabold text-uk-ink hover:bg-uk-col dark:border-uk-field-dark dark:bg-transparent dark:text-uk-ink-dark dark:hover:bg-white/5';
-
-export const BotonEditar = ({ href, etiqueta }: { href: string; etiqueta: string }) => (
-    <Link href={href} aria-label={etiqueta} title={etiqueta} className="grid h-10 w-10 place-content-center rounded-[10px] border border-uk-field bg-white text-primary hover:bg-primary-light dark:border-uk-field-dark dark:bg-transparent dark:text-uk-link-dark dark:hover:bg-white/5">
-        <IconEdit className="h-4 w-4" />
-    </Link>
-);
 
 export const AccionSecundaria = ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href} className={claseBotonSecundario}>

@@ -152,7 +152,7 @@ const HistorialComercial = ({ oportunidadId, subtitulo, movimientos }: { oportun
 
             {datos?.verBajas && bajas.length > 0 && filtro !== 'etapas' ? (
                 <button type="button" className={`${claseAccion} self-start`} onClick={() => setVerBajas((v) => !v)}>
-                    {verBajas ? 'Ocultar las actividades dadas de baja' : `Ver las actividades dadas de baja (${bajas.length})`}
+                    {verBajas ? 'Ocultar las actividades eliminadas' : `Ver las actividades eliminadas (${bajas.length})`}
                 </button>
             ) : null}
         </Tarjeta>

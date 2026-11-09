@@ -1,5 +1,6 @@
 'use client';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 
 const Dropdown = (props : any, forwardedRef: any) => {
@@ -7,8 +8,10 @@ const Dropdown = (props : any, forwardedRef: any) => {
 
     const referenceRef = useRef<any>(null);
     const popperRef = useRef<any>(null);
+    const [referenceEl, setReferenceEl] = useState<HTMLButtonElement | null>(null);
+    const [popperEl, setPopperEl] = useState<HTMLDivElement | null>(null);
 
-    const { styles, attributes } = usePopper(referenceRef.current, popperRef.current, {
+    const { styles, attributes } = usePopper(referenceEl, popperEl, {
         placement: props.placement || 'bottom-end',
         strategy: props.fijo ? 'fixed' : 'absolute',
         modifiers: [
@@ -42,10 +45,28 @@ const Dropdown = (props : any, forwardedRef: any) => {
         },
     }));
 
+    const menu = (
+        <div
+            ref={(el) => {
+                popperRef.current = el;
+                setPopperEl(el);
+            }}
+            style={styles.popper}
+            {...attributes.popper}
+            className="z-50"
+            onClick={() => setVisibility(!visibility)}
+        >
+            {visibility && props.children}
+        </div>
+    );
+
     return (
         <>
             <button
-                ref={referenceRef}
+                ref={(el) => {
+                    referenceRef.current = el;
+                    setReferenceEl(el);
+                }}
                 type="button"
                 className={props.btnClassName}
                 aria-label={props['aria-label']}
@@ -55,16 +76,8 @@ const Dropdown = (props : any, forwardedRef: any) => {
                 {props.button}
             </button>
 
-                <div
-                ref={popperRef}
-                style={styles.popper}
-                {...attributes.popper}
-                className="z-50"
-                onClick={() => setVisibility(!visibility)}
-                >
-                    {visibility && props.children}
-                </div>
-
+            {/* Con fijo se monta en body al abrirse: un ancestro con transform u overflow lo recortaría. */}
+            {props.fijo ? visibility && createPortal(menu, document.body) : menu}
         </>
     );
 };

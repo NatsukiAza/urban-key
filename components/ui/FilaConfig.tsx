@@ -93,7 +93,7 @@ const MenuFila = ({ nombre, onRenombrar, desactivar }: MenuProps) => {
                                     }}
                                     className={`${itemBase} ${desactivar.deshabilitado ? 'cursor-not-allowed opacity-60 hover:bg-transparent dark:hover:bg-transparent' : ''}`}
                                 >
-                                    <span className="text-[13px] font-bold">Desactivar…</span>
+                                    <span className="text-[13px] font-bold">Desactivar</span>
                                     <span className="text-xs font-normal leading-snug text-uk-muted dark:text-uk-muted-dark">{desactivar.descripcion}</span>
                                 </button>
                             </>

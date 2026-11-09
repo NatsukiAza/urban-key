@@ -99,8 +99,8 @@ export async function darDeBajaActividad(id: string): Promise<ActionResult> {
         console.error('Error dando de baja la actividad', error);
         return fallo(mensajeDeError(error));
     }
-    if (count === 0) return fallo('Solo podés dar de baja las actividades que registraste vos');
+    if (count === 0) return fallo('Solo podés eliminar las actividades que registraste vos');
 
     revalidar();
-    return { ok: true, mensaje: 'Actividad dada de baja' };
+    return { ok: true, mensaje: 'Actividad eliminada' };
 }

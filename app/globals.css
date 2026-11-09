@@ -69,7 +69,7 @@
 
     .sidebar ul.sub-menu li button,
     .sidebar ul.sub-menu li a {
-        @apply flex min-h-[44px] w-full items-center px-9 py-2.5 text-[13px] text-uk-sidebar-sub before:h-1.5 before:w-1.5 before:rounded-full before:bg-transparent hover:bg-white/5 hover:text-white ltr:before:mr-2 rtl:before:ml-2;
+        @apply flex min-h-[44px] w-full items-center px-9 py-2.5 text-[13px] font-semibold text-white before:h-1.5 before:w-1.5 before:rounded-full before:bg-transparent hover:bg-white/5 hover:text-white ltr:before:mr-2 rtl:before:ml-2;
     }
     .sidebar ul.sub-menu li button.active,
     .sidebar ul.sub-menu li a.active {
@@ -82,7 +82,7 @@
     }
     .sidebar .nav-item > a.active div:first-child svg,
     .sidebar .nav-item > button.active div:first-child svg {
-        @apply text-gold;
+        @apply text-primary dark:text-gold;
     }
 
     .main-container .main-content {

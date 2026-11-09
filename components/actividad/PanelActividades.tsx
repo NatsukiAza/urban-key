@@ -42,7 +42,7 @@ export const ItemActividad = ({ actividad, mostrarOportunidad, ultimo, ocupado, 
             </p>
             {actividad.puedeDarDeBaja ? (
                 <button type="button" disabled={ocupado} onClick={onDarDeBaja} className="text-xs font-bold text-uk-lost hover:underline disabled:opacity-60 dark:text-uk-lost-dark">
-                    Dar de baja
+                    Eliminar
                 </button>
             ) : null}
         </div>
@@ -66,7 +66,7 @@ export const ItemActividad = ({ actividad, mostrarOportunidad, ultimo, ocupado, 
         ) : null}
         {!actividad.activo ? (
             <p className="mt-2 inline-flex h-6 items-center rounded-md bg-uk-col px-2 text-xs font-bold text-uk-muted dark:bg-white/5 dark:text-uk-muted-dark">
-                Dada de baja{actividad.dadaDeBajaEn ? ` el ${formatearFechaHora(actividad.dadaDeBajaEn)}` : ''}
+                Eliminada{actividad.dadaDeBajaEn ? ` el ${formatearFechaHora(actividad.dadaDeBajaEn)}` : ''}
                 {actividad.dadaDeBajaPor ? ` por ${actividad.dadaDeBajaPor}` : ''}
             </p>
         ) : null}
@@ -132,7 +132,7 @@ const PanelActividades = ({ vinculo, subtitulo, mostrarOportunidad = false }: Pr
                     <VerMas restantes={todas.length - visibles.length} onClick={() => setLimite((l) => l + POR_PAGINA)} />
                     {datos.verBajas && bajas.length > 0 ? (
                         <button type="button" className={`${claseAccion} self-start`} onClick={() => setVerBajas((v) => !v)}>
-                            {verBajas ? 'Ocultar las dadas de baja' : `Ver las dadas de baja (${bajas.length})`}
+                            {verBajas ? 'Ocultar las eliminadas' : `Ver las eliminadas (${bajas.length})`}
                         </button>
                     ) : null}
                 </>

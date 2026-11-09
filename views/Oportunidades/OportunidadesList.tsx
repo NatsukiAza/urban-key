@@ -507,6 +507,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
                                                 ) : null}
                                                 <Dropdown
                                                     placement="bottom-end"
+                                                    fijo
                                                     offset={[0, 6]}
                                                     btnClassName="grid h-[34px] w-[34px] place-content-center rounded-[9px] border border-uk-line bg-white text-uk-muted hover:bg-uk-col dark:border-uk-line-dark dark:bg-transparent dark:text-uk-muted-dark dark:hover:bg-white/5"
                                                     aria-label="Más acciones"

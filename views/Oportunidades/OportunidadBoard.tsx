@@ -244,7 +244,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
                         </h2>
                         <span className="inline-flex h-5 min-w-[22px] items-center justify-center rounded-full bg-white px-1.5 text-[11px] font-extrabold tabular-nums text-uk-ink dark:bg-white/10 dark:text-uk-ink-dark">{column.tasks.length}</span>
                     </div>
-                    <p className="mt-1 text-xs tabular-nums text-uk-muted dark:text-uk-muted-dark">{suma || 'Sin valor estimado'}</p>
+                    {column.tasks.length > 0 ? <p className="mt-1 text-xs tabular-nums text-uk-muted dark:text-uk-muted-dark">{suma ? `Estimado: ${suma}` : 'Sin valores estimados'}</p> : null}
                 </div>
                 <div className="relative">
                     {visibles.length === 0 && (
