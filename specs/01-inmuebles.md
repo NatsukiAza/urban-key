@@ -56,6 +56,7 @@ La cartera es **compartida**: todo usuario activo ve y edita inmuebles ([[_base/
 - **RF4:** El sistema debe permitir **filtrar** la cartera por tipo de operación, tipo de inmueble, estado comercial y localidad. Los filtros que definen qué datos se traen viajan en la **URL** ([[_base/estado]]).
 - **RF5:** El sistema debe mostrar el **detalle** de un inmueble con todos sus datos, su propietario y **las oportunidades asociadas** (título, contacto, responsable, funnel, etapa y estado), con link a cada una.
 - **RF6:** El sistema debe permitir **editar** un inmueble, incluido su **estado comercial** (`DISPONIBLE` / `RESERVADO` / `OPERADO` / `RETIRADO`).
+- **RF6a:** Al cerrar como ganada una oportunidad abierta vinculada a un inmueble activo, el inmueble pasa a `OPERADO` en la misma transacción. Los cierres anteriores no se modifican automáticamente.
 - **RF7:** El sistema debe permitir dar de **baja lógica** un inmueble (`activo = false`), **rechazándola** si el inmueble tiene oportunidades **abiertas** — regla 9 de [[00-general]]: no se borra lo que tiene historial comercial, y no se retira de la cartera algo que se está negociando.
 - **RF8:** Los datos numéricos deben ser **coherentes**: dormitorios ≤ ambientes; superficie, precio, expensas y antigüedad no negativos.
 - **RF9:** Toda alta/edición debe registrar **quién** la hizo (`creado_por` / `actualizado_por`) — regla 13 de [[00-general]].

@@ -9,18 +9,19 @@ import type { Sucursal } from '@/lib/sucursal/types';
 
 interface Props {
     sucursal?: Sucursal | null;
+    onCerrar?: () => void;
 }
 
 const texto = (v: string | null | undefined) => v ?? '';
 
-const SucursalForm = ({ sucursal }: Props) => {
+const SucursalForm = ({ sucursal, onCerrar }: Props) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const esEdicion = !!sucursal;
 
     useEffect(() => {
-        dispatch(setPageTitle(esEdicion ? 'Editar sucursal' : 'Nueva sucursal'));
-    });
+        if (!onCerrar) dispatch(setPageTitle(esEdicion ? 'Editar sucursal' : 'Nueva sucursal'));
+    }, [dispatch, esEdicion, onCerrar]);
 
     const [params, setParams] = useState({
         nombre: texto(sucursal?.nombre),
@@ -42,8 +43,8 @@ const SucursalForm = ({ sucursal }: Props) => {
         setGuardando(false);
         if (res.ok) {
             showToast(res.mensaje ?? 'Guardado');
-            const destino = esEdicion ? `/sucursales/${sucursal.id}` : res.data ? `/sucursales/${res.data.id}` : '/sucursales';
-            router.push(destino);
+            if (onCerrar) onCerrar();
+            else router.push(esEdicion ? `/sucursales/${sucursal.id}` : res.data ? `/sucursales/${res.data.id}` : '/sucursales');
             router.refresh();
         } else {
             showToast(res.mensaje, 'error');
@@ -51,8 +52,8 @@ const SucursalForm = ({ sucursal }: Props) => {
     };
 
     return (
-        <div className="panel max-w-xl">
-            <h2 className="text-xl font-semibold mb-5">{esEdicion ? 'Editar sucursal' : 'Nueva sucursal'}</h2>
+        <div className={onCerrar ? '' : 'panel max-w-xl'}>
+            {!onCerrar && <h2 className="text-xl font-semibold mb-5">{esEdicion ? 'Editar sucursal' : 'Nueva sucursal'}</h2>}
             <form onSubmit={submit} className="space-y-5">
                 <div>
                     <label htmlFor="nombre">Nombre *</label>
@@ -73,7 +74,7 @@ const SucursalForm = ({ sucursal }: Props) => {
                     </label>
                 )}
                 <div className="flex justify-end gap-4">
-                    <button type="button" className="btn btn-cancel" onClick={() => router.push(esEdicion ? `/sucursales/${sucursal.id}` : '/sucursales')}>
+                    <button type="button" className="btn btn-cancel" disabled={guardando} onClick={() => onCerrar ? onCerrar() : router.push(esEdicion ? `/sucursales/${sucursal.id}` : '/sucursales')}>
                         Cancelar
                     </button>
                     <button type="submit" className="btn btn-primary" disabled={guardando}>

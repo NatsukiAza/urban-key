@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { redirect } from 'next/navigation';
-import SucursalForm from '@/views/Sucursales/SucursalForm';
 import { getUsuarioActual } from '@/lib/auth/session';
 import { getInmobiliaria } from '@/lib/sucursal/queries';
 
@@ -15,5 +14,5 @@ export default async function Page() {
     if (usuario?.rol !== 'ADMINISTRADOR') redirect('/no-autorizado');
     const inmobiliaria = await getInmobiliaria();
     if (!inmobiliaria) redirect('/sucursales');
-    return <SucursalForm />;
+    redirect('/sucursales');
 }

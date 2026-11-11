@@ -35,7 +35,7 @@ export async function cargarPanelActividades(vinculo: unknown): Promise<ActionRe
     const usuario = await getUsuarioActual();
     if (!usuario) return fallo('No hay una sesión activa');
 
-    const verBajas = usuario.rol === 'ADMINISTRADOR' || usuario.rol === 'RESPONSABLE_COMERCIAL';
+    const verBajas = true;
     try {
         const [actividades, tipos] = await Promise.all([
             getActividades(parsed.data, { incluirBajas: verBajas, usuarioId: usuario.id, esAdmin: usuario.rol === 'ADMINISTRADOR' }),

@@ -67,7 +67,7 @@ Que un usuario pueda **registrar actividades ya ocurridas** vinculadas a un cont
 
 - **RF9:** El detalle de una **oportunidad** debe mostrar en una sola línea de tiempo sus actividades, sus cambios de etapa y su cierre, ordenados por fecha, con el usuario que los registró.
 - **RF10:** El detalle de un **contacto** y el de un **inmueble** deben mostrar sus actividades, incluidas las registradas sobre sus oportunidades, con un link a la oportunidad de origen.
-- **RF11:** Las actividades dadas de baja no se muestran por defecto, pero el Administrador y el Responsable comercial pueden verlas, marcadas como dadas de baja.
+- **RF11:** Las actividades dadas de baja no se muestran por defecto, pero los usuarios pueden ver las que corresponden a registros a los que tienen acceso, marcadas como dadas de baja.
 
 ## Datos y modelo
 
@@ -135,7 +135,7 @@ No hay mockup de actividades: se diseña siguiendo `docs/diseno.md`, a partir de
 - [ ] **CA2:** Dado el formulario de actividad, cuando la fecha es futura, entonces el sistema no la guarda y muestra el error, también si la llamada llega directo a la base.
 - [ ] **CA3:** Dado un vendedor, cuando intenta registrar o ver una actividad de una oportunidad que no tiene asignada, entonces la base lo rechaza o no la devuelve.
 - [ ] **CA4:** Dada una actividad registrada, cuando cualquier usuario intenta editarla o borrarla (desde la app o directo contra Supabase), entonces la base lo rechaza. Solo se permite la baja lógica, por el autor o un admin.
-- [ ] **CA5:** Dada una actividad dada de baja, entonces no aparece en el historial por defecto, y el responsable comercial la ve marcada con quién y cuándo la dio de baja.
+- [ ] **CA5:** Dada una actividad dada de baja, entonces no aparece en el historial por defecto, y los usuarios con acceso pueden verla marcada con quién y cuándo la dio de baja.
 - [ ] **CA6:** Dado el admin en Configuración, cuando desactiva el tipo "Tasación", entonces deja de aparecer en el formulario y las tasaciones ya cargadas siguen mostrando su tipo.
 - [ ] **CA7:** Dado un usuario que no es admin, cuando intenta crear o modificar un tipo de actividad u origen, entonces la base lo rechaza.
 - [ ] **CA8:** Dado el responsable comercial en una oportunidad cerrada, cuando abre el detalle, entonces ve en una sola línea de tiempo las actividades, los cambios de etapa y el cierre, cada uno con su fecha y usuario.

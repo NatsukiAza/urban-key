@@ -11,6 +11,7 @@ type Supabase = Awaited<ReturnType<typeof createClient>>;
 function revalidar(id?: string) {
     revalidatePath('/oportunidades');
     revalidatePath('/oportunidades/tablero');
+    revalidatePath('/inmuebles', 'layout');
     if (id) revalidatePath(`/oportunidades/${id}`);
 }
 
