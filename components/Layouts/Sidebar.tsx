@@ -16,6 +16,7 @@ import IconUser from '../Icon/IconUser';
 import IconTrendingUp from '../Icon/IconTrendingUp';
 import IconMapPin from '../Icon/IconMapPin';
 import IconSettings from '../Icon/IconSettings';
+import IconHelpCircle from '../Icon/IconHelpCircle';
 import { createClient } from '@/lib/supabase/client';
 import type { RolUsuario } from '@/lib/enums/rolUsuario';
 
@@ -51,6 +52,7 @@ const Sidebar = () => {
         oportunidades: enSeccion('/oportunidades'),
         usuarios: enSeccion('/usuarios'),
         configuracion: enSeccion('/configuracion'),
+        ayuda: enSeccion('/ayuda'),
     };
     const seccionActual = activo.oportunidades ? 'oportunidades' : activo.configuracion ? 'configuracion' : '';
     const props = (esActivo: boolean) => ({ 'aria-current': esActivo ? ('page' as const) : undefined, className: esActivo ? 'active' : '' });
@@ -183,6 +185,15 @@ const Sidebar = () => {
                                     </AnimateHeight>
                                 </li>
                             ) : null}
+
+                            <li className="nav-item">
+                                <Link href="/ayuda" className={`group ${activo.ayuda ? 'active' : ''}`} aria-current={activo.ayuda ? 'page' : undefined}>
+                                    <div className="flex items-center">
+                                        <IconHelpCircle duotone={false} className="text-white group-hover:!text-white shrink-0" />
+                                        <span className="ltr:pl-3 rtl:pr-3 text-uk-sidebar-text group-hover:text-white">{t('Ayuda')}</span>
+                                    </div>
+                                </Link>
+                            </li>
                         </ul>
                     </PerfectScrollbar>
                 </div>
