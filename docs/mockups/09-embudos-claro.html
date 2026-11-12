@@ -54,8 +54,7 @@ button,input{font-family:inherit}
       </div>
 
       <div role="tablist" aria-label="Funnel" style="display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #E7E2EC">
-        <button role="tab" aria-selected="true" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid #502558; background: transparent; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer">Captación Alquiler</button>
-        <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Captación Venta</button>
+        <button role="tab" aria-selected="true" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid #502558; background: transparent; color: #502558; font-size: 14px; font-weight: 800; cursor: pointer">Propietarios</button>
         <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Interesados Alquiler</button>
         <button role="tab" aria-selected="false" style="height: 44px; padding: 0 14px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #5C5F77; font-size: 14px; font-weight: 700; cursor: pointer">Interesados Compra</button>
       </div>
@@ -78,11 +77,11 @@ button,input{font-family:inherit}
 
           <!-- Editando -->
           <li style="display: flex; align-items: center; gap: 4px; min-height: 56px; padding: 6px 8px 6px 2px; border: 1.5px solid #502558; border-radius: 10px; background: #FBF8FC; flex-wrap: wrap">
-            <button aria-label="Reordenar Relevamiento" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+            <button aria-label="Reordenar Tasación" style="width: 44px; height: 44px; border: 0; background: transparent; color: #8E91A6; cursor: grab; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
             <span style="width: 24px; font-size: 13px; font-weight: 700; color: #5C5F77">2</span>
             <label style="flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 4px">
               <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Nombre de la etapa</span>
-              <input type="text" value="Relevamiento del inmueble" style="height: 38px; padding: 0 10px; border: 1px solid #502558; border-radius: 8px; font-size: 15px; font-weight: 700; color: #1B1424; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(80,37,88,0.15)">
+              <input type="text" value="Tasación del inmueble" style="height: 38px; padding: 0 10px; border: 1px solid #502558; border-radius: 8px; font-size: 15px; font-weight: 700; color: #1B1424; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(80,37,88,0.15)">
               <span style="font-size: 11px; color: #5C5F77">Enter para guardar · Esc para cancelar</span>
             </label>
             <button style="height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #1B1424; font-size: 13px; font-weight: 700; cursor: pointer; margin-left: 8px">Cancelar</button>
@@ -141,8 +140,8 @@ button,input{font-family:inherit}
         <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
           <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 8px 0 16px; border: 1px solid #E7E2EC; border-radius: 10px">
             <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 12px; background: #E6F6EE; color: #047A3F; font-size: 12px; font-weight: 800">Ganada</span>
-            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Contrato firmado</button>
-            <button aria-label="Renombrar Contrato firmado" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+            <button title="Renombrar" style="flex: 1; text-align: left; border: 0; background: transparent; padding: 8px 6px; font-size: 15px; font-weight: 700; color: #1B1424; cursor: text">Operación concretada</button>
+            <button aria-label="Renombrar Operación concretada" style="width: 40px; height: 40px; border: 1px solid #E7E2EC; border-radius: 9px; background: #FFFFFF; color: #5C5F77; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
           </li>
           <li style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 8px 0 16px; border: 1px solid #E7E2EC; border-radius: 10px">
             <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 12px; background: #FDECEE; color: #C42B35; font-size: 12px; font-weight: 800">Perdida</span>

@@ -827,11 +827,7 @@ export type Database = {
       estado_oportunidad: "ABIERTA" | "GANADA" | "PERDIDA"
       moneda: "ARS" | "USD"
       rol_usuario: "ADMINISTRADOR" | "VENDEDOR" | "RESPONSABLE_COMERCIAL"
-      tipo_funnel:
-        | "CAPTACION_VENTA"
-        | "CAPTACION_ALQUILER"
-        | "INTERESADOS_COMPRA"
-        | "INTERESADOS_ALQUILER"
+      tipo_funnel: "PROPIETARIOS" | "INTERESADOS_COMPRA" | "INTERESADOS_ALQUILER"
       tipo_inmueble: "CASA" | "DEPARTAMENTO" | "PH"
       tipo_operacion: "VENTA" | "ALQUILER"
     }
@@ -969,12 +965,7 @@ export const Constants = {
       estado_oportunidad: ["ABIERTA", "GANADA", "PERDIDA"],
       moneda: ["ARS", "USD"],
       rol_usuario: ["ADMINISTRADOR", "VENDEDOR", "RESPONSABLE_COMERCIAL"],
-      tipo_funnel: [
-        "CAPTACION_VENTA",
-        "CAPTACION_ALQUILER",
-        "INTERESADOS_COMPRA",
-        "INTERESADOS_ALQUILER",
-      ],
+      tipo_funnel: ["PROPIETARIOS", "INTERESADOS_COMPRA", "INTERESADOS_ALQUILER"],
       tipo_inmueble: ["CASA", "DEPARTAMENTO", "PH"],
       tipo_operacion: ["VENTA", "ALQUILER"],
     },

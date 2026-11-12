@@ -138,8 +138,8 @@ const motivos = await contar('motivos_perdida');
 
 console.log(`✓ Configuración: ${funnels} funnels · ${etapas} etapas · ${origenes} orígenes · ${motivos} motivos de pérdida`);
 
-if (funnels !== 4 || etapas !== 29) {
-    console.log('  ⚠ Se esperaban 4 funnels y 29 etapas. Revisá que la migración de datos de configuración se haya aplicado.');
+if (funnels !== 3 || etapas !== 22) {
+    console.log('  ⚠ Se esperaban 3 funnels y 22 etapas. Revisá que la migración de datos de configuración se haya aplicado.');
 }
 
 console.log('\nTodo listo: la app puede hablar con Supabase y hay sesión con RLS puesto.');

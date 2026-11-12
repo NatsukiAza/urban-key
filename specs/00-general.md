@@ -15,7 +15,7 @@ Cambios deliberados respecto del CRM genérico de la consigna, para reflejar el 
 
 - **Se elimina la entidad "Empresa".** UrbanKey es un CRM residencial B2C: el cliente es siempre una **persona** (propietario/interesado). Se reemplaza la entidad "Empresa" del modelo genérico por el **rol dual del Contacto** (propietario e/o interesado), reflejando el proceso real de una inmobiliaria de venta/alquiler a particulares. Los casos aislados de una empresa (p. ej. una firma que alquila para un empleado) se modelan como Contacto con una observación; una empresa como garante es un **garante**, no el cliente de la oportunidad.
 - **Inmueble** es entidad propia (no un "producto/servicio" genérico) por ser el eje del negocio.
-- **Cuatro funnels** en vez de un embudo único, por los dos lados del mercado (captación vs. demanda) y las dos operaciones (venta vs. alquiler). Ver más abajo.
+- **Tres funnels** en vez de un embudo único: uno de **Propietarios** (captación, igual para venta y alquiler) y dos de demanda, separados por operación (compra vs. alquiler). Ver más abajo.
 
 ## Specs base (lo transversal)
 
@@ -59,14 +59,13 @@ Definidos como enum en la app (ver [[_base/acceso-y-roles]] para el mecanismo).
 | **Motivo de pérdida** | Razón por la que una oportunidad no se concretó. |
 | **Origen** | Medio por el que llegó un contacto/oportunidad. |
 
-### Los cuatro funnels
+### Los tres funnels
 
 Cada oportunidad pertenece a **un** funnel, y cada funnel tiene su propia secuencia de etapas:
 
 | Funnel | Actor | Ejemplo de etapas |
 | --- | --- | --- |
-| **Captación Venta** | Propietario que quiere vender | Consulta → Tasación → Publicación → Negociación → Reserva → Operación concretada / perdida |
-| **Captación Alquiler** | Propietario que quiere alquilar | Consulta → Relevamiento → Publicación → Negociación → Reserva → Contrato firmado / perdida |
+| **Propietarios** | Propietario que quiere vender o alquilar | Consulta → Tasación → Publicación → Negociación → Reserva → Operación concretada / perdida |
 | **Interesados Compra** | Interesado que quiere comprar | Consulta recibida → Necesidad relevada → Propiedades seleccionadas → Visita realizada → Negociación → Reserva → Operación concretada / perdida |
 | **Interesados Alquiler** | Interesado que quiere alquilar | Consulta recibida → Necesidad relevada → Propiedades seleccionadas → Visita realizada → Negociación → Contrato firmado / perdida |
 

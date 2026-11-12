@@ -165,7 +165,7 @@ Potencial, Operado, ARS, USD, Vendedor, Departamento, Casa, Venta, Alquiler y si
 - Venta y Alquiler se distinguen por el texto y la posición: van siempre primero y en `font-extrabold`.
 
 ### 5.3 Pestañas (funnels)
-Mismo componente en Kanban y en Configuración de embudos. Los 4 funnels son fijos: **nunca** un `select`.
+Mismo componente en Kanban y en Configuración de embudos. Los 3 funnels son fijos: **nunca** un `select`.
 - Contenedor: `role="tablist"`, `border-b border-uk-line`.
 - Pestaña: `h-11 px-3.5 text-sm font-bold border-b-[3px] border-transparent text-uk-muted`.
 - Activa: `aria-selected="true" border-primary text-primary font-extrabold` (dark: `border-gold text-white`).
@@ -229,7 +229,7 @@ En modales de SweetAlert no usar `<select>` nativo: montar `components/ui/Select
 
 ### 6.2 Lista `/oportunidades`
 - Filtros visibles: búsqueda, Funnel, Estado. "Más filtros (n)" abre Responsable, Etapa y Origen. **Etapa se habilita solo con un funnel elegido** y lista solo sus etapas.
-- Debajo de los filtros: chips de filtros activos (`Funnel: Captación Venta ✕`) + "Limpiar filtros".
+- Debajo de los filtros: chips de filtros activos (`Funnel: Propietarios ✕`) + "Limpiar filtros".
 - Columnas: Título · Interesado · Inmueble · Responsable · Funnel / Etapa (dos líneas: etapa en `font-bold`, funnel en `text-xs text-uk-muted`) · Estado · Valor (alineado a la derecha) · Acciones.
 - Título: `text-primary dark:text-uk-link-dark font-bold no-underline hover:underline`.
 - Orden: mostrar el ícono solo en la columna ordenada y al hacer hover sobre los headers ordenables.

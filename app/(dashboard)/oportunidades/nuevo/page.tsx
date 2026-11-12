@@ -6,17 +6,16 @@ import { puedeReasignar } from '@/lib/auth/permisos';
 import type { FormOptions } from '@/lib/oportunidad/types';
 import type { TipoFunnel } from '@/lib/enums/tipoFunnel';
 
-// El propietario del inmueble entra por Captación; cualquier otro contacto, por Interesados.
+// El propietario del inmueble entra por Propietarios; cualquier otro contacto, por Interesados.
 function deducirTipoFunnel(options: FormOptions, contactoId?: string, inmuebleId?: string): TipoFunnel | null {
     const inmueble = options.inmuebles.find((i) => i.id === inmuebleId);
     if (inmueble) {
-        const esPropietario = !contactoId || inmueble.contactoId === contactoId;
-        if (inmueble.tipoOperacion === 'VENTA') return esPropietario ? 'CAPTACION_VENTA' : 'INTERESADOS_COMPRA';
-        return esPropietario ? 'CAPTACION_ALQUILER' : 'INTERESADOS_ALQUILER';
+        if (!contactoId || inmueble.contactoId === contactoId) return 'PROPIETARIOS';
+        return inmueble.tipoOperacion === 'VENTA' ? 'INTERESADOS_COMPRA' : 'INTERESADOS_ALQUILER';
     }
     const contacto = options.interesados.find((c) => c.id === contactoId);
     if (!contacto) return null;
-    if (contacto.esPropietario && !contacto.esInteresado) return 'CAPTACION_VENTA';
+    if (contacto.esPropietario && !contacto.esInteresado) return 'PROPIETARIOS';
     return 'INTERESADOS_COMPRA';
 }
 

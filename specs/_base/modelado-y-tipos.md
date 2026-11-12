@@ -55,7 +55,7 @@ Los estados y categorías **siempre** se tipan con su enum, nunca con string sue
 - **`options`** — `{ label, value }[]` para selects;
 - **`config`** — `Record<valor, { label, color, clase }>` para chips/badges → render en [[ui-y-feedback]].
 
-Enums del dominio: `rolUsuario`, `estadoOportunidad` (`ABIERTA`/`GANADA`/`PERDIDA`), `estadoContacto` (`POTENCIAL`/`CLIENTE`/`INACTIVO`/`NO_CONTACTAR`), `tipoFunnel` (los 4), `estadoInmueble`, `tipoOperacion` (`VENTA`/`ALQUILER`).
+Enums del dominio: `rolUsuario`, `estadoOportunidad` (`ABIERTA`/`GANADA`/`PERDIDA`), `estadoContacto` (`POTENCIAL`/`CLIENTE`/`INACTIVO`/`NO_CONTACTAR`), `tipoFunnel` (los 3: `PROPIETARIOS`/`INTERESADOS_COMPRA`/`INTERESADOS_ALQUILER`), `estadoInmueble`, `tipoOperacion` (`VENTA`/`ALQUILER`).
 
 > Etapas, motivos de pérdida, orígenes y tipos de actividad son **configurables por el Administrador** → son **tablas**, no enums de código. Solo se hace enum lo que es fijo en el dominio.
 
