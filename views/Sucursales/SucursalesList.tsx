@@ -156,8 +156,8 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                 <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
                 <div className="fixed inset-0 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
-                        <Dialog.Panel className="panel w-full max-w-xl rounded-[14px] dark:border dark:border-[#232C45] dark:bg-uk-card-dark">
-                            <Dialog.Title className="mb-5 text-xl font-semibold">Nueva sucursal</Dialog.Title>
+                        <Dialog.Panel className="panel w-full max-w-xl rounded-[14px] text-uk-ink dark:border dark:border-[#232C45] dark:bg-uk-card-dark dark:text-uk-ink-dark">
+                            <Dialog.Title className="mb-5 text-xl font-extrabold text-uk-ink dark:text-uk-ink-dark">Nueva sucursal</Dialog.Title>
                             <SucursalForm onCerrar={() => setNuevaAbierta(false)} />
                         </Dialog.Panel>
                     </div>

@@ -6,6 +6,7 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { showToast } from '@/lib/ui/toast';
 import { actualizarSucursal, crearSucursal } from '@/lib/sucursal/actions';
 import type { Sucursal } from '@/lib/sucursal/types';
+import { Campo, claseInput } from '@/components/ui/FormPartes';
 
 interface Props {
     sucursal?: Sucursal | null;
@@ -53,20 +54,17 @@ const SucursalForm = ({ sucursal, onCerrar }: Props) => {
 
     return (
         <div className={onCerrar ? '' : 'panel max-w-xl'}>
-            {!onCerrar && <h2 className="text-xl font-semibold mb-5">{esEdicion ? 'Editar sucursal' : 'Nueva sucursal'}</h2>}
+            {!onCerrar && <h2 className="mb-5 text-xl font-extrabold text-uk-ink dark:text-uk-ink-dark">{esEdicion ? 'Editar sucursal' : 'Nueva sucursal'}</h2>}
             <form onSubmit={submit} className="space-y-5">
-                <div>
-                    <label htmlFor="nombre">Nombre *</label>
-                    <input id="nombre" value={params.nombre} onChange={change} type="text" className="form-input" placeholder="Ej: Morón Centro" />
-                </div>
-                <div>
-                    <label htmlFor="direccion">Dirección</label>
-                    <input id="direccion" value={params.direccion} onChange={change} type="text" className="form-input" placeholder="Ej: Av. Rivadavia 17000" />
-                </div>
-                <div>
-                    <label htmlFor="telefono">Teléfono</label>
-                    <input id="telefono" value={params.telefono} onChange={change} type="text" className="form-input" placeholder="Ej: 11 5555-5555" />
-                </div>
+                <Campo id="nombre" etiqueta="Nombre" obligatorio>
+                    <input id="nombre" value={params.nombre} onChange={change} type="text" className={claseInput} placeholder="Ej: Morón Centro" />
+                </Campo>
+                <Campo id="direccion" etiqueta="Dirección">
+                    <input id="direccion" value={params.direccion} onChange={change} type="text" className={claseInput} placeholder="Ej: Av. Rivadavia 17000" />
+                </Campo>
+                <Campo id="telefono" etiqueta="Teléfono">
+                    <input id="telefono" value={params.telefono} onChange={change} type="text" className={claseInput} placeholder="Ej: 11 5555-5555" />
+                </Campo>
                 {esEdicion && (
                     <label className="inline-flex items-center gap-2 cursor-pointer">
                         <input id="activo" type="checkbox" className="form-checkbox" checked={params.activo} onChange={change} />
