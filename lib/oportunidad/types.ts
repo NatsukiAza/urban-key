@@ -88,6 +88,7 @@ export interface OportunidadRow {
     moneda: Moneda;
     fechaCierreEstimada: string | null;
     motivoPerdida: string | null;
+    creadoEn: string;
 }
 
 export interface FiltroOportunidades {

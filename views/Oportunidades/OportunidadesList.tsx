@@ -210,7 +210,7 @@ const OportunidadesList = ({ rows, filtro, usuarios, funnels, origenes, etapas, 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 25, 50];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'titulo', direction: 'asc' });
+    const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'creadoEn', direction: 'desc' });
 
     const filtradas = useMemo(() => {
         const q = search.trim().toLowerCase();
