@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import SucursalForm from '@/views/Sucursales/SucursalForm';
 import { getUsuarioActual } from '@/lib/auth/session';
 import { getSucursal } from '@/lib/sucursal/queries';
 
@@ -14,5 +13,5 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     if (usuario?.rol !== 'ADMINISTRADOR') redirect('/no-autorizado');
     const detalle = await getSucursal(id);
     if (!detalle) notFound();
-    return <SucursalForm sucursal={detalle} />;
+    redirect(`/sucursales/${detalle.id}`);
 }

@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -11,6 +10,7 @@ import { showToast } from '@/lib/ui/toast';
 import { rolUsuarioConfig } from '@/lib/enums/rolUsuario';
 import type { SucursalDetalle, UsuarioDeSucursal } from '@/lib/sucursal/types';
 import { useBreadcrumbDetalle } from '@/components/Layouts/useBreadcrumbDetalle';
+import SucursalModal from './SucursalModal';
 
 interface Props {
     detalle: SucursalDetalle;
@@ -31,6 +31,7 @@ const SucursalDetalleView = ({ detalle, esAdmin, candidatos }: Props) => {
     useBreadcrumbDetalle(detalle.nombre);
     const [usuarioId, setUsuarioId] = useState('');
     const [asignando, setAsignando] = useState(false);
+    const [editando, setEditando] = useState(false);
 
     useEffect(() => {
         dispatch(setPageTitle(detalle.nombre));
@@ -88,6 +89,7 @@ const SucursalDetalleView = ({ detalle, esAdmin, candidatos }: Props) => {
 
     return (
         <div className="space-y-5">
+            {editando && <SucursalModal sucursal={detalle} onCerrar={() => setEditando(false)} />}
             <div className="panel">
                 <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
                     <div>
@@ -95,10 +97,10 @@ const SucursalDetalleView = ({ detalle, esAdmin, candidatos }: Props) => {
                         <span className={`badge mt-2 ${detalle.activo ? 'badge-outline-success' : 'badge-outline-danger'}`}>{detalle.activo ? 'Activa' : 'Inactiva'}</span>
                     </div>
                     {esAdmin && (
-                        <Link href={`/sucursales/${detalle.id}/editar`} className="btn btn-primary gap-2">
+                        <button type="button" onClick={() => setEditando(true)} className="btn btn-primary gap-2">
                             <IconEdit />
                             Editar
-                        </Link>
+                        </button>
                     )}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

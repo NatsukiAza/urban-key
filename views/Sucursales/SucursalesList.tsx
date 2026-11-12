@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Dialog } from '@headlessui/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -16,7 +15,7 @@ import { formatearTelefono } from '@/lib/formato';
 import { actualizarInmobiliaria, crearInmobiliaria } from '@/lib/sucursal/actions';
 import { showToast } from '@/lib/ui/toast';
 import type { Inmobiliaria, Sucursal } from '@/lib/sucursal/types';
-import SucursalForm from './SucursalForm';
+import SucursalModal from './SucursalModal';
 
 interface Props {
     inmobiliaria: Inmobiliaria | null;
@@ -38,6 +37,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
     const [cuitOrg, setCuitOrg] = useState(inmobiliaria?.cuit ?? '');
     const [guardando, setGuardando] = useState(false);
     const [nuevaAbierta, setNuevaAbierta] = useState(false);
+    const [sucursalEditando, setSucursalEditando] = useState<Sucursal | null>(null);
 
     useEffect(() => {
         dispatch(setPageTitle(esAdmin ? 'Sucursales' : 'Tu sucursal'));
@@ -152,17 +152,8 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
     return (
         <div>
             <PageHeader title="Sucursales" description={contar(sucursales.length, 'sucursal', 'sucursales')} actions={nueva} />
-            <Dialog open={nuevaAbierta} onClose={() => setNuevaAbierta(false)} className="relative z-[51]">
-                <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <Dialog.Panel className="panel w-full max-w-xl rounded-[14px] text-uk-ink dark:border dark:border-[#232C45] dark:bg-uk-card-dark dark:text-uk-ink-dark">
-                            <Dialog.Title className="mb-5 text-xl font-extrabold text-uk-ink dark:text-uk-ink-dark">Nueva sucursal</Dialog.Title>
-                            <SucursalForm onCerrar={() => setNuevaAbierta(false)} />
-                        </Dialog.Panel>
-                    </div>
-                </div>
-            </Dialog>
+            {nuevaAbierta && <SucursalModal onCerrar={() => setNuevaAbierta(false)} />}
+            {sucursalEditando && <SucursalModal sucursal={sucursalEditando} onCerrar={() => setSucursalEditando(null)} />}
 
             <div className="panel !rounded-[14px] !p-0 shadow-[0_2px_4px_rgba(30,15,40,.14)] dark:!border dark:!border-[#232C45] dark:!bg-uk-card-dark dark:shadow-none">
                 <div className="flex flex-wrap items-center gap-3 border-b border-uk-line px-5 py-4 dark:border-[#232C45]">
@@ -234,7 +225,7 @@ const SucursalesList = ({ inmobiliaria, sucursales, esAdmin }: Props) => {
                                                 ariaLabel={`Más acciones para ${s.nombre}`}
                                                 items={[
                                                     { etiqueta: 'Ver detalle', href: `/sucursales/${s.id}` },
-                                                    { etiqueta: 'Editar', href: `/sucursales/${s.id}/editar` },
+                                                    { etiqueta: 'Editar', onClick: () => setSucursalEditando(s) },
                                                 ]}
                                             />
                                         </div>
