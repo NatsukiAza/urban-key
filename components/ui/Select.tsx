@@ -17,7 +17,7 @@ interface Props {
     placeholder?: string;
     disabled?: boolean;
     className?: string;
-    alto?: 'sm' | 'lg';
+    alto?: 'sm' | 'md' | 'lg';
     invalido?: boolean;
     onClear?: () => void;
     describedBy?: string;
@@ -124,7 +124,7 @@ const Select = ({ value, onChange, opciones, ariaLabel, id, placeholder = 'Selec
                 onClick={() => (abierto ? setAbierto(false) : abrir())}
                 onKeyDown={teclado}
                 className={`flex w-full items-center justify-between gap-2 rounded-[9px] bg-white px-3 text-left font-semibold text-uk-ink hover:bg-uk-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-white dark:bg-uk-page-dark dark:text-uk-ink-dark dark:hover:bg-white/5 dark:focus-visible:ring-gold/50 dark:disabled:hover:bg-uk-page-dark ${
-                    alto === 'lg' ? 'h-[42px] text-sm' : 'h-[38px] text-[13px]'
+                    alto === 'lg' ? 'h-[42px] text-sm' : alto === 'md' ? 'h-[38px] text-sm' : 'h-[38px] text-[13px]'
                 } ${onClear && value ? 'pr-11' : ''} ${icono ? '!pl-2.5' : ''} ${
                     invalido ? 'border-[1.5px] border-uk-lost dark:border-uk-lost-dark' : 'border border-uk-field dark:border-uk-field-dark'
                 }`}

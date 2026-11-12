@@ -21,6 +21,7 @@ import IconTrendingUp from '@/components/Icon/IconTrendingUp';
 import IconSearch from '@/components/Icon/IconSearch';
 import EstadoPantalla from '@/components/ui/EstadoPantalla';
 import SwitchVista from '@/components/ui/SwitchVista';
+import Select from '@/components/ui/Select';
 import { ColumnasSkeleton } from './OportunidadBoardSkeleton';
 
 const ReactSortable = dynamic(() => import('react-sortablejs').then((mod) => mod.ReactSortable), { ssr: false });
@@ -380,7 +381,7 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
                 <div className="min-w-0 flex-1">
                     <FunnelTabs tabs={funnels} activeId={funnelPedido ?? activeFunnelId} conteos={conteoFunnels} onSelect={cambiarFunnel} ariaLabel="Funnels" />
                 </div>
-                <div className="flex w-full flex-wrap items-center gap-2 pb-1.5 sm:w-auto">
+                <div className="flex w-full flex-wrap items-center gap-2 pb-1.5 sm:w-auto sm:shrink-0 sm:flex-nowrap">
                     <input
                         type="search"
                         className="form-input h-[38px] w-full rounded-[9px] sm:w-56"
@@ -390,10 +391,17 @@ const OportunidadBoard = ({ columnas, funnels, activeFunnelId, conteoFunnels, ha
                         onChange={(event) => setBusqueda(event.target.value)}
                     />
                     {puedeFiltrarResponsable ? (
-                        <select className="form-select h-[38px] w-full rounded-[9px] sm:w-44" aria-label="Responsable" value={soloMias ? 'mias' : 'todos'} onChange={(event) => setSoloMias(event.target.value === 'mias')}>
-                            <option value="todos">Responsable: Todos</option>
-                            <option value="mias">Responsable: Solo mías</option>
-                        </select>
+                        <Select
+                            ariaLabel="Responsable"
+                            className="w-full sm:w-[210px]"
+                            alto="md"
+                            value={soloMias ? 'mias' : 'todos'}
+                            onChange={(v) => setSoloMias(v === 'mias')}
+                            opciones={[
+                                { value: 'todos', label: 'Responsable: Todos' },
+                                { value: 'mias', label: 'Responsable: Solo mías' },
+                            ]}
+                        />
                     ) : null}
                 </div>
             </div>
